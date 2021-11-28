@@ -13,18 +13,6 @@ from .models import User
 from .serializers import UserSerializer,UserSerializerNoPassword,UserLoginSerializer
 from backend.decorators import user_required,admin_required
 
-class AuthView(APIView):
-    authentication_classes = [SessionAuthentication,BasicAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get(self,request,format=None):
-        content ={
-            'user': str(request.user),
-            'auth': str(request.auth)
-        }
-        return Response(content)
-
-
 class UserList(APIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializerNoPassword
