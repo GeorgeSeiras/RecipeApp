@@ -19,6 +19,7 @@ urlpatterns = [
     #     name='token_refresh')
     path('user', views.UserList.as_view()),
     path('user/register', views.UserRegister.as_view()),
+    path('user/login',views.UserLogin.as_view()),
     path('user/<int:pk>', views.UserDetail.as_view())
 ]
 
