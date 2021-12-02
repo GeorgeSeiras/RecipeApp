@@ -5,6 +5,7 @@ from django.db.models.fields.related import ForeignKey
 
 from user.models import User
 
+
 class Recipe(models.Model):
     user_id = models.ForeignKey(User, on_delete=CASCADE)
     title = models.CharField(
@@ -34,12 +35,14 @@ class Recipe(models.Model):
         auto_now=True
     )
     steps = ArrayField(models.CharField(max_length=200))
-    ingredients = models.ManyToManyField('recipe.Ingredient',related_name='recipe_ingredients')
+    ingredients = models.ManyToManyField(
+        'recipe.Ingredient', related_name='recipe_ingredients')
+
 
 class Ingredient(models.Model):
-    amount = models.DecimalField(max_digits=8,decimal_places=2)
-    unit = models.CharField(max_length=10,blank=True)
+    amount = models.DecimalField(max_digits=8, decimal_places=2)
+    unit = models.CharField(max_length=10, blank=True)
     ingredient = models.CharField(max_length=50,)
 
     class Meta:
-        db_table='ingredient'
+        db_table = 'ingredient'
