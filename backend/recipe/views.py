@@ -40,7 +40,7 @@ class RecipeCreate(APIView):
 
 class RecipeDetail(APIView):
     
-    def get(self, pk):
+    def get(self,request, pk):
         try:
             recipe = Recipe.objects.get(pk=pk)
             return Response({
