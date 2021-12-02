@@ -14,9 +14,10 @@ class Ingredient(models.Model):
         list = []
         for ingredient in ingredients:
             dict = {}
+            dict['id'] = ingredient.pk
             dict['amount'] = float(ingredient.amount)
             dict['unit'] = ingredient.unit
             dict['ingredient'] = ingredient.ingredient
-            dict['recipe'] = ingredient.recipe
+            dict['recipe'] = ingredient.recipe.pk
             list.append(dict)
         return list

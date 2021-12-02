@@ -54,5 +54,5 @@ class RecipeSerializer(serializers.Serializer):
         ingredients = []
         for ingredient in ingredient_data:
             created_ingredient = IngredientSerializer.create(self, ingredient,recipe)
-            ingredients.append(created_ingredient.id)
-        return recipe, ingredient_data
+            ingredients.append(created_ingredient)
+        return recipe, Ingredient.ingredients_to_list(ingredients)

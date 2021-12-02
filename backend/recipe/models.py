@@ -58,6 +58,7 @@ class Recipe(models.Model):
         dict['updated_at'] = str(recipe.updated_at)
         dict['steps'] = recipe.steps
         ingredients = Ingredient.objects.get(recipe=recipe.pk)
+        print(ingredients)
         dict['ingredients'] = Ingredient.ingredients_to_list(ingredients)
         return dict
 
