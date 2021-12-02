@@ -38,13 +38,29 @@ class RecipeCreate(APIView):
                 }
             }, status=status.HTTP_201_CREATED)
 
+
 class RecipeDetail(APIView):
-    
-    def get(self,request, pk):
+
+    def get(self, request, pk):
         try:
             recipe = Recipe.objects.get(pk=pk)
             return Response({
-                'status':'ok',
-                'data':Recipe.recipe_to_dict(recipe)})
+                'status': 'ok',
+                'data': Recipe.recipe_to_dict(recipe)})
         except User.DoesNotExist:
             Response(status=status.HTTP_404_NOT_FOUND)
+
+    @user_required
+    def delete(self, request, pk):
+        try:
+            recipe = Recipe.objects.get(pk=pk)
+        except User.DoesNotExist:
+            Response(status=status.HTTP_404_NOT_FOUND)
+        try:
+            user = User.objects.get(username=request.user)
+        except Recipe.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        if str(recipe.user) != user.username:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        Recipe.objects.filter(id=pk).delete()
+        return Response({'status':'ok'},status=status.HTTP_200_OK)
