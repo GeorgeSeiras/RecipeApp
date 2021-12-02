@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
 from user.models import User
-from .models import Ingredient, Recipe
+from .models import Recipe
+from ingredient.models import Ingredient
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -34,7 +35,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.Serializer):
-    user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     photo = serializers.ImageField(
         required=False, allow_empty_file=True, max_length=None)
     title = serializers.CharField()

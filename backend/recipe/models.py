@@ -1,9 +1,11 @@
+import json
+
 from django.db import models, connection
 from django.contrib.postgres.fields import ArrayField
 from django.db.models.deletion import CASCADE
 from django.db.models.fields.related import ForeignKey
-import json
 
+from ingredient.models import Ingredient
 from user.models import User
 
 
@@ -36,8 +38,7 @@ class Recipe(models.Model):
         auto_now=True
     )
     steps = ArrayField(models.CharField(max_length=200))
-    ingredients = models.ManyToManyField(
-        'recipe.Ingredient', related_name='recipe_ingredients')
+    ingredients = models.ManyToManyField(Ingredient)
 
     def recipe_to_dict(recipe):
         if recipe == None:
@@ -64,20 +65,4 @@ class Recipe(models.Model):
         list=[]
         for recipe in recipes:
             list.append(Recipe.recipe_to_dict(recipe))
-        return list
-class Ingredient(models.Model):
-    amount = models.DecimalField(max_digits=8, decimal_places=2)
-    unit = models.CharField(max_length=10, blank=True)
-    ingredient = models.CharField(max_length=50,)
-
-    class Meta:
-        db_table = 'ingredient'
-    def ingredients_to_list(ingredients):
-        list = []
-        for ingredient in ingredients:
-            dict = {}
-            dict['amount'] = float(ingredient.amount)
-            dict['unit'] = ingredient.unit
-            dict['ingredient'] = ingredient.ingredient
-            list.append(dict)
         return list
