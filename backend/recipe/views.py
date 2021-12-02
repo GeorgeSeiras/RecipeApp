@@ -5,6 +5,7 @@ from django.db import transaction
 from django.forms.models import model_to_dict
 import json
 
+from recipe.models import Recipe
 from user.models import User
 from recipe.serializers import RecipeSerializer
 from backend.decorators import user_required
@@ -36,3 +37,14 @@ class RecipeCreate(APIView):
                     'recipe': recipe_dict
                 }
             }, status=status.HTTP_201_CREATED)
+
+class RecipeDetail(APIView):
+    
+    def get(self, request, pk):
+        try:
+            recipe = Recipe.objects.get(pk=pk)
+            return Response({
+                'status':'ok',
+                'data':Recipe.recipe_to_dict(recipe)})
+        except User.DoesNotExist:
+            Response(status=status.HTTP_404_NOT_FOUND)
