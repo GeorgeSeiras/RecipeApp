@@ -33,20 +33,13 @@ class Recipe(models.Model):
     updated_at = models.DateTimeField(
         auto_now=True
     )
+    steps = ArrayField(models.CharField(max_length=200))
+    ingredients = models.ManyToManyField('recipe.Ingredient',related_name='recipe_ingredients')
 
 class Ingredient(models.Model):
-    recipe_id = ForeignKey(Recipe,on_delete=CASCADE)
     amount = models.DecimalField(max_digits=8,decimal_places=2)
-    unit = models.CharField(max_length=10)
-    ingredient = models.CharField(max_length=50)
+    unit = models.CharField(max_length=10,blank=True)
+    ingredient = models.CharField(max_length=50,)
 
     class Meta:
         db_table='ingredient'
-
-class Step(models.Model):
-    recipe_id = ForeignKey(Recipe,on_delete=CASCADE)
-    step_num = models.IntegerField()
-    desc = models.CharField(max_length=100)
-
-    class Meta:
-        db_table='step'

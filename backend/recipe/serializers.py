@@ -1,32 +1,19 @@
 from rest_framework import serializers
 
 from user.models import User
-from .models import Ingredient, Recipe, Step
+from .models import Ingredient, Recipe
 
 class IngredientSerializer(serializers.ModelSerializer):
-    recipe_id = serializers.RelatedField(source='recipe',read_only=True)
     amount = serializers.FloatField()
-    unit = serializers.CharField()
+    unit = serializers.CharField(required=False)
     ingredient = serializers.CharField()
 
     class Meta:
         model = Ingredient
         fields = '__all__'
 
-    def create(self, validated_data,recipe):
-        return Ingredient.objects.create(recipe_id=recipe,**validated_data)
-
-class StepSerializer(serializers.ModelSerializer):
-    recipe_id = serializers.RelatedField(source='recipe',read_only=True)
-    step_num = serializers.IntegerField()
-    desc = serializers.CharField()
-
-    class Meta:
-        model = Step
-        fields = '__all__'
-
-    def create(self, validated_data,recipe):
-        return Step.objects.create(**validated_data,recipe_id=recipe)
+    def create(self, validated_data):
+        return Ingredient.objects.create(**validated_data)
         
 class RecipeCreateSerializer(serializers.ModelSerializer):
     photo = serializers.ImageField(required=False,allow_empty_file=True,max_length=None)
@@ -55,19 +42,17 @@ class RecipeSerializer(serializers.Serializer):
     servings = serializers.IntegerField()
     cuisine = serializers.ListField(child=serializers.CharField())
     course = serializers.ListField(child=serializers.CharField())
-    steps = StepSerializer(many=True)
-
+    steps = serializers.ListField(child=serializers.CharField())
+    
     def create(self,validated_data):
         ingredient_data = validated_data.pop('ingredients')
-        step_data = validated_data.pop('steps')
-        recipe = Recipe.objects.create(**validated_data)
         ingredients =[]
-        steps=[]
         for ingredient in ingredient_data:
-            ingredients.append(IngredientSerializer.create(self,ingredient,recipe))
-        for step in step_data:
-            steps.append(StepSerializer.create(self,step,recipe))
-        return recipe,ingredients,steps 
+            created_ingredient = IngredientSerializer.create(self,ingredient)
+            ingredients.append(created_ingredient.id)
+        recipe = Recipe.objects.create(**validated_data)
+        recipe.ingredients.set(ingredients)
+        return recipe,ingredient_data 
         
 
     
