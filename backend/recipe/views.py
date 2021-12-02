@@ -1,21 +1,24 @@
-from re import UNICODE
-from django.db.utils import DatabaseError
-from django.shortcuts import render
-from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from django.db import transaction
-from django.core import serializers as core_serializers
 from django.forms.models import model_to_dict
 import json
 
-from recipe.serializers import IngredientSerializer, RecipeSerializer, RecipeSerializer, StepSerializer
+from user.models import User
+from recipe.serializers import  RecipeSerializer
+from backend.decorators import user_required
 
 class RecipeCreate(APIView):
 
+    @user_required
     def post(self,request):
-        serializer = RecipeSerializer(data = request.data)
+        data = request.data
+        print(request.user)
+        user = User.objects.get(username=request.user)
+        
+        data['user_id']=user.id
+        serializer = RecipeSerializer(data = data)
         with transaction.atomic():
             if (not serializer.is_valid()):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

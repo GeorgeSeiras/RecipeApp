@@ -1,6 +1,7 @@
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
+from django.db import transaction
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication,BasicAuthentication, TokenAuthentication
@@ -8,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from django.http import Http404
+from django.forms.models import model_to_dict
 
 from .models import User
 from .serializers import UserSerializer,UserSerializerNoPassword,UserLoginSerializer
@@ -34,9 +36,12 @@ class UserDetail(APIView):
 
 class UserRegister(APIView):
     def post(self, request, format=None):
-        serializer = UserSerializerNoPassword(data = request.data)
-        if (not serializer.is_valid()):
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        serializer.validated_data['password'] = make_password(serializer.validated_data['password'])
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        with transaction.atomic():
+            serializer = UserSerializer(data = request.data)
+            if (not serializer.is_valid()):
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            serializer.validated_data['password'] = make_password(serializer.validated_data['password'])
+            serializer.save()
+            res = serializer.data
+            del res['password']
+            return Response(res, status=status.HTTP_201_CREATED)

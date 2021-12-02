@@ -3,8 +3,10 @@ from django.contrib.postgres.fields import ArrayField
 from django.db.models.deletion import CASCADE
 from django.db.models.fields.related import ForeignKey
 
+from user.models import User
 
 class Recipe(models.Model):
+    user_id = models.ForeignKey(User, on_delete=CASCADE)
     title = models.CharField(
         max_length=100
     )
