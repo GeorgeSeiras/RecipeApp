@@ -9,13 +9,13 @@ class IngredientSerializer(serializers.ModelSerializer):
     amount = serializers.FloatField()
     unit = serializers.CharField(required=False)
     ingredient = serializers.CharField()
-
+    recipe = serializers.RelatedField(source='recipe.recipe',read_only=True)
     class Meta:
         model = Ingredient
         fields = '__all__'
 
-    def create(self, validated_data):
-        return Ingredient.objects.create(**validated_data)
+    def create(self, validated_data,recipe):
+        return Ingredient.objects.create(**validated_data,recipe=recipe)
 
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
@@ -50,10 +50,9 @@ class RecipeSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         ingredient_data = validated_data.pop('ingredients')
+        recipe = Recipe.objects.create(**validated_data)
         ingredients = []
         for ingredient in ingredient_data:
-            created_ingredient = IngredientSerializer.create(self, ingredient)
+            created_ingredient = IngredientSerializer.create(self, ingredient,recipe)
             ingredients.append(created_ingredient.id)
-        recipe = Recipe.objects.create(**validated_data)
-        recipe.ingredients.set(ingredients)
         return recipe, ingredient_data

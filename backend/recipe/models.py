@@ -38,7 +38,6 @@ class Recipe(models.Model):
         auto_now=True
     )
     steps = ArrayField(models.CharField(max_length=200))
-    ingredients = models.ManyToManyField(Ingredient)
 
     def recipe_to_dict(recipe):
         if recipe == None:
@@ -58,7 +57,8 @@ class Recipe(models.Model):
         dict['created_at'] = str(recipe.created_at)
         dict['updated_at'] = str(recipe.updated_at)
         dict['steps'] = recipe.steps
-        dict['ingredients'] = Ingredient.ingredients_to_list(recipe.ingredients.all())
+        ingredients = Ingredient.objects.get(recipe=recipe.pk)
+        dict['ingredients'] = Ingredient.ingredients_to_list(ingredients)
         return dict
 
     def recipes_to_list(recipes):
