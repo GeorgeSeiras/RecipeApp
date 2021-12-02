@@ -16,4 +16,11 @@ class User(AbstractUser):
     last_name = None
     def __str__(self):
         return "{}".format(self.username)
-    
+
+    def user_to_dict(user):
+        dict = {}
+        dict['id'] = user.pk
+        dict['username'] = user.username
+        dict['email'] = user.email
+        
+        return dict

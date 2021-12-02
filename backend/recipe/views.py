@@ -16,7 +16,7 @@ class RecipeCreate(APIView):
     def post(self, request):
         data = request.data
         user = User.objects.get(username=request.user)
-        data['user_id'] = user.id
+        data['user'] = user.id
         serializer = RecipeSerializer(data=data)
         with transaction.atomic():
             if (not serializer.is_valid()):
