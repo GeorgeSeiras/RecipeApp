@@ -1,17 +1,15 @@
-from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
+from django.http.response import JsonResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.authentication import SessionAuthentication,BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
-from django.http import Http404
 from django.forms.models import model_to_dict
-
+from django.core.serializers import serialize
+import json
 from .models import User
+from recipe.models import Recipe
 from .serializers import UserSerializer,UserSerializerNoPassword,UserLoginSerializer
 from backend.decorators import user_required,admin_required
 
@@ -32,7 +30,7 @@ class UserDetail(APIView):
             user = User.objects.get(pk =pk)
             return Response(UserSerializerNoPassword(user).data,status=status.HTTP_200_OK)
         except User.DoesNotExist:
-            raise Http404
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 class UserRegister(APIView):
     def post(self, request, format=None):
@@ -45,3 +43,19 @@ class UserRegister(APIView):
             res = serializer.data
             del res['password']
             return Response(res, status=status.HTTP_201_CREATED)
+
+
+class UserRecipes(APIView):
+
+    @user_required
+    def get(self,request):
+        try:
+            user = User.objects.get(username=request.user)
+            recipes = Recipe.objects.filter(user_id=user.id)
+            return JsonResponse({
+                'status':'ok',
+                'data':Recipe.recipes_to_list(recipes)
+            })
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
