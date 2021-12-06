@@ -22,7 +22,8 @@ class Recipe(models.Model):
     cook_time = models.IntegerField()
     desc = models.TextField(
         max_length=500,
-        blank=True
+        blank=True,
+        null=True
     )
     servings = models.IntegerField()
     cuisine = ArrayField(
@@ -39,30 +40,33 @@ class Recipe(models.Model):
     )
     steps = ArrayField(models.CharField(max_length=200))
 
-    def recipe_to_dict(recipe):
-        if recipe == None:
-            return None
+    def to_dict(self):
         dict = {}
-        dict['id'] = recipe.pk
-        dict['user'] = User.user_to_dict(recipe.user)
-        dict['title'] = recipe.title
-        if(recipe.photo != ""):
-            dict['photo'] = json.dumps(str(recipe.photo))
-        dict['prep_time'] = recipe.prep_time
-        dict['cook_time'] = recipe.cook_time
-        dict['desc'] = recipe.desc
-        dict['sercings'] = recipe.servings
-        dict['cuisine'] = recipe.cuisine
-        dict['course'] = recipe.course
-        dict['created_at'] = str(recipe.created_at)
-        dict['updated_at'] = str(recipe.updated_at)
-        dict['steps'] = recipe.steps
-        ingredients = Ingredient.objects.filter(recipe=recipe.pk)
-        dict['ingredients'] = Ingredient.ingredients_to_list(ingredients)
+        dict['id'] = self.id
+        dict['user'] = User.user_to_dict(self.user)
+        dict['title'] = self.title
+        if(self.photo != ""):
+            dict['photo'] = json.dumps(str(self.photo))
+        else:
+            dict['photo'] = None
+        dict['prep_time'] = self.prep_time
+        dict['cook_time'] = self.cook_time
+        dict['desc'] = self.desc
+        dict['sercings'] = self.servings
+        dict['cuisine'] = self.cuisine
+        dict['course'] = self.course
+        dict['created_at'] = str(self.created_at)
+        dict['updated_at'] = str(self.updated_at)
+        dict['steps'] = self.steps
+        ingredients = Ingredient.objects.filter(recipe=self.pk)
+        ingredient_list = []
+        for ingredient in ingredients:
+            ingredient_list.append(ingredient.to_dict())
+        dict['ingredients'] = ingredient_list
         return dict
 
     def recipes_to_list(recipes):
         list=[]
         for recipe in recipes:
-            list.append(Recipe.recipe_to_dict(recipe))
+            list.append(Recipe.to_dict(recipe))
         return list

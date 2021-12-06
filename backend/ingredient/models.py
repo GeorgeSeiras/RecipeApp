@@ -10,6 +10,16 @@ class Ingredient(models.Model):
 
     class Meta:
         db_table = 'ingredient'
+
+    def to_dict(self):
+        dict = {}
+        dict['id'] = self.pk
+        dict['amount'] = float(self.amount)
+        dict['unit'] = self.unit
+        dict['ingredient'] = self.ingredient
+        dict['recipe'] = self.recipe.pk
+        return dict
+
     def ingredients_to_list(ingredients):
         list = []
         for ingredient in ingredients:
