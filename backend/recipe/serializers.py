@@ -9,13 +9,14 @@ class IngredientSerializer(serializers.ModelSerializer):
     amount = serializers.FloatField()
     unit = serializers.CharField(required=False)
     ingredient = serializers.CharField()
-    recipe = serializers.RelatedField(source='recipe.recipe',read_only=True)
+    recipe = serializers.RelatedField(source='recipe.recipe', read_only=True)
+
     class Meta:
         model = Ingredient
         fields = '__all__'
 
-    def create(self, validated_data,recipe):
-        return Ingredient.objects.create(**validated_data,recipe=recipe)
+    def create(self, validated_data, recipe):
+        return Ingredient.objects.create(**validated_data, recipe=recipe)
 
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
@@ -53,6 +54,26 @@ class RecipeSerializer(serializers.Serializer):
         recipe = Recipe.objects.create(**validated_data)
         ingredients = []
         for ingredient in ingredient_data:
-            created_ingredient = IngredientSerializer.create(self, ingredient,recipe)
+            created_ingredient = IngredientSerializer.create(
+                self, ingredient, recipe)
             ingredients.append(created_ingredient)
-        return recipe, Ingredient.ingredients_to_list(ingredients)
+        print(recipe)
+        res = Recipe.objects.get(pk=recipe.id)
+        return res.to_dict()
+
+
+class RecipePatchSerializer(serializers.Serializer):
+    photo = serializers.ImageField(
+        required=False, allow_empty_file=True, max_length=None)
+    title = serializers.CharField(required=False)
+    prep_time = serializers.IntegerField(required=False)
+    cook_time = serializers.IntegerField(required=False)
+    desc = serializers.CharField(required=False)
+    ingredients = IngredientSerializer(required=False, many=True)
+    servings = serializers.IntegerField(required=False)
+    cuisine = serializers.ListField(
+        required=False, child=serializers.CharField())
+    course = serializers.ListField(
+        required=False, child=serializers.CharField())
+    steps = serializers.ListField(
+        required=False, child=serializers.CharField())
