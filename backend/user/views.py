@@ -23,7 +23,7 @@ class UserList(APIView):
     def get(self, request, format=None):
         users = User.objects.defer("password")
         serializer = UserSerializerNoPassword(users, many=True)
-        return Response(serializer.data)
+        return JsonResponse(serializer.data)
 
 
 class UserDetail(APIView):
@@ -34,7 +34,7 @@ class UserDetail(APIView):
             user = User.objects.get(pk=pk)
             return JsonResponse(UserSerializerNoPassword(user).data, status=status.HTTP_200_OK)
         except User.DoesNotExist:
-            raise NotFound
+            raise NotFound({"message":"User not found"})
 
     @user_required
     def delete(self, request, pk):
@@ -46,7 +46,7 @@ class UserDetail(APIView):
                 user.delete()
                 return JsonResponse(status=status.HTTP_200_OK)
         except User.DoesNotExist:
-            raise NotFound
+            raise NotFound({"message":"User not found"})
 
 
 class UserRegister(APIView):
@@ -75,4 +75,4 @@ class UserRecipes(APIView):
                 'data': Recipe.recipes_to_list(recipes)
             })
         except User.DoesNotExist:
-            raise NotFound
+            raise NotFound({"message":"User not found"})

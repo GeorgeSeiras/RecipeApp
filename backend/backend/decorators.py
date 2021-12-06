@@ -5,7 +5,7 @@ from functools import wraps
 from django.http.response import HttpResponse 
 from user.models import User
 from rest_framework import status
-
+from rest_framework.exceptions import NotAuthenticated
 def user_required(function):
     @wraps(function)
     def wrap(self,request,*args,**kwargs):
@@ -14,9 +14,9 @@ def user_required(function):
             if user.is_active:
                 return function(self,request,*args,**kwargs)
             else:
-                return HttpResponse('Access Unauthorized',status=status.HTTP_401_UNAUTHORIZED)
+                raise NotAuthenticated({"message":'Access Unauthorized'})
         except User.DoesNotExist:
-                return HttpResponse('Access Unauthorized',status=status.HTTP_401_UNAUTHORIZED)
+                raise NotAuthenticated({"message":"Access Unauthorized"})
     return wrap
 
 def admin_required(function):
@@ -27,8 +27,8 @@ def admin_required(function):
             if user.is_staff:
                 return function(self,request,*args,**kwargs)
             else:
-                return HttpResponse('Access Unauthorized',status=status.HTTP_401_UNAUTHORIZED)
+                raise NotAuthenticated({"message":'Access Unauthorized'})
         except User.DoesNotExist:
-                return HttpResponse('Access Unauthorized',status=status.HTTP_401_UNAUTHORIZED)
+                raise NotAuthenticated({"message":"Access Unauthorized"})
     return wrap
     
