@@ -32,6 +32,18 @@ class UserDetail(APIView):
         except User.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+    @user_required
+    def delete(self, request, pk):
+        try:
+            with transaction.atomic():
+                user = User.objects.get(pk=pk)
+                if(str(request.user) != user.username):
+                    return Response("Cannot delete another user's acount",status=status.HTTP_401_UNAUTHORIZED)
+                user.delete()
+                return Response(status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response('User not found',status=status.HTTP_404_NOT_FOUND)
+
 class UserRegister(APIView):
     def post(self, request, format=None):
         with transaction.atomic():
