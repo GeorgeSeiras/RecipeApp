@@ -57,8 +57,7 @@ class Recipe(models.Model):
         dict['created_at'] = str(recipe.created_at)
         dict['updated_at'] = str(recipe.updated_at)
         dict['steps'] = recipe.steps
-        ingredients = Ingredient.objects.get(recipe=recipe.pk)
-        print(ingredients)
+        ingredients = Ingredient.objects.filter(recipe=recipe.pk)
         dict['ingredients'] = Ingredient.ingredients_to_list(ingredients)
         return dict
 
