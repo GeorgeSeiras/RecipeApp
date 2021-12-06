@@ -5,7 +5,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('ingredient', views.IngredientDetail.as_view()),
+    path('ingredient', views.IngredientCreate.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

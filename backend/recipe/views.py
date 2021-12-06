@@ -1,13 +1,14 @@
-from rest_framework.response import Response
+from django.http.response import JsonResponse
 from rest_framework.views import APIView
-from rest_framework import  status
+from rest_framework import status
+from rest_framework.exceptions import AuthenticationFailed, NotFound
 from django.db import transaction
 
 from ingredient.models import Ingredient
 from recipe.models import Recipe
 from user.models import User
 from recipe.serializers import IngredientSerializer, RecipeSerializer, RecipePatchSerializer
-from backend.decorators import user_required
+from backend.decorators import admin_required, user_required
 
 
 class RecipeCreate(APIView):
@@ -20,9 +21,9 @@ class RecipeCreate(APIView):
         serializer = RecipeSerializer(data=data)
         with transaction.atomic():
             if (not serializer.is_valid()):
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             recipe = serializer.save()
-            return Response({
+            return JsonResponse({
                 'status': 'ok',
                 'data': {
                     'recipe': recipe
@@ -35,11 +36,11 @@ class RecipeDetail(APIView):
     def get(self, request, pk):
         try:
             recipe = Recipe.objects.get(pk=pk)
-            return Response({
+            return JsonResponse({
                 'status': 'ok',
                 'data': recipe.to_dict()})
         except Recipe.DoesNotExist:
-            return Response('Recipe does not exist', status=status.HTTP_404_NOT_FOUND)
+            raise NotFound
 
     @user_required
     def patch(self, request, pk):
@@ -47,12 +48,12 @@ class RecipeDetail(APIView):
             try:
                 recipe = Recipe.objects.get(pk=pk)
                 if(recipe.user.username != str(request.user)):
-                    return Response("Cannot alter another user's recipe",
-                                    status=status.HTTP_401_UNAUTHORIZED)
+                    raise AuthenticationFailed
+
                 serializer = RecipePatchSerializer(data=request.data)
                 if(not serializer.is_valid()):
-                    return Response(serializer.errors,
-                                    status=status.HTTP_400_BAD_REQUEST)
+                    return JsonResponse(serializer.errors,
+                                        status=status.HTTP_400_BAD_REQUEST)
                 if(serializer.data.get('title', None)):
                     recipe.title = serializer.data['title']
                 for key, value in serializer.data.items():
@@ -64,27 +65,26 @@ class RecipeDetail(APIView):
                             ingredient = IngredientSerializer.create(
                                 self, ingredient, recipe)
                             ingredients.append(ingredient)
-                        setattr(recipe,key,ingredients)
+                        setattr(recipe, key, ingredients)
                     else:
-                        setattr(recipe,key,value)
+                        setattr(recipe, key, value)
                 recipe.save()
                 res = Recipe.objects.filter(pk=recipe.id)
-                return Response({'status': 'ok', 'data': Recipe.recipes_to_list(res)})
+                return JsonResponse({'status': 'ok', 'data': Recipe.recipes_to_list(res)})
             except Recipe.DoesNotExist:
-                return Response('Recipe does not exist',
-                                status=status.HTTP_404_NOT_FOUND)
+                raise NotFound
 
     @user_required
     def delete(self, request, pk):
         try:
             recipe = Recipe.objects.get(pk=pk)
         except User.DoesNotExist:
-            Response(status=status.HTTP_404_NOT_FOUND)
+            raise NotFound
         try:
             user = User.objects.get(username=request.user)
         except Recipe.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            raise NotFound
         if str(recipe.user) != user.username:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            raise AuthenticationFailed
         Recipe.objects.filter(id=pk).delete()
-        return Response({'status': 'ok'}, status=status.HTTP_200_OK)
+        return JsonResponse({'status': 'ok'}, status=status.HTTP_200_OK)
