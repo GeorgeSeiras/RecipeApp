@@ -1,23 +1,9 @@
 from rest_framework import serializers
 
+from ingredient.serializers import IngredientSerializer
 from user.models import User
 from .models import Recipe
 from ingredient.models import Ingredient
-
-
-class IngredientSerializer(serializers.ModelSerializer):
-    amount = serializers.FloatField()
-    unit = serializers.CharField(required=False)
-    ingredient = serializers.CharField()
-    recipe = serializers.RelatedField(source='recipe.recipe', read_only=True)
-
-    class Meta:
-        model = Ingredient
-        fields = '__all__'
-
-    def create(self, validated_data, recipe):
-        return Ingredient.objects.create(**validated_data, recipe=recipe)
-
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
     photo = serializers.ImageField(
@@ -57,7 +43,6 @@ class RecipeSerializer(serializers.Serializer):
             created_ingredient = IngredientSerializer.create(
                 self, ingredient, recipe)
             ingredients.append(created_ingredient)
-        print(recipe)
         res = Recipe.objects.get(pk=recipe.id)
         return res.to_dict()
 
