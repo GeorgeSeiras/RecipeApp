@@ -7,7 +7,8 @@ from . import views
 urlpatterns = [
     path('recipe', views.RecipeCreate.as_view()),
     path('recipe/<int:pk>',views.RecipeDetail.as_view()),
-    path('recipe/<int:pk>/ingredient', views.RecipeIngredients.as_view())
+    path('recipe/<int:recipe_id>/ingredient', views.IngredientCreate.as_view()),
+    path('recipe/<int:recipe_id>/ingredient/<int:ingr_id>', views.IngredientDetail.as_view())
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

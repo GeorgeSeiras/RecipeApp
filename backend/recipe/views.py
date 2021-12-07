@@ -1,14 +1,13 @@
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import BadRequest, PermissionDenied
 from django.http.response import JsonResponse
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.exceptions import NotFound
 from django.db import transaction
 
-from ingredient.models import Ingredient
-from recipe.models import Recipe
+from recipe.models import Recipe, Ingredient
 from user.models import User
-from recipe.serializers import IngredientSerializer, RecipeSerializer, RecipePatchSerializer
+from recipe.serializers import IngredientCreateSerializer, IngredientPatchSerializer, IngredientSerializer, RecipeSerializer, RecipePatchSerializer
 from backend.decorators import admin_required, user_required
 
 
@@ -101,3 +100,72 @@ class RecipeIngredients(APIView):
             'status':'ok',
             'data':recipe.to_dict()['ingredients']
         })
+
+class IngredientCreate(APIView):
+
+    @user_required
+    def post(self, request, recipe_id):
+        with transaction.atomic():
+            user = User.objects.get(username=request.user)
+            serializer = IngredientCreateSerializer(data=request.data)
+            if(not serializer.is_valid()):
+                raise BadRequest({"message": serializer.errors})
+            recipe = Recipe.objects.get(pk=recipe_id)
+            if(recipe.user.id != user.id):
+                raise PermissionDenied
+            res = IngredientSerializer.create(self,
+                                              serializer.validated_data, recipe)
+            return JsonResponse({
+                'status': 'ok',
+                'data': res.to_dict()
+            },
+                status=status.HTTP_200_OK)
+
+    
+class IngredientDetail(APIView):
+
+    @user_required
+    def patch(self, request, recipe_id, ingr_id):
+        with transaction.atomic():
+            try:
+                user = User.objects.get(username=request.user)
+            except User.DoesNotExist:
+                raise NotFound({"message": "User not found"})
+            try:
+                recipe = Recipe.objects.get(pk=recipe_id)
+            except Recipe.DoesNotExist:
+                raise NotFound('Recipe does not exist')
+            try:
+                ingredient = Ingredient.objects.get(pk=ingr_id)
+            except Ingredient.DoesNotExist:
+                raise NotFound({"message": "Ingredient not found"})
+            if(recipe.user.id != user.id):
+                raise PermissionDenied(
+                    {"message": "You cannot modify another user's recipe"})
+            serializer = IngredientPatchSerializer(data=request.data)
+            if(not serializer.is_valid()):
+                raise BadRequest({"message": serializer.errors})
+            for key, value in serializer.data.items():
+                setattr(ingredient,key,value)
+            ingredient.save()
+            return JsonResponse({
+                'status': 'ok',
+                'data': ingredient.to_dict()},
+                status=status.HTTP_200_OK)
+    
+    @user_required
+    def delete(self, request, pk):
+        with transaction.atomic():
+            try:
+                user = User.objects.get(username=request.user)
+            except User.DoesNotExist:
+                raise NotFound({"message": "User not found"})
+            try:
+                ingredient = Ingredient.objects.get(pk=pk)
+            except Ingredient.DoesNotExist:
+                raise NotFound({"message": "Ingredient not found"})
+            if(ingredient.recipe.user.id != user.id):
+                raise PermissionDenied(
+                    {"message": "You cannot delete another user's ingredient"})
+            ingredient.delete()
+            return JsonResponse({'status': 'ok'}, status=status.HTTP_200_OK)
