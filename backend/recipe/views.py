@@ -60,7 +60,7 @@ class RecipeDetail(APIView):
             if(serializer.data.get('title', None)):
                 recipe.title = serializer.data['title']
             for key, value in serializer.data.items():
-            # replaces existing ingredients
+                # replaces existing ingredients
                 if(key == 'ingredients'):
                     ingredients = []
                     Ingredient.objects.filter(recipe=recipe.id).delete()
@@ -89,3 +89,15 @@ class RecipeDetail(APIView):
             raise PermissionDenied({"message":"You cannot delete another user's recipe"})
         Recipe.objects.filter(id=pk).delete()
         return JsonResponse({'status': 'ok'}, status=status.HTTP_200_OK)
+
+class RecipeIngredients(APIView):
+
+    def get(self, request, pk):
+        try:
+            recipe = Recipe.objects.get(pk=pk)
+        except Recipe.DoesNotExist:
+            raise NotFound({"message":"Recipe not found"})
+        return JsonResponse({
+            'status':'ok',
+            'data':recipe.to_dict()['ingredients']
+        })

@@ -4,7 +4,7 @@ from django.db.models.deletion import CASCADE
 
 class Ingredient(models.Model):
     amount = models.DecimalField(max_digits=8, decimal_places=2)
-    unit = models.CharField(max_length=10, blank=True)
+    unit = models.CharField(max_length=20, blank=True)
     ingredient = models.CharField(max_length=50,)
     recipe = models.ForeignKey('recipe.recipe', on_delete=CASCADE)
 

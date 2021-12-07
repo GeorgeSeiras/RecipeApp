@@ -6,7 +6,8 @@ from . import views
 
 urlpatterns = [
     path('recipe', views.RecipeCreate.as_view()),
-    path('recipe/<int:pk>',views.RecipeDetail.as_view())
+    path('recipe/<int:pk>',views.RecipeDetail.as_view()),
+    path('recipe/<int:pk>/ingredient', views.RecipeIngredients.as_view())
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
