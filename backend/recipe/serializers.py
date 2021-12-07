@@ -85,3 +85,7 @@ class IngredientPatchSerializer(serializers.Serializer):
     amount = serializers.FloatField(required=False)
     unit = serializers.CharField(required=False)
     ingredient = serializers.CharField(required=False)
+
+class StepCreateSerializer(serializers.Serializer):
+    step = serializers.CharField()
+    pos = serializers.IntegerField(required=False)
