@@ -20,8 +20,7 @@ class RecipeCreate(APIView):
         data['user'] = user.id
         serializer = RecipeSerializer(data=data)
         with transaction.atomic():
-            if (not serializer.is_valid()):
-                return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            serializer.is_valid(raise_exception=True)
             recipe = serializer.save()
             return JsonResponse({
                 'status': 'ok',
@@ -54,9 +53,7 @@ class RecipeDetail(APIView):
                     {"You cannot modify another user's recipe"})
 
             serializer = RecipePatchSerializer(data=request.data)
-            if(not serializer.is_valid()):
-                return JsonResponse(serializer.errors,
-                                    status=status.HTTP_400_BAD_REQUEST)
+            serializer.is_valid(raise_exception=True)
             if(serializer.data.get('title', None)):
                 recipe.title = serializer.data['title']
             for key, value in serializer.data.items():
@@ -112,8 +109,7 @@ class IngredientCreate(APIView):
         with transaction.atomic():
             user = User.objects.get(username=request.user)
             serializer = IngredientCreateSerializer(data=request.data)
-            if(not serializer.is_valid()):
-                raise BadRequest({"message": serializer.errors})
+            serializer.is_valid(raise_exception=True)
             recipe = Recipe.objects.get(pk=recipe_id)
             if(recipe.user.id != user.id):
                 raise PermissionDenied
@@ -147,8 +143,7 @@ class IngredientDetail(APIView):
                 raise PermissionDenied(
                     {"message": "You cannot modify another user's recipe"})
             serializer = IngredientPatchSerializer(data=request.data)
-            if(not serializer.is_valid()):
-                raise BadRequest({"message": serializer.errors})
+            serializer.is_valid(raise_exception=True)
             for key, value in serializer.data.items():
                 setattr(ingredient, key, value)
             ingredient.save()
@@ -196,8 +191,7 @@ class StepCreateView(APIView):
                 raise PermissionDenied(
                     {"message": "You cannot mofidy another user's recipe"})
             serializer = StepCreateSerializer(data=request.data)
-            if(not serializer.is_valid()):
-                raise BadRequest({'message': serializer.errors})
+            serializer.is_valid(raise_exception=True)
             pos = serializer.data.get('pos', None)
             if(pos != None):
                 recipe.steps.insert(pos, serializer.data['step'])

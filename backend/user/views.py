@@ -53,8 +53,7 @@ class UserRegister(APIView):
     def post(self, request, format=None):
         with transaction.atomic():
             serializer = UserSerializer(data=request.data)
-            if (not serializer.is_valid()):
-                return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            serializer.is_valid(raise_exception=True)
             serializer.validated_data['password'] = make_password(
                 serializer.validated_data['password'])
             serializer.save()

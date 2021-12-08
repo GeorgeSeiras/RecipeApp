@@ -25,8 +25,7 @@ class RateRecipe(APIView):
             except Recipe.DoesNotExist:
                 raise NotFound({'message':'Recipe does not exist'})
             serializer = RateRecipeSerializer(data=request.data)
-            if(not serializer.is_valid()):
-                raise BadRequest({'message':serializer.errors})
+            not serializer.is_valid(raise_exception=True)
             rating_exists_check = Rating.objects.filter(recipe=recipe,user=user)
             if rating_exists_check:
                 raise BadRequest({'message':'You have already rated this recipe'})
