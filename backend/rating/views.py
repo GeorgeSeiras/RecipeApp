@@ -36,11 +36,8 @@ class RateRecipe(APIView):
                 recipe=recipe, user=user, rating=serializer.data['rating'])
             return JsonResponse({'status': 'ok', 'data': rating.to_dict()})
 
-
-class DeleteRating(APIView):
-
     @user_required
-    def delete(self, request, recipe_id, rating_id):
+    def delete(self, request, recipe_id):
         with transaction.atomic():
             try:
                 user = User.objects.get(username=request.user)
@@ -51,7 +48,7 @@ class DeleteRating(APIView):
             except Recipe.DoesNotExist:
                 raise NotFound({'message': 'Recipe does not exist'})
             try:
-                rating = Rating.objects.get(pk=rating_id)
+                rating = Rating.objects.get(user=request.user)
             except Rating.DoesNotExist:
                 raise NotFound({'message': 'Rating does not exist'})
             if(rating.user != request.user):
