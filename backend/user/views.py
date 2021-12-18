@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.forms.models import model_to_dict
 from django.core.serializers import serialize
-import json
+
 from .models import User
 from recipe.models import Recipe
 from .serializers import UserSerializer, UserSerializerNoPassword, UserLoginSerializer

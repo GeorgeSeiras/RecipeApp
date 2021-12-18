@@ -52,12 +52,13 @@ INSTALLED_APPS = [
     'recipe',
     'rating',
     'list',
+    'utils'
 ]
 
 AUTH_USER_MODEL = 'user.User'
 
 REST_FRAMEWORK = {
-
+    'EXCEPTION_HANDLER': 'utils.exceptionHandler.custom_exception_handler',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
