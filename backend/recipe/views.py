@@ -1,8 +1,7 @@
-from django.core.exceptions import BadRequest, PermissionDenied
 from django.http.response import JsonResponse
 from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, PermissionDenied
 from django.db import transaction
 
 from recipe.models import Recipe, Ingredient
@@ -85,7 +84,7 @@ class RecipeDetail(APIView):
         if str(recipe.user) != user.username:
             raise PermissionDenied(
                 {"message": "You cannot delete another user's recipe"})
-        Recipe.objects.filter(id=pk).delete()
+        recipe.delete()
         return JsonResponse({'status': 'ok'}, status=status.HTTP_200_OK)
 
 
