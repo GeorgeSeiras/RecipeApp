@@ -7,7 +7,7 @@ from user.models import User
 from recipe.models import Recipe
 
 class List(models.Model):
-    user = ForeignKey(User,on_delete=CASCADE)
+    user = ForeignKey(User, on_delete=CASCADE)
     name = CharField(max_length=20)
     desc = CharField(max_length=150)
 
@@ -17,11 +17,23 @@ class List(models.Model):
         dict['user'] = self.user.to_dict()
         dict['name'] = self.name
         dict['desc'] = self.desc
+        recipes_in_list = RecipesInList.objects.filter(list=self.pk)
+        recipe_list = []
+        for recipe in recipes_in_list:
+            recipe_list.append(recipe.to_dict())
+        dict['recipes'] = recipe_list
         return dict
 
+    def lists_to_list(lists):
+        list = []
+        for entry in lists:
+            list.append(entry.to_dict())
+        return list
+
+
 class RecipesInList(models.Model):
-    recipe = ForeignKey(Recipe,on_delete=CASCADE)
-    list = ForeignKey(List,on_delete=CASCADE)
+    recipe = ForeignKey(Recipe, on_delete=CASCADE)
+    list = ForeignKey(List, on_delete=CASCADE)
 
     def to_dict(self):
         dict = {}
