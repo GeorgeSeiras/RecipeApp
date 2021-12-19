@@ -21,9 +21,12 @@ class UserList(APIView):
 
     @admin_required
     def get(self, request, format=None):
-        users = User.objects.defer("password")
-        serializer = UserSerializerNoPassword(users, many=True)
-        return JsonResponse(serializer.data)
+        users = User.objects.all()
+        users_list = User.users_to_list(users)
+        return JsonResponse({
+            'status':'ok',
+            'data': users_list
+        })
 
 
 class UserDetail(APIView):

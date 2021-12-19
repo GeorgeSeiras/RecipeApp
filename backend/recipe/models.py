@@ -70,7 +70,7 @@ class Recipe(models.Model):
     def to_dict(self):
         dict = {}
         dict['id'] = self.id
-        dict['user'] = User.user_to_dict(self.user)
+        dict['user'] = User.to_dict(self.user)
         dict['title'] = self.title
         if(self.photo != ""):
             dict['photo'] = json.dumps(str(self.photo))
