@@ -1,8 +1,6 @@
 from django.db import models
 from django.db.models.deletion import CASCADE
 
-from user.models import User
-from recipe.models import Recipe
 from .enum import rating_choices
 
 
