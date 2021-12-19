@@ -29,6 +29,5 @@ class User(AbstractUser):
         user_list = []
         for user in users:
             print(user)
-            dict = {}
             user_list.append(user.to_dict())
         return user_list
