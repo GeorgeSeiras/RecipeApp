@@ -6,3 +6,7 @@ from list.models import List
 class ListCreateSerializer(serializers.Serializer):
     name = serializers.CharField()
     desc = serializers.CharField(required=False)
+
+class ListPatchSerializer(serializers.Serializer):
+    name = serializers.CharField(required=False)
+    desc = serializers.CharField(required=False)

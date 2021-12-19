@@ -13,6 +13,7 @@ class List(models.Model):
 
     def to_dict(self):
         dict = {}
+        dict['id'] = self.pk
         dict['user'] = self.user.to_dict()
         dict['name'] = self.name
         dict['desc'] = self.desc
