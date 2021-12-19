@@ -30,7 +30,12 @@ class ListCreate(APIView):
 
 class ListDetail(APIView):
 
-
+    def get(self, request, list_id):
+        try:
+            lists = List.objects.get(pk=list_id)
+        except List.DoesNotExist:
+            raise NotFound({'message': 'List does not exist'})
+        return JsonResponse({'status':'ok','data':lists.to_dict()})
     @user_required
     def patch(self, request, list_id):
         with transaction.atomic():
