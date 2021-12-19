@@ -37,6 +37,27 @@ class RateRecipe(APIView):
             return JsonResponse({'status': 'ok', 'data': rating.to_dict()})
 
     @user_required
+    def patch(self, request, recipe_id):
+        with transaction.atomic():
+            try:
+                user = User.objects.get(username=request.user)
+            except User.DoesNotExist:
+                raise NotFound({'message': 'User not found'})
+            try:
+                recipe = Recipe.objects.get(pk=recipe_id)
+            except Recipe.DoesNotExist:
+                raise NotFound({'message': 'Recipe does not exist'})
+            serializer = RateRecipeSerializer(data=request.data)
+            not serializer.is_valid(raise_exception=True)
+            try:
+                rating = Rating.objects.get(user=request.user,recipe=recipe)
+            except Rating.DoesNotExist:
+                raise NotFound({'message':'Rating does not exist'})
+            setattr(rating,'rating', serializer.data['rating'])
+            rating.save()
+            return JsonResponse({'status':'ok','data':rating.to_dict()})
+    
+    @user_required
     def delete(self, request, recipe_id):
         with transaction.atomic():
             try:
