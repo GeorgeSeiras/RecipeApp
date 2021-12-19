@@ -5,7 +5,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('recipe/<int:recipe_id>/rating', views.RateRecipe.as_view())
+    path('recipe/<int:recipe_id>/rating', views.RateRecipe.as_view()),
+    path('recipe/<int:recipe_id>/rating/average', views.RecipeRatingAverage.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

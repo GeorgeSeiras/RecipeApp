@@ -18,10 +18,17 @@ class User(AbstractUser):
     def __str__(self):
         return "{}".format(self.username)
 
-    def user_to_dict(user):
+    def to_dict(self):
         dict = {}
-        dict['id'] = user.pk
-        dict['username'] = user.username
-        dict['email'] = user.email
+        dict['id'] = self.pk
+        dict['username'] = self.username
+        dict['email'] = self.email
         
         return dict
+    def users_to_list(users):
+        user_list = []
+        for user in users:
+            print(user)
+            dict = {}
+            user_list.append(user.to_dict())
+        return user_list

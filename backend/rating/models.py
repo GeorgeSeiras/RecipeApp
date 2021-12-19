@@ -16,7 +16,7 @@ class Rating(models.Model):
     def to_dict(self):
         dict = {}
         dict['id'] = self.id
-        dict['user'] = self.user.user_to_dict()
+        dict['user'] = self.user.to_dict()
         dict['rating'] = self.rating
         dict['recipe'] = self.recipe.to_dict()
         return dict
