@@ -50,12 +50,11 @@ class RecipeDetail(APIView):
             if(recipe.user.username != str(request.user)):
                 raise PermissionDenied(
                     {"You cannot modify another user's recipe"})
-
+            print(request.data)
             serializer = RecipePatchSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            if(serializer.data.get('title', None)):
-                recipe.title = serializer.data['title']
-            for key, value in serializer.data.items():
+            print(serializer.validated_data)
+            for key, value in serializer.validated_data.items():
                 # replaces existing ingredients
                 if(key == 'ingredients'):
                     ingredients = []
@@ -65,6 +64,8 @@ class RecipeDetail(APIView):
                             self, ingredient, recipe)
                         ingredients.append(ingredient)
                     setattr(recipe, key, ingredients)
+                elif key == 'photo':                        
+                    setattr(recipe, key, value)
                 else:
                     setattr(recipe, key, value)
             recipe.save()
