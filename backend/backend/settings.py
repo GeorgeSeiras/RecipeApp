@@ -15,7 +15,7 @@ import os.path
 from datetime import timedelta
 import environ
 
-# Initialise environment 
+# Initialise environment
 env = environ.Env()
 environ.Env.read_env()
 
@@ -163,8 +163,8 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_ROOT=os.path.join(BASE_DIR,'media/')
-MEDIA_URL='/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = '/media/'
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',

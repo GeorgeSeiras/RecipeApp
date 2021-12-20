@@ -1,8 +1,10 @@
 import json
+import os
 
 from django.db import models, connection
 from django.contrib.postgres.fields import ArrayField
 from django.db.models.deletion import CASCADE
+from django.dispatch import receiver
 
 from user.models import User
 
@@ -97,3 +99,33 @@ class Recipe(models.Model):
         for recipe in recipes:
             list.append(Recipe.to_dict(recipe))
         return list
+
+@receiver(models.signals.post_delete, sender=Recipe)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding `Recipe` object is deleted.
+    """
+    if instance.photo:
+        if os.path.isfile(instance.photo.path):
+            os.remove(instance.photo.path)
+
+@receiver(models.signals.pre_save, sender=Recipe)
+def auto_delete_file_on_change(sender, instance, **kwargs):
+    """
+    Deletes old file from filesystem
+    when corresponding `MediaFile` object is updated
+    with new file.
+    """
+    if not instance.pk:
+        return False
+
+    try:
+        old_file = Recipe.objects.get(pk=instance.pk).photo
+    except Recipe.DoesNotExist:
+        return False
+
+    new_file = instance.photo
+    if not old_file == new_file:
+        if os.path.isfile(old_file.path):
+            os.remove(old_file.path)

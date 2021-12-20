@@ -61,7 +61,7 @@ class RecipeSerializer(serializers.Serializer):
 
 class RecipePatchSerializer(serializers.Serializer):
     photo = serializers.ImageField(
-        required=False, allow_empty_file=True, max_length=None)
+        required=True)
     title = serializers.CharField(required=False)
     prep_time = serializers.IntegerField(required=False)
     cook_time = serializers.IntegerField(required=False)
