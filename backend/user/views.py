@@ -11,7 +11,8 @@ from django.core.serializers import serialize
 
 from .models import User
 from recipe.models import Recipe
-from .serializers import UserSerializer, UserSerializerNoPassword, UserLoginSerializer
+from list.models import List
+from .serializers import UserSerializer, UserSerializerNoPassword
 from backend.decorators import user_required, admin_required
 
 
@@ -71,10 +72,24 @@ class UserRecipes(APIView):
     def get(self, request):
         try:
             user = User.objects.get(username=request.user)
-            recipes = Recipe.objects.filter(user_id=user.id)
+        except User.DoesNotExist:
+            raise NotFound({"message":"User not found"})
+        recipes = Recipe.objects.filter(user=user.id)
+        return JsonResponse({
+            'status': 'ok',
+            'data': Recipe.recipes_to_list(recipes)
+        })
+
+
+class UserLists(APIView):
+    @user_required
+    def get(self, request):
+        try:
+            user = User.objects.get(username=request.user)
+            lists = List.objects.filter(user=user.id)
             return JsonResponse({
                 'status': 'ok',
-                'data': Recipe.recipes_to_list(recipes)
+                'data': List.lists_to_list(lists)
             })
         except User.DoesNotExist:
             raise NotFound({"message":"User not found"})
