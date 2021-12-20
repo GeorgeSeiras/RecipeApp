@@ -1,4 +1,5 @@
 from django.contrib.auth.hashers import make_password
+from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.http.response import JsonResponse
 from rest_framework.exceptions import NotFound
@@ -6,28 +7,26 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from django.forms.models import model_to_dict
-from django.core.serializers import serialize
+from rest_framework.pagination import LimitOffsetPagination
 
 from .models import User
 from recipe.models import Recipe
-from list.models import List
+from list.models import List, RecipesInList
 from .serializers import UserSerializer, UserSerializerNoPassword
 from backend.decorators import user_required, admin_required
 
 
-class UserList(APIView):
+class UserList(APIView, LimitOffsetPagination):
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializerNoPassword
 
     @admin_required
     def get(self, request, format=None):
         users = User.objects.all()
-        users_list = User.users_to_list(users)
-        return JsonResponse({
-            'status':'ok',
-            'data': users_list
-        })
+        paginated_queryset = self.paginate_queryset(users, request)
+        users_list = User.users_to_list(paginated_queryset)
+        paginated_result = self.get_paginated_response(users_list)
+        return paginated_result
 
 
 class UserDetail(APIView):
@@ -36,9 +35,9 @@ class UserDetail(APIView):
     def get(self, request, pk, format=None):
         try:
             user = User.objects.get(pk=pk)
-            return JsonResponse(UserSerializerNoPassword(user).data, status=status.HTTP_200_OK)
+            return JsonResponse({'result': UserSerializerNoPassword(user).data})
         except User.DoesNotExist:
-            raise NotFound({"message":"User not found"})
+            raise NotFound({"message": "User not found"})
 
     @user_required
     def delete(self, request, pk):
@@ -46,11 +45,12 @@ class UserDetail(APIView):
             with transaction.atomic():
                 user = User.objects.get(pk=pk)
                 if(str(request.user) != user.username):
-                    return Response("Cannot delete another user's acount", status=status.HTTP_401_UNAUTHORIZED)
+                    raise PermissionDenied(
+                        {"Cannot delete another user's acount"})
                 user.delete()
                 return JsonResponse(status=status.HTTP_200_OK)
         except User.DoesNotExist:
-            raise NotFound({"message":"User not found"})
+            raise NotFound({"message": "User not found"})
 
 
 class UserRegister(APIView):
@@ -63,33 +63,33 @@ class UserRegister(APIView):
             serializer.save()
             res = serializer.data
             del res['password']
-            return JsonResponse(res, status=status.HTTP_201_CREATED)
+            return JsonResponse({'result': res}, status=status.HTTP_201_CREATED)
 
 
-class UserRecipes(APIView):
+class UserRecipes(APIView, LimitOffsetPagination):
 
     @user_required
     def get(self, request):
         try:
             user = User.objects.get(username=request.user)
         except User.DoesNotExist:
-            raise NotFound({"message":"User not found"})
+            raise NotFound({"message": "User not found"})
         recipes = Recipe.objects.filter(user=user.id)
-        return JsonResponse({
-            'status': 'ok',
-            'data': Recipe.recipes_to_list(recipes)
-        })
+        paginated_queryset = self.paginate_queryset(recipes, request)
+        paginated_response = self.get_paginated_response(
+            Recipe.recipes_to_list(paginated_queryset))
+        return paginated_response
 
 
-class UserLists(APIView):
+class UserLists(APIView, LimitOffsetPagination):
     @user_required
     def get(self, request):
         try:
             user = User.objects.get(username=request.user)
-            lists = List.objects.filter(user=user.id)
-            return JsonResponse({
-                'status': 'ok',
-                'data': List.lists_to_list(lists)
-            })
         except User.DoesNotExist:
-            raise NotFound({"message":"User not found"})
+            raise NotFound({"message": "User not found"})
+        lists = List.objects.filter(user=user.id)
+        paginated_queryset = self.paginate_queryset(lists, request)
+        paginated_response = self.get_paginated_response(List.lists_to_list(paginated_queryset))
+        return paginated_response
+        

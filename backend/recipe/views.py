@@ -1,4 +1,5 @@
 from django.http.response import JsonResponse
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.exceptions import NotFound, PermissionDenied
@@ -22,8 +23,7 @@ class RecipeCreate(APIView):
             serializer.is_valid(raise_exception=True)
             recipe = serializer.save()
             return JsonResponse({
-                'status': 'ok',
-                'data': {
+                'result': {
                     'recipe': recipe
                 }
             }, status=status.HTTP_201_CREATED)
@@ -35,8 +35,7 @@ class RecipeDetail(APIView):
         try:
             recipe = Recipe.objects.get(pk=pk)
             return JsonResponse({
-                'status': 'ok',
-                'data': recipe.to_dict()})
+                'result': recipe.to_dict()})
         except Recipe.DoesNotExist:
             raise NotFound({"message": "Recipe not found"})
 
@@ -46,7 +45,7 @@ class RecipeDetail(APIView):
             try:
                 recipe = Recipe.objects.get(pk=pk)
             except Recipe.DoesNotExist:
-                raise NotFound("Recipe not found")
+                raise NotFound({"message": "Recipe not found"})
             if(recipe.user.username != str(request.user)):
                 raise PermissionDenied(
                     {"You cannot modify another user's recipe"})
@@ -64,13 +63,13 @@ class RecipeDetail(APIView):
                             self, ingredient, recipe)
                         ingredients.append(ingredient)
                     setattr(recipe, key, ingredients)
-                elif key == 'photo':                        
+                elif key == 'photo':
                     setattr(recipe, key, value)
                 else:
                     setattr(recipe, key, value)
             recipe.save()
             res = Recipe.objects.filter(pk=recipe.id)
-            return JsonResponse({'status': 'ok', 'data': Recipe.recipes_to_list(res)})
+            return JsonResponse({'result': Recipe.recipes_to_list(res)})
 
     @user_required
     def delete(self, request, pk):
@@ -86,20 +85,19 @@ class RecipeDetail(APIView):
             raise PermissionDenied(
                 {"message": "You cannot delete another user's recipe"})
         recipe.delete()
-        return JsonResponse({'status': 'ok'}, status=status.HTTP_200_OK)
+        return JsonResponse({'status': 'ok'})
 
-
-class RecipeIngredients(APIView):
+''' is this needed???'''
+class RecipeIngredients(APIView, LimitOffsetPagination):
 
     def get(self, request, pk):
         try:
             recipe = Recipe.objects.get(pk=pk)
         except Recipe.DoesNotExist:
             raise NotFound({"message": "Recipe not found"})
-        return JsonResponse({
-            'status': 'ok',
-            'data': recipe.to_dict()['ingredients']
-        })
+        paginated_queryset = self.paginate_queryset(recipe)
+        paginated_response = self.get_paginated_response(recipe.to_dict()['ingredients'])
+        return paginated_response
 
 
 class IngredientCreate(APIView):
@@ -116,10 +114,9 @@ class IngredientCreate(APIView):
             res = IngredientSerializer.create(self,
                                               serializer.validated_data, recipe)
             return JsonResponse({
-                'status': 'ok',
-                'data': res.to_dict()
+                'result': res.to_dict()
             },
-                status=status.HTTP_200_OK)
+                status=status.HTTP_201_CREATED)
 
 
 class IngredientDetail(APIView):
@@ -147,10 +144,7 @@ class IngredientDetail(APIView):
             for key, value in serializer.data.items():
                 setattr(ingredient, key, value)
             ingredient.save()
-            return JsonResponse({
-                'status': 'ok',
-                'data': ingredient.to_dict()},
-                status=status.HTTP_200_OK)
+            return JsonResponse({'result': ingredient.to_dict()})
 
     @user_required
     def delete(self, request, recipe_id, ingr_id):
@@ -171,7 +165,7 @@ class IngredientDetail(APIView):
                 raise PermissionDenied(
                     {"message": "You cannot delete another user's ingredient"})
             ingredient.delete()
-            return JsonResponse({'status': 'ok'}, status=status.HTTP_200_OK)
+            return JsonResponse({'status': 'ok'})
 
 
 class StepCreateView(APIView):
@@ -199,6 +193,5 @@ class StepCreateView(APIView):
                 recipe.steps.append(serializer.data['step'])
             recipe.save()
             return JsonResponse({
-                'status': 'ok',
-                'data': recipe.to_dict()
-            }, status=status.HTTP_200_OK)
+                'result': recipe.to_dict()
+            }, status=status.HTTP_201_CREATED)
