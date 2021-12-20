@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from recipe.models import Recipe
 
 from list.models import List
 
@@ -10,3 +11,6 @@ class ListCreateSerializer(serializers.Serializer):
 class ListPatchSerializer(serializers.Serializer):
     name = serializers.CharField(required=False)
     desc = serializers.CharField(required=False)
+
+class ListRecipeSerializer(serializers.Serializer):
+    recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all())
