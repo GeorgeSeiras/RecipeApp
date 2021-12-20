@@ -52,13 +52,30 @@ class ListDetail(APIView):
                 raise NotFound({'message': 'List does not exist'})
             if(user != list.user):
                 raise PermissionDenied(
-                    {"message':'You cannot edit another user's lists"})
+                    {"message":"You cannot edit another user's lists"})
             serializer = ListPatchSerializer(data=request.data)
             not serializer.is_valid(raise_exception=True)
             for key, value in serializer.data.items():
                 setattr(list, key, value)
             list.save()
             return JsonResponse({'status': 'ok', 'data': list.to_dict()})
+
+    @user_required
+    def delete(self, request, list_id):
+        with transaction.atomic():
+            try:
+                user = User.objects.get(username=request.user)
+            except User.DoesNotExist:
+                raise NotFound({'message': 'User does not exist'})
+            try:
+                list = List.objects.get(pk=list_id)
+            except List.DoesNotExist:
+                raise NotFound({'message': 'List does not exist'})
+            if(user != list.user):
+                raise PermissionDenied(
+                    {"message":"You cannot edit another user's lists"})
+            list.delete()
+            return JsonResponse({'status': 'ok'})
 
 
 class ListRecipe(APIView):
