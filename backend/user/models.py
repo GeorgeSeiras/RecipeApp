@@ -28,6 +28,5 @@ class User(AbstractUser):
     def users_to_list(users):
         user_list = []
         for user in users:
-            print(user)
             user_list.append(user.to_dict())
         return user_list
