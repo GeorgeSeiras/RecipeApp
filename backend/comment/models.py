@@ -14,7 +14,7 @@ class Comment(models.Model):
 
     def get_parent(self):
         try:
-            parent = Comment.objects.get(pk=self.parent)
+            parent = Comment.objects.get(pk=self.id)
         except Comment.DoesNotExist:
             raise CustomException(
                 'There was an error retriving the parent comment', 500)
@@ -24,8 +24,9 @@ class Comment(models.Model):
         dict['id'] = self.id
         dict['user'] = self.user.to_dict()
         dict['recipe'] = self.recipe.to_dict()
+        dict['text'] = self.text
         if self.parent != None:
-            dict['parent'] = self.get_parent(self)
+            dict['parent'] = self.get_parent()
         else:
             dict['parent'] = None
         return dict
