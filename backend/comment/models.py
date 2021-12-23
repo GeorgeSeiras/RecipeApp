@@ -13,17 +13,19 @@ class Comment(models.Model):
         'self', on_delete=CASCADE, null=True)
 
     def get_parent(self):
+        
         try:
-            parent = Comment.objects.get(pk=self.id)
+            parent = Comment.objects.get(pk=self.parent.id)
         except Comment.DoesNotExist:
             raise CustomException(
                 'There was an error retriving the parent comment', 500)
+        return parent.to_dict()
 
     def to_dict(self):
         dict = {}
         dict['id'] = self.id
         dict['user'] = self.user.to_dict()
-        dict['recipe'] = self.recipe.to_dict()
+        dict['recipe'] = self.recipe.id
         dict['text'] = self.text
         if self.parent != None:
             dict['parent'] = self.get_parent()
