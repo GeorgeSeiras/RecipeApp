@@ -13,4 +13,5 @@ class CreateCommentSerializer(serializers.Serializer):
 
 
 class PatchCommentSerializer(serializers.Serializer):
-    text = serializers.CharField()
+    text = serializers.CharField(required=False)
+    deleted = serializers.BooleanField(required=False)

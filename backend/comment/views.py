@@ -52,23 +52,7 @@ class CommentDetailView(APIView):
                     {"message':'You cannot alter another user's comments"})
             serializer = PatchCommentSerializer(data=request.data)
             not serializer.is_valid(raise_exception=True)
-            setattr(comment,'text',serializer.validated_data['text'])
-            comment.save
+            for key,value in serializer.validated_data:
+                setattr(comment.key,value)
+            comment.save()
             return JsonResponse({'result':comment.to_dict()})
-
-    @user_required
-    def delete(self, request, comment_id):
-        with transaction.atomic():
-            try:
-                user = User.objects.get(username=request.user)
-            except User.DoesNotExist:
-                raise NotFound({'message': 'User not found'})
-            try:
-                comment = Comment.objects.get(pk=comment_id)
-            except Comment.DoesNotExist:
-                raise NotFound({'message': 'Comment not found'})
-            if(user != comment.user):
-                raise PermissionDenied(
-                    {"message':'You cannot delete another user's comments"})
-            comment.delete()
-            return JsonResponse({})
