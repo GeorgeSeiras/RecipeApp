@@ -52,7 +52,7 @@ class CommentDetailView(APIView):
                     {"message':'You cannot alter another user's comments"})
             serializer = PatchCommentSerializer(data=request.data)
             not serializer.is_valid(raise_exception=True)
-            for key,value in serializer.validated_data:
-                setattr(comment.key,value)
+            for key,value in serializer.validated_data.items():
+                setattr(comment,key,value)
             comment.save()
             return JsonResponse({'result':comment.to_dict()})
