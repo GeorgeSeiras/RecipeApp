@@ -10,3 +10,7 @@ class CreateCommentSerializer(serializers.Serializer):
     parent = serializers.PrimaryKeyRelatedField(
         queryset=Comment.objects.all(), required=False)
     recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all())
+
+
+class PatchCommentSerializer(serializers.Serializer):
+    text = serializers.CharField()
