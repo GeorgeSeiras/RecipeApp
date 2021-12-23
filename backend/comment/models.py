@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.deletion import CASCADE
 from django.dispatch.dispatcher import receiver
-
+import json
 
 from utils.custom_exceptions import CustomException
 
@@ -35,6 +35,40 @@ class Comment(models.Model):
         else:
             dict['parent'] = None
         return dict
+
+    def to_dict_no_parent_population(self):
+        dict = {}
+        dict['id'] = self.id
+        # dict['user'] = self.user.to_dict()
+        # dict['recipe'] = self.recipe.id
+        # dict['text'] = self.text
+        dict['parent'] = self.parent
+        # dict['deleted'] = self.deleted
+        return dict
+
+    def to_list(comments):
+        list = []
+        for comment in comments:
+            list.append(comment.to_dict_no_parent_population())
+        return list
+
+    def comments_to_list_sorted(comments):
+        comment_list = Comment.to_list(comments)
+        comment_dict = {}
+        comments_to_delete = []
+        for comment in comment_list:
+            comment['children'] = []
+            comment_dict[comment['id']] = comment
+        for comment in comment_list:
+            if(comment['parent'] != None):
+                parent =  comment_dict[comment['parent'].id]
+                parent['children'].append(comment)
+                comment['parent'] = comment['parent'].id
+                comments_to_delete.append(comment['id'])
+        for id in comments_to_delete:
+            del comment_dict[id]
+        return json.loads(json.dumps(list(comment_dict.values())))
+            
 
 '''
     instance.deleted == True means that either
