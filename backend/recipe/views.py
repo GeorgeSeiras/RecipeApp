@@ -1,5 +1,4 @@
 from django.http.response import JsonResponse
-from rest_framework import pagination
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView
 from rest_framework import status
@@ -211,4 +210,7 @@ class RecipeCommentsView(APIView,LimitOffsetPagination):
         except Recipe.DoesNotExist:
             raise NotFound({'message': 'Recipe does not exist'})
         comments = Comment.objects.filter(recipe=recipe)
-        return JsonResponse({'result':Comment.comments_to_list_sorted(comments)})
+        objects = Comment.comments_to_list_sorted(comments)
+        page = self.paginate_queryset(objects,request)
+        response = self.get_paginated_response(page)
+        return response
