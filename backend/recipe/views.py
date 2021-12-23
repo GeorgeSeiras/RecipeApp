@@ -1,10 +1,12 @@
 from django.http.response import JsonResponse
+from rest_framework import pagination
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.exceptions import NotFound, PermissionDenied
 from django.db import transaction
 
+from comment.models import Comment
 from recipe.models import Recipe, Ingredient
 from user.models import User
 from recipe.serializers import IngredientCreateSerializer, IngredientPatchSerializer, IngredientSerializer, RecipeSerializer, RecipePatchSerializer, StepCreateSerializer
@@ -87,7 +89,10 @@ class RecipeDetail(APIView):
         recipe.delete()
         return JsonResponse({'status': 'ok'})
 
+
 ''' is this needed???'''
+
+
 class RecipeIngredients(APIView, LimitOffsetPagination):
 
     def get(self, request, pk):
@@ -96,7 +101,8 @@ class RecipeIngredients(APIView, LimitOffsetPagination):
         except Recipe.DoesNotExist:
             raise NotFound({"message": "Recipe not found"})
         paginated_queryset = self.paginate_queryset(recipe)
-        paginated_response = self.get_paginated_response(recipe.to_dict()['ingredients'])
+        paginated_response = self.get_paginated_response(
+            recipe.to_dict()['ingredients'])
         return paginated_response
 
 
@@ -195,3 +201,14 @@ class StepCreateView(APIView):
             return JsonResponse({
                 'result': recipe.to_dict()
             }, status=status.HTTP_201_CREATED)
+
+
+class RecipeCommentsView(APIView,LimitOffsetPagination):
+
+    def get(self, request, recipe_id):
+        try:
+            recipe = Recipe.objects.get(pk=recipe_id)
+        except Recipe.DoesNotExist:
+            raise NotFound({'message': 'Recipe does not exist'})
+        comments = Comment.objects.filter(recipe=recipe)
+        return JsonResponse({'result':Comment.comments_to_list_sorted(comments)})
