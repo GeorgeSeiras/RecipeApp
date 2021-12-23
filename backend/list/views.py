@@ -1,5 +1,4 @@
 from django.http.response import JsonResponse
-from rest_framework import serializers
 from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.views import APIView
 from django.db import transaction

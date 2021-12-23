@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'recipe',
     'rating',
     'list',
-    'utils'
+    'utils',
+    'comment'
 ]
 
 AUTH_USER_MODEL = 'user.User'
