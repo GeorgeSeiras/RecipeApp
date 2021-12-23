@@ -13,18 +13,20 @@ from user.models import User
 class createCommentView(APIView):
 
     @user_required
-    def post(self, request, recipe_id):
+    def post(self, request):
         with transaction.atomic():
             try:
                 user = User.objects.get(username=request.user)
             except User.DoesNotExist:
                 raise NotFound('User not found')
-            try:
-                recipe = Recipe.objects.get(pk=recipe_id)
-            except Recipe.DoesNotExist:
-                raise NotFound('Recipe does not exist')
             serializer = CreateCommentSerializer(data=request.data)
             not serializer.is_valid(raise_exception=True)
             comment = Comment.objects.create(
-                user=user, recipe=recipe, **serializer.validated_data)
+                user=user, **serializer.validated_data)
             return JsonResponse({'result': comment.to_dict()})
+    
+class DeleteCommentView(APIView):
+
+    @user_required
+    def delete(self, request):
+        return JsonResponse({'result':''})
