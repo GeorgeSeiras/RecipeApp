@@ -5,22 +5,13 @@ import PropTypes from 'prop-types'
 
 import "./Login.css";
 
-async function loginUser(credentials) {
-    return fetch('http://localhost:8000/api/token/', {
-        method:'POST',
-        headers:{
-            'Content-Type': 'application/json'
-        },
-        body:JSON.stringify(credentials)
-    }).then(data=>data.json())
-}
 
-export default function Login({setToken}) {
+export default function Login({ setToken }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [remember, setRemember] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
-    
 
     function validateForm() {
         return username.length > 0 && password.length > 0;
@@ -32,7 +23,7 @@ export default function Login({setToken}) {
             username,
             password
         });
-        setToken(token,remember)
+        setToken(token, remember)
     }
 
     return (
@@ -67,11 +58,36 @@ export default function Login({setToken}) {
                 <Button variant="primary" size="lg" type="submit" disabled={!validateForm()}>
                     Login
                 </Button>
+                {errorMessage &&
+                    <h2 className="Error">{errorMessage}</h2>}
             </Form>
         </div>
     );
+
+    async function loginUser(credentials) {
+        try {
+            const response = await fetch('http://localhost:8000/api/token/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(credentials)
+            })
+            if (!response.ok) {
+                throw response.status
+            }
+            return response.json()
+        } catch (error) {
+            if (error === 401) {
+                setErrorMessage("Incorrect username or password");
+            } else {
+                setErrorMessage("Something went wrong");
+            }
+        }
+    }
 }
 
 Login.propTypes = {
     setToken: PropTypes.func.isRequired
 }
+

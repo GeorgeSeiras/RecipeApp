@@ -8,5 +8,8 @@
       max-width: 320px;
     }
     
+    .Error {
+      color:red
+    }
   }
   

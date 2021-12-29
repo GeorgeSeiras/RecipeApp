@@ -27,6 +27,7 @@ function getToken(){
 }
 
 function App() {
+
   const token = getToken();
   if(!token) {
     return <Login setToken={setToken}/>
@@ -34,7 +35,6 @@ function App() {
 
   return (
     <div className="wrapper">
-      <h1>Application</h1>
       <BrowserRouter>
         <Routes>
           <Route exact path="/login" element={<Login setToken={setToken}/>}/>
