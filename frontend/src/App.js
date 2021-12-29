@@ -18,17 +18,16 @@ function getToken(){
   const sessionToken = sessionStorage.getItem('recipeapptoken');
   if(storageToken){
     const token = JSON.parse(storageToken);
-    return token?.token;
+    return token?.access;
   }else{
     const token = JSON.parse(sessionToken);
-    return token?.token;
+    return token?.access;
   }
 
 }
 
 function App() {
   const token = getToken();
-
   if(!token) {
     return <Login setToken={setToken}/>
   }
@@ -38,7 +37,7 @@ function App() {
       <h1>Application</h1>
       <BrowserRouter>
         <Routes>
-          <Route exact path="/login" element={<Login/>}/>
+          <Route exact path="/login" element={<Login setToken={setToken}/>}/>
           <Route exact path="/register" element={<Signup/>}/>
         </Routes>
       </BrowserRouter>
