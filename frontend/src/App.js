@@ -1,23 +1,47 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import Login from '../src/components/Login/Login';
+import Signup from '../src/components/Signup/Signup';
+
+function setToken(token,remember){
+  if(remember){
+    localStorage.setItem('recipeapptoken',JSON.stringify(token));
+  }else{
+    sessionStorage.setItem('recipeapptoken',JSON.stringify(token));
+  }
+
+}
+
+function getToken(){
+  const storageToken = localStorage.getItem('recipeapptoken');
+  const sessionToken = sessionStorage.getItem('recipeapptoken');
+  if(storageToken){
+    const token = JSON.parse(storageToken);
+    return token?.token;
+  }else{
+    const token = JSON.parse(sessionToken);
+    return token?.token;
+  }
+
+}
 
 function App() {
+  const token = getToken();
+
+  if(!token) {
+    return <Login setToken={setToken}/>
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="wrapper">
+      <h1>Application</h1>
+      <BrowserRouter>
+        <Routes>
+          <Route exact path="/login" element={<Login/>}/>
+          <Route exact path="/register" element={<Signup/>}/>
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
