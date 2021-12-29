@@ -59,7 +59,7 @@ export default function Login({ setToken }) {
                     Login
                 </Button>
                 {errorMessage &&
-                    <h2 className="Error">{errorMessage}</h2>}
+                    <h4 className="Error">{errorMessage}</h4>}
             </Form>
         </div>
     );

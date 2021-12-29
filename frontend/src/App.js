@@ -38,7 +38,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route exact path="/login" element={<Login setToken={setToken}/>}/>
-          <Route exact path="/register" element={<Signup/>}/>
+          <Route exact path="/register" element={<Signup setToken={setToken}/>}/>
         </Routes>
       </BrowserRouter>
     </div>
