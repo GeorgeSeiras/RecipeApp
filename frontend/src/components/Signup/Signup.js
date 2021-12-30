@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { Navigate } from 'react-router-dom';
 import './Signup.css';
 
-export default function Signup({ setToken }) {
+export default function Signup() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -134,8 +134,4 @@ export default function Signup({ setToken }) {
             }
         }
     }
-}
-
-Signup.propTypes = {
-    setToken: PropTypes.func.isRequired
 }

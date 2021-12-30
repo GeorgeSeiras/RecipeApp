@@ -1,29 +1,42 @@
 import React, { useState } from 'react'
 import Form from "react-bootstrap/Form";
 import Button from 'react-bootstrap/Button';
-import PropTypes from 'prop-types'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { login, useAuthState, useAuthDispatch } from '../Context';
 
 import "./Login.css";
 
 
-export default function Login({ setToken }) {
+function Login(props) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [remember, setRemember] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
+    const navigate = useNavigate();
 
+    const dispatch = useAuthDispatch();
+    const { loading, errorMessage } = useAuthState();
 
     function validateForm() {
         return username.length > 0 && password.length > 0;
     }
 
-    async function handleSumbit(e) {
+    const handleSumbit = async (e) => {
         e.preventDefault();
-        const token = await loginUser({
-            username,
-            password
-        });
-        setToken(token, remember)
+        let payload = { username, password };
+        try {
+            let response = await login(dispatch, payload);
+            if (!response.access) {
+                return;
+            }
+            navigate('/home');
+        } catch (error) {
+            console.log(error)
+        }
+        // const token = await loginUser({
+        //     username,
+        //     password
+        // });
+        // setToken(token, remember)
     }
 
     return (
@@ -64,30 +77,6 @@ export default function Login({ setToken }) {
         </div>
     );
 
-    async function loginUser(credentials) {
-        try {
-            const response = await fetch('http://localhost:8000/api/token/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(credentials)
-            })
-            if (!response.ok) {
-                throw response.status
-            }
-            return response.json()
-        } catch (error) {
-            if (error === 401) {
-                setErrorMessage("Incorrect username or password");
-            } else {
-                setErrorMessage("Something went wrong");
-            }
-        }
-    }
 }
 
-Login.propTypes = {
-    setToken: PropTypes.func.isRequired
-}
-
+export default Login;

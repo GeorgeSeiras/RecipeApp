@@ -1,47 +1,25 @@
 import React from 'react';
 import './App.css';
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
-import Login from '../src/components/Login/Login';
-import Signup from '../src/components/Signup/Signup';
-
-function setToken(token,remember){
-  if(remember){
-    localStorage.setItem('recipeapptoken',JSON.stringify(token));
-  }else{
-    sessionStorage.setItem('recipeapptoken',JSON.stringify(token));
-  }
-
-}
-
-function getToken(){
-  const storageToken = localStorage.getItem('recipeapptoken');
-  const sessionToken = sessionStorage.getItem('recipeapptoken');
-  if(storageToken){
-    const token = JSON.parse(storageToken);
-    return token?.access;
-  }else{
-    const token = JSON.parse(sessionToken);
-    return token?.access;
-  }
-
-}
-
+import { Route, BrowserRouter, Routes } from 'react-router-dom';
+import routes from './routes';
+import { AuthProvider } from './components/Context';
+import Home from './components/Home/Home';
+import Login from './components/Login/Login'
 function App() {
-
-  const token = getToken();
-  if(!token) {
-    return <Login setToken={setToken}/>
-  }
-
   return (
-    <div className="wrapper">
+    <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route exact path="/login" element={<Login setToken={setToken}/>}/>
-          <Route exact path="/register" element={<Signup setToken={setToken}/>}/>
+          {routes.map((route) => (
+            <Route
+              key={route.path}
+              exact path={route.path}
+              element={route.element}
+            />
+          ))}
         </Routes>
       </BrowserRouter>
-    </div>
+    </AuthProvider>
   );
 }
 
