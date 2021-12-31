@@ -27,8 +27,8 @@ export async function login(dispatch, payload) {
                 });
             return data
         }
-        dispatch({ type: 'LOGIN_ERROR', error: data.errors })
+        await dispatch({ type: 'LOGIN_ERROR', error: data.detail })
     } catch (error) {
-        dispatch({ type: 'LOGIN_ERROR', error: error });
+        return await dispatch({ type: 'LOGIN_ERROR', error: error });
     }
 }

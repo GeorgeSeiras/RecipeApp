@@ -25,18 +25,13 @@ function Login(props) {
         let payload = { username, password };
         try {
             let response = await login(dispatch, payload);
-            if (!response.access) {
+            if (!response?.access) {
                 return;
             }
             navigate('/home');
         } catch (error) {
             console.log(error)
         }
-        // const token = await loginUser({
-        //     username,
-        //     password
-        // });
-        // setToken(token, remember)
     }
 
     return (
