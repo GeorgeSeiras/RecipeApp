@@ -1,21 +1,26 @@
-import  Login  from './components/Login/Login';
+import Login from './components/Login/Login';
 import Signup from './components/Signup/Signup';
 import Home from './components/Home/Home';
 
-const routes = [
-    {
-        path: '/login',
-        element: <Login/>
-    },
-    {
-        path: '/register',
-        element: <Signup/>
-    },
+export const privateRoutes = [
     {
         path: '/home',
-        element: <Home/>,
-        isPrivate: true
+        element: <Home />
     }
 ]
 
-export default routes
+export const publicRoutes = [
+  
+]
+export const authRoutes = [
+    {
+
+        path: '/login',
+        element: <Login />,
+    },
+    {
+        path: '/register',
+        element: <Signup />,
+
+    },
+]

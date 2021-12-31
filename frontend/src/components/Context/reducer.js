@@ -4,7 +4,7 @@ const cookies = new Cookies();
 
 let token = cookies.get('token')
     ? cookies.get('token')
-    : "";
+    : null;
 
 export const initialState = {
     token: null || token,

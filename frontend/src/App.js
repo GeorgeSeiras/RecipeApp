@@ -1,20 +1,33 @@
 import React from 'react';
 import './App.css';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
-import routes from './routes';
+import { authRoutes, publicRoutes, privateRoutes, } from './routes';
 import { AuthProvider } from './components/Context';
-import  AppRoute  from './components/AppRoute'
+import { PrivateRoute, NoLoggedInRoute } from './components/CustomRoutes'
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {routes.map((route) => (
+          {privateRoutes.map((route) => (
             <Route
               key={route.path}
               exact path={route.path}
-              element={<AppRoute>{route.element}</AppRoute>}
-              isPrivate={route.isPrivate}
+              element={<PrivateRoute>{route.element}</PrivateRoute>}
+            />
+          ))}
+          {publicRoutes.map((route) => (
+            <Route
+              key={route.path}
+              exact path={route.path}
+              element={route.element}
+            />
+          ))}
+          {authRoutes.map((route) => (
+            <Route
+              key={route.path}
+              exact path={route.path}
+              element={<NoLoggedInRoute>{route.element}</NoLoggedInRoute>}
             />
           ))}
         </Routes>
