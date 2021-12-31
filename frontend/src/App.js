@@ -3,8 +3,7 @@ import './App.css';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import routes from './routes';
 import { AuthProvider } from './components/Context';
-import Home from './components/Home/Home';
-import Login from './components/Login/Login'
+import  AppRoute  from './components/AppRoute'
 function App() {
   return (
     <AuthProvider>
@@ -14,7 +13,8 @@ function App() {
             <Route
               key={route.path}
               exact path={route.path}
-              element={route.element}
+              element={<AppRoute>{route.element}</AppRoute>}
+              isPrivate={route.isPrivate}
             />
           ))}
         </Routes>

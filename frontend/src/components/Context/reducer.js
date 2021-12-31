@@ -7,7 +7,7 @@ let token = cookies.get('token')
     : "";
 
 export const initialState = {
-    token: "" || token,
+    token: null || token,
     loading: false,
     errorMessage: null
 }
@@ -28,7 +28,7 @@ export const AuthReducer = (initialState, action) => {
         case "LOGOUT":
             return {
                 ...initialState,
-                token: ""
+                token: null
             }
         case "LOGIN_ERROR":
             return {

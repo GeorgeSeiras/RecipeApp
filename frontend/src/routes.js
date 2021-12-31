@@ -13,7 +13,8 @@ const routes = [
     },
     {
         path: '/home',
-        element: <Home/>
+        element: <Home/>,
+        isPrivate: true
     }
 ]
 
