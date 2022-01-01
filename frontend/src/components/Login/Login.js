@@ -7,14 +7,13 @@ import { login, useAuthState, useAuthDispatch } from '../Context';
 import "./Login.css";
 
 
-function Login(props) {
+function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [remember, setRemember] = useState("");
-    const navigate = useNavigate();
 
     const dispatch = useAuthDispatch();
-    const { loading, errorMessage } = useAuthState();
+    const { errorMessage } = useAuthState();
 
     function validateForm() {
         return username.length > 0 && password.length > 0;
@@ -24,11 +23,11 @@ function Login(props) {
         e.preventDefault();
         let payload = { username, password };
         try {
-            let response = await login(dispatch, payload);
+            let response = await login(dispatch, payload, remember);
             if (!response?.access) {
                 return;
             }
-            navigate('/home');
+            return <Navigate to='/home'/>
         } catch (error) {
             console.log(error)
         }
