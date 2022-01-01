@@ -1,13 +1,14 @@
 import { Navigate } from "react-router-dom";
-
-import { useAuthState } from './Context'
+import { useContext } from 'react';
+import { UserContext } from './Context/authContext'
 
 export const PrivateRoute = ({ children }) => {
-    let userDetails = useAuthState()
-    return userDetails.token ? children : <Navigate to='/login' />
+    const { user } = useContext(UserContext);
+    return user?.token ? children : <Navigate to='/login' />
 }
 
 export const NoLoggedInRoute = ({ children }) => {
-    let userDetails = useAuthState();
-    return userDetails.token ? <Navigate to='/home' /> : children
+    const { user } = useContext(UserContext);
+    console.log(user)
+    return user?.token ? <Navigate to='/home' /> : children
 }

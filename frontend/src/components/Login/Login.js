@@ -1,19 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, useReducer, useRef, useEffect, useContext } from 'react'
 import Form from "react-bootstrap/Form";
 import Button from 'react-bootstrap/Button';
-import { Navigate, useNavigate } from 'react-router-dom'
-import { login, useAuthState, useAuthDispatch } from '../Context';
-
+import { useNavigate } from 'react-router-dom'
+import { userLogin } from '../Context';
+import { AuthReducer } from '../Context/reducer'
+import { UserContext } from '../Context/authContext';
 import "./Login.css";
 
 
-function Login() {
+function Login(props) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [remember, setRemember] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+    const navigate = useNavigate();
+    const [state, dispatch] = useReducer(AuthReducer);
+    const { login } = useContext(UserContext);
 
-    const dispatch = useAuthDispatch();
-    const { errorMessage } = useAuthState();
+    const initialState = useRef(true);
+    useEffect(() => {
+        if (initialState.current) {
+            initialState.current = false;
+            return
+        }
+        if (state?.errorMessage) {
+            setErrorMessage(state.errorMessage)
+        }
+    }, [state])
 
     function validateForm() {
         return username.length > 0 && password.length > 0;
@@ -23,13 +36,14 @@ function Login() {
         e.preventDefault();
         let payload = { username, password };
         try {
-            let response = await login(dispatch, payload, remember);
+            let response = await userLogin(dispatch, payload, remember);
             if (!response?.access) {
                 return;
             }
-            return <Navigate to='/home'/>
+            await login(response.access)
+            navigate('/home')
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     }
 

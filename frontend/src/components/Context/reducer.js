@@ -7,7 +7,7 @@ let token = cookies.get('token')
     : null;
 
 export const initialState = {
-    token: null || token,
+    token: null ,
     loading: false,
     errorMessage: null
 }

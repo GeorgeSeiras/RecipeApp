@@ -2,7 +2,7 @@ import Cookies from 'universal-cookie';
 
 const ROOT_URL = 'http://localhost:8000/api';
 
-export async function login(dispatch, payload, remember) {
+export async function userLogin(dispatch, payload, remember) {
     const cookies = new Cookies();
     const requestOptions = {
         method: 'POST',

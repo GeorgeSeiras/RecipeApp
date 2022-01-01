@@ -1,37 +1,35 @@
-import React, { useReducer } from 'react';
-import { AuthReducer, initialState } from './reducer';
+import React, { useState } from 'react';
+import Cookies from 'universal-cookie';
 
-export const AuthContext = React.createContext();
 
-const AuthStateContext = React.createContext();
-const AuthDispatchContext = React.createContext();
 
-export function useAuthState() {
-    const context = React.useContext(AuthStateContext);
-    if (context === undefined) {
-        throw new Error("useAuthState must be used within an authenticator")
-    }
+export const UserContext = React.createContext({ token: null });
 
-    return context;
-}
-
-export function useAuthDispatch() {
-    const context = React.useContext(AuthDispatchContext);
-    if (context === undefined) {
-        throw new Error("useAuthDispatch must be used within an AuthProvider")
-    }
-
-    return context;
-}
 
 export const AuthProvider = ({ children }) => {
-    const [token, dispatch] = useReducer(AuthReducer, initialState);
+    const cookies = new Cookies();
+
+    let cookieToken = cookies.get('token')
+        ? cookies.get('token')
+        : null;
+
+    const [user, setUser] = useState({ token: null || cookieToken });
+
+    const login = (token) => {
+        setUser((user) => ({
+            token: token
+        }));
+    };
+
+    const logout = () => {
+        setUser((user) => ({
+            token: null
+        }));
+    };
 
     return (
-        <AuthStateContext.Provider value={token}>
-            <AuthDispatchContext.Provider value={dispatch}>
-                {children}
-            </AuthDispatchContext.Provider>
-        </AuthStateContext.Provider>
+        <UserContext.Provider value={{ user, login, logout }}>
+            {children}
+        </UserContext.Provider>
     );
 };
