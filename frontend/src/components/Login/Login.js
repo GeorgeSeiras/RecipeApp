@@ -41,7 +41,7 @@ function Login(props) {
                 return;
             }
             await login(response.access)
-            navigate('/home')
+            navigate('/')
         } catch (error) {
             console.log(error);
         }
