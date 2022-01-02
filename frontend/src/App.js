@@ -4,6 +4,7 @@ import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import { authRoutes, publicRoutes, privateRoutes, } from './routes';
 import { AuthProvider } from './components/Context';
 import { PrivateRoute, NoLoggedInRoute } from './components/CustomRoutes'
+
 function App() {
   return (
     <AuthProvider>

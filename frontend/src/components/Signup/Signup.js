@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useReducer, useEffect, useRef } from "react";
 import Form from "react-bootstrap/Form";
 import Button from 'react-bootstrap/Button';
-import PropTypes from 'prop-types'
 import { Navigate } from 'react-router-dom';
+import { register } from './actions';
+import { SignupReducer } from './reducer';
 import './Signup.css';
 
+
 export default function Signup() {
+
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -15,6 +18,8 @@ export default function Signup() {
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [success, setSuccess] = useState("");
+    const [state, dispatch] = useReducer(SignupReducer);
+
     function validateForm() {
         return username.length > 0
             && password.length > 0
@@ -34,17 +39,41 @@ export default function Signup() {
         return true;
     }
 
-    function handleSumbit(event) {
+    const initialState = useRef(true);
+    useEffect(() => {
+        if (initialState.current) {
+            initialState.current = false;
+            return
+        }
+        console.log(state)
+        if (state?.errorMessage) {
+            if (state.errorMessage?.email) {
+                setEmailError(state.errorMessage.email);
+            }
+            if (state.errorMessage?.username) {
+                setUsernameError(state.errorMessage.username);
+            }
+        }
+    }, [state])
+
+    const handleSumbit = async (event) => {
         event.preventDefault();
         setGenericError("");
         setUsernameError("");
         setEmailError("");
         setPasswordError("");
         if (checkPassword()) {
-            registerUser(username, email, password)
+            const payload = {
+                "username": username,
+                "email": email,
+                "password": password
+            }
+            const response = await register(dispatch, payload);
+            if (response) {
+                setSuccess(true);
+            }
+            return;
         }
-        setSuccess(true);
-        return;
     }
 
     return (
@@ -96,42 +125,7 @@ export default function Signup() {
                     <h4 className="Error">{genericError}</h4>}
             </Form>
             {success &&
-                <Navigate to='../login'/>}
+                <Navigate to='../login' />}
         </div>
     );
-
-    async function registerUser(username, email, password) {
-        try {
-            const data = {
-                "username": username,
-                "email": email,
-                "password": password
-            }
-            const response = await fetch('http://localhost:8000/api/user/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            if (!response.ok) {
-                throw response;
-            } else {
-                return await response.json()
-
-            }
-        } catch (error) {
-            const errorJson = JSON.parse(await error.text())
-            if (error.status === 400) {
-                if (errorJson?.email) {
-                    setEmailError("Email already exists");
-                }
-                if (errorJson?.username) {
-                    setUsernameError("Username already exists");
-                }
-            } else {
-                setGenericError("Something went wrong");
-            }
-        }
-    }
 }
