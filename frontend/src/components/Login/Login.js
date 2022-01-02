@@ -2,8 +2,8 @@ import React, { useState, useReducer, useRef, useEffect, useContext } from 'reac
 import Form from "react-bootstrap/Form";
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom'
-import { userLogin } from '../Context';
-import { AuthReducer } from '../Context/reducer'
+import { userLogin } from './actions';
+import { AuthReducer } from './reducer'
 import { UserContext } from '../Context/authContext';
 import "./Login.css";
 
