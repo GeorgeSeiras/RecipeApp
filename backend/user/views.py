@@ -3,7 +3,6 @@ from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.http.response import JsonResponse
 from rest_framework.exceptions import NotFound
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
@@ -90,6 +89,17 @@ class UserLists(APIView, LimitOffsetPagination):
             raise NotFound({"message": "User not found"})
         lists = List.objects.filter(user=user.id)
         paginated_queryset = self.paginate_queryset(lists, request)
-        paginated_response = self.get_paginated_response(List.lists_to_list(paginated_queryset))
+        paginated_response = self.get_paginated_response(
+            List.lists_to_list(paginated_queryset))
         return paginated_response
-        
+
+
+class UserMe(APIView):
+
+    @user_required
+    def get(self, request):
+        try:
+            user = User.objects.get(username=request.user)
+        except User.DoesNotExist:
+            raise NotFound({"message": "User not found"})
+        return JsonResponse({'user':user.to_dict()})
