@@ -2,8 +2,8 @@ import React, { useState, useReducer, useRef, useEffect, useContext } from 'reac
 import Form from "react-bootstrap/Form";
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom'
-import { userLogin } from './actions';
-import { AuthReducer } from './reducer'
+import { userLogin, getMe } from './actions';
+import { AuthReducer, GetMeReducer } from './reducer'
 import { UserContext } from '../Context/authContext';
 import "./Login.css";
 
@@ -15,6 +15,7 @@ function Login(props) {
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
     const [state, dispatch] = useReducer(AuthReducer);
+    const [stateGetMe, dispatchGetMe] = useReducer(GetMeReducer);
     const { login } = useContext(UserContext);
 
     const initialState = useRef(true);
@@ -36,11 +37,15 @@ function Login(props) {
         e.preventDefault();
         let payload = { username, password };
         try {
-            let response = await userLogin(dispatch, payload, remember);
-            if (!response?.access) {
+            let responseLogin = await userLogin(dispatch, payload, remember);
+            if (!responseLogin?.access) {
                 return;
             }
-            await login(response.access)
+            let responseMe = await getMe(dispatchGetMe, responseLogin.access);
+            if (!responseMe) {
+                return;
+            }
+            await login({ user: responseMe.user, token: responseLogin.access })
             navigate('/')
         } catch (error) {
             console.log(error);

@@ -37,3 +37,25 @@ export async function userLogin(dispatch, payload, remember) {
         dispatch({ type: 'LOGIN_ERROR', error: error });
     }
 }
+
+export async function getMe(dispatch, token) {
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Content-type': 'application/json',
+            'Authorization': 'Bearer '.concat(token)
+        }
+    };
+    try {
+        dispatch({ type: 'GET_ME_REQUEST' });
+        const response = await fetch(`${ROOT_URL}/user/me`, requestOptions);
+        const data = await response.json();
+        if (data?.user) {
+            dispatch({ type: 'GET_ME_SUCCESS', payload: data.user })
+            return data
+        }
+        dispatch({ type: 'GET_ME_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'GET_ME_ERROR', errorMessage: error })
+    }
+}

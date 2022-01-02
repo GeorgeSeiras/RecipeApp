@@ -1,37 +1,42 @@
 import React, { useState, useReducer, useEffect } from 'react';
 import Cookies from 'universal-cookie';
-import { getMe } from './actions';
-import { GetMeReducer } from './reducer'
 
 
 export const UserContext = React.createContext({ token: null });
 
 export const AuthProvider = ({ children }) => {
-    const [state, dispatch] = useReducer(GetMeReducer);
-    const [data, setData] = useState({ token: null, user: null });
+    const [user, setUser] = useState({ user: null, token: null });
+
+    const ROOT_URL = 'http://localhost:8000/api';
+
+    const cookies = new Cookies();
 
     useEffect(() => {
-        const cookies = new Cookies();
-        let cookieToken = cookies.get('token')
+        const token = cookies.get('token')
             ? cookies.get('token')
             : null;
+        if (token) {
 
-        var userData = null;
-        if (cookieToken) {
-            const payload = {
-                "token": cookieToken
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Authorization': 'Bearer '.concat(token.key)
+                }
             };
-            getMe(dispatch, payload).then(res => userData = res);
+            fetch(`${ROOT_URL}/user/me`, requestOptions)
+                .then(res => res.json())
+                .then(data => setUser({
+                    user: data.user,
+                    token: token
+                }))
         }
-        setData({ token: cookieToken, user: userData })
-    }, [dispatch])
+    }, [])
 
-    const [user, setUser] = useState({ user: null || data.user, token: null || data.token });
-
-    const login = (token) => {
+    const login = (data) => {
         setUser((user) => ({
-            token: user.token,
-            user: user.user
+            token: data.token,
+            user: data.user
         }));
     };
 
