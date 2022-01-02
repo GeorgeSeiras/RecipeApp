@@ -12,7 +12,6 @@ export async function register(dispatch, payload) {
         await dispatch({ type: 'REGISTER_REQUEST' });
         let response = await fetch(`${ROOT_URL}/user/register`, requestOptions);
         let data = await response.json();
-        console.log(data)
         if (data?.result) {
             await dispatch({ type: 'REGISTER_SUCCESS', payload: data.result })
             return data
