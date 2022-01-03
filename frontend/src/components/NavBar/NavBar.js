@@ -38,6 +38,9 @@ const Navigation = () => {
                             <NavDropdown id="dropdown-basic-button" drop="start"
                                 title={<img className="avatar" src={avatar} alt='user pic' width="40px" height="auto" />}>
                                 <NavDropdown.Item href={'/user/' + userData.user.user.username}>Profile</NavDropdown.Item>
+                                <NavDropdown.Item onClick={()=>{
+                                    userData.logout();
+                                }}>Logout</NavDropdown.Item>
                             </NavDropdown>
                         </Nav>
                     }

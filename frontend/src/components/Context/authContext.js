@@ -45,6 +45,7 @@ export const AuthProvider = ({ children }) => {
             token: null,
             user: null
         }));
+        cookies.remove('token',{path:'/'});
     };
 
     return (
