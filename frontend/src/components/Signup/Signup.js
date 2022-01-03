@@ -1,5 +1,7 @@
 import React, { useState, useReducer, useEffect, useRef } from "react";
 import { Navigate } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 import { register } from './actions';
 import { SignupReducer } from './reducer';
 import './Signup.css';
@@ -76,7 +78,7 @@ export default function Signup() {
 
     return (
         <div className="Signup">
-            {/* <Form onSubmit={handleSumbit}>
+            <Form onSubmit={handleSumbit}>
                 <Form.Group size="lg" controlId="email">
                     <Form.Label>Email</Form.Label>
                     <Form.Control
@@ -123,7 +125,7 @@ export default function Signup() {
                     <h4 className="Error">{genericError}</h4>}
             </Form>
             {success &&
-                <Navigate to='../login' />} */}
+                <Navigate to='../login' />}
         </div>
     );
 }

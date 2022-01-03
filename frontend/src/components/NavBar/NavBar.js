@@ -1,24 +1,31 @@
 import React, { useContext } from 'react';
 import { UserContext } from '../Context/authContext';
-
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import NAV_LOGO from '../../static/nav_logo.png';
 const Navigation = () => {
     const user = useContext(UserContext);
     return (
-        <h1></h1>
-        // <>
-        //     <Navbar className='nav' sticky='top' collapseOnSelect fixed='top' expand='sm' bg='dark' variant='dark'>
-        //         <Container>
-        //             <Navbar.Toggle aria-controls='responsive-navbar-nav' />
-        //             <Navbar.Collapse id='responsive-navbar-nav'>
-        //                 <Nav className="container-fluid">
-        //                     <Nav.Link className="ms-auto" href='/'>Home</Nav.Link>
-        //                     <Nav.Link className="ms-auto" href='/recipes'>Recipes</Nav.Link>
-        //                     <Nav.Link className="me-auto" href='/login'>Login</Nav.Link>
-        //                 </Nav>
-        //             </Navbar.Collapse>
-        //         </Container>
-        //     </Navbar>
-        // </>
+        <>
+            <Navbar sticky='top' collapseOnSelect fixed='top' expand='sm' bg='dark' variant='dark'>
+                <Navbar.Brand id="Brand" href="/">
+                    <img src={NAV_LOGO} width="70px" height="auto" className="img-responsive" />
+                    RecipeApp
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls='responsive-navbar-nav' />
+                <Navbar.Collapse id='responsive-navbar-nav'>
+                    <Nav className="container-fluid ml-auto">
+                        <Nav.Link href='/recipes'>Recipes</Nav.Link>
+                        {(!user.user.token || !user.user.user) &&
+                            < Nav className="ms-auto">
+                                <Nav.Link href='/login'>Login</Nav.Link>
+                                <Nav.Link href='/register'>Register</Nav.Link>
+                            </Nav>
+                        }
+                    </Nav>
+                </Navbar.Collapse>
+            </Navbar>
+        </>
     )
 };
 
