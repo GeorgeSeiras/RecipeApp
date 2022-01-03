@@ -3,5 +3,10 @@
 }
 
 .dropdown-toggle{
-    border-radius: 30em 30em 30em 30em !important;
+    border-radius: 500%;
+}
+.avatar{
+    max-width:100%;
+    height:auto;
+    border-radius: 50% ;
 }
