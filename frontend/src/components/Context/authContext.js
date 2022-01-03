@@ -1,30 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import Cookies from 'universal-cookie';
-
 
 
 export const UserContext = React.createContext({ token: null });
 
-
 export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState({ user: null, token: null });
+
+    const ROOT_URL = 'http://localhost:8000/api';
+
     const cookies = new Cookies();
 
-    let cookieToken = cookies.get('token')
-        ? cookies.get('token')
-        : null;
+    useEffect(() => {
+        const token = cookies.get('token')
+            ? cookies.get('token')
+            : null;
+        if (token) {
 
-    const [user, setUser] = useState({ token: null || cookieToken });
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Authorization': 'Bearer '.concat(token.key)
+                }
+            };
+            fetch(`${ROOT_URL}/user/me`, requestOptions)
+                .then(res => res.json())
+                .then(data => setUser({
+                    user: data.user,
+                    token: token
+                }))
+        }
+    }, [])
 
-    const login = (token) => {
+    const login = (data) => {
         setUser((user) => ({
-            token: token
+            token: data.token,
+            user: data.user
         }));
     };
 
     const logout = () => {
         setUser((user) => ({
-            token: null
+            token: null,
+            user: null
         }));
+        cookies.remove('token',{path:'/'});
     };
 
     return (

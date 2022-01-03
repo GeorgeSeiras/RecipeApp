@@ -3,14 +3,14 @@ import Signup from './components/Signup/Signup';
 import Home from './components/Home/Home';
 
 export const privateRoutes = [
-    {
-        path: '/home',
-        element: <Home />
-    }
+    
 ]
 
 export const publicRoutes = [
-  
+    {
+        path: '/',
+        element: <Home />
+    }
 ]
 export const authRoutes = [
     {

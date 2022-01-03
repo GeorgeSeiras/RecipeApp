@@ -1,0 +1,12 @@
+.dropdown-toggle:before{
+    display:none !important;
+}
+
+.dropdown-toggle{
+    border-radius: 500%;
+}
+.avatar{
+    max-width:100%;
+    height:auto;
+    border-radius: 50% ;
+}

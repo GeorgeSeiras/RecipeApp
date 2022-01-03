@@ -1,9 +1,7 @@
 import React, { useState, useReducer, useRef, useEffect, useContext } from 'react'
-import Form from "react-bootstrap/Form";
-import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom'
-import { userLogin } from './actions';
-import { AuthReducer } from './reducer'
+import { userLogin, getMe } from './actions';
+import { AuthReducer, GetMeReducer } from './reducer'
 import { UserContext } from '../Context/authContext';
 import "./Login.css";
 
@@ -15,6 +13,7 @@ function Login(props) {
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
     const [state, dispatch] = useReducer(AuthReducer);
+    const [stateGetMe, dispatchGetMe] = useReducer(GetMeReducer);
     const { login } = useContext(UserContext);
 
     const initialState = useRef(true);
@@ -36,53 +35,62 @@ function Login(props) {
         e.preventDefault();
         let payload = { username, password };
         try {
-            let response = await userLogin(dispatch, payload, remember);
-            if (!response?.access) {
+            let responseLogin = await userLogin(dispatch, payload, remember);
+            if (!responseLogin?.access) {
                 return;
             }
-            await login(response.access)
-            navigate('/home')
+            let responseMe = await getMe(dispatchGetMe, responseLogin.access);
+            if (!responseMe) {
+                return;
+            }
+            await login({ user: responseMe.user, token: responseLogin.access })
+            navigate('/')
         } catch (error) {
             console.log(error);
         }
     }
 
     return (
-        <div className="Login">
-            <Form onSubmit={handleSumbit}>
-                <Form.Group size="lg" controlId="username">
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control
-                        autoFocus
-                        type="username"
-                        value={username}
-                        placeholder="Enter Username"
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </Form.Group>
-                <Form.Group size="lg" controlId="password">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        type="password"
-                        value={password}
-                        placeholder="Enter Password"
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </Form.Group>
-                <Form.Group size="lg" controlId="remember">
-                    <Form.Check
+        <form className="Login" onSubmit={handleSumbit}>
+            <div className="mb-3">
+                <label htmlFor="username" className="form-label">Username</label>
+                <input
+                    className="form-control"
+                    id="username"
+                    autoFocus
+                    type="username"
+                    value={username}
+                    placeholder="Enter Username"
+                    onChange={(e) => setUsername(e.target.value)}
+                />
+            </div>
+            <div className="mb-3">
+                <label htmlFor="password" className="form-label">Password</label>
+                <input
+                    className="form-control"
+                    id="password"
+                    type="password"
+                    value={password}
+                    placeholder="Enter Password"
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <div className="form-check">
+                    <input className="form-check-input"
+                        id="rememberMe"
                         type="checkbox"
-                        label="Remember Me"
-                        onChange={(e) => setRemember(e.target.checked)}>
-                    </Form.Check>
-                </Form.Group>
-                <Button variant="primary" size="lg" type="submit" disabled={!validateForm()}>
-                    Login
-                </Button>
-                {errorMessage &&
-                    <h4 className="Error">{errorMessage}</h4>}
-            </Form>
-        </div>
+                        onChange={(e) => setRemember(e.target.checked)} />
+                    <label className="form-check-label" htmlFor="rememberMe">
+                        RememberMe
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" className="btn-lg btn-primary" disabled={!validateForm()}>
+                Login
+            </button>
+            {errorMessage &&
+                <h4 className="Error">{errorMessage}</h4>}
+        </form>
     );
 
 }

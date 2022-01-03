@@ -1,7 +1,7 @@
 import React, { useState, useReducer, useEffect, useRef } from "react";
-import Form from "react-bootstrap/Form";
-import Button from 'react-bootstrap/Button';
 import { Navigate } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 import { register } from './actions';
 import { SignupReducer } from './reducer';
 import './Signup.css';

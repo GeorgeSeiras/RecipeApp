@@ -9,6 +9,5 @@ export const PrivateRoute = ({ children }) => {
 
 export const NoLoggedInRoute = ({ children }) => {
     const { user } = useContext(UserContext);
-    console.log(user)
-    return user?.token ? <Navigate to='/home' /> : children
+    return user?.token ? <Navigate to='/' /> : children
 }
