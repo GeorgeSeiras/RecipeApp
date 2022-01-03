@@ -1,0 +1,7 @@
+.dropdown-toggle:before{
+    display:none !important;
+}
+
+.dropdown-toggle{
+    border-radius: 30em 30em 30em 30em !important;
+}
