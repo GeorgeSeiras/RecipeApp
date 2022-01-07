@@ -63,10 +63,6 @@ class RecipeDetail(APIView):
                             self, ingredient, recipe)
                         ingredients.append(ingredient)
                     setattr(recipe, key, ingredients)
-                # elif key == 'images':
-                #     setattr(recipe, key, value)
-                # else:
-                #     setattr(recipe, key, value)
             recipe.save()
             res = Recipe.objects.filter(pk=recipe.id)
             return JsonResponse({'result': Recipe.recipes_to_list(res)})

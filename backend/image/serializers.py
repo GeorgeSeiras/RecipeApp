@@ -29,7 +29,6 @@ class RecipeImageSerializer(serializers.Serializer):
                     'Invalid image type '+type['type'], status.HTTP_400_BAD_REQUEST)
             types.append(type['type'])
         i=0
-        print(self.validated_data['recipe'])
         for image in self.validated_data.get('images'):
             object={
                 'image':image,

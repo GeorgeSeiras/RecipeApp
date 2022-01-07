@@ -26,10 +26,10 @@ class RecipeImageView(APIView):
             try:
                 user = User.objects.get(username=request.user)
             except User.DoesNotExist:
-                raise NotFound({"message": "Recipe not found"})
+                raise NotFound({"message": "User not found"})
             try:
                 recipe = Recipe.objects.get(pk=recipe_id)
-            except User.DoesNotExist:
+            except Recipe.DoesNotExist:
                 raise NotFound({"message": "Recipe not found"})
             if(user.id != recipe.user.id):
                 raise PermissionDenied(
@@ -37,4 +37,24 @@ class RecipeImageView(APIView):
             serializer = RecipeImageSerializer(data={**request.data,'recipe':recipe.id})
             serializer.is_valid(raise_exception=True)
             images = serializer.create()
+            raise NotFound()
             return JsonResponse({'result':RecipeImage.recipe_images_to_list(images)})
+
+class RecipeImageDetail(APIView):
+
+    @user_required
+    def delete(self,request,image_id):
+        with transaction.atomic():
+            try:
+                user = User.objects.get(username=request.user)
+            except User.DoesNotExist:
+                raise NotFound({"message": "User not found"})
+            try:
+                image = RecipeImage.objects.get(pk=image_id)
+            except RecipeImage.DoesNotExist:
+                raise NotFound({"message": "Image not found"})
+            if(user.id != image.recipe.user.id):
+                raise PermissionDenied(
+                    {"You cannot modify another user's recipe"}) 
+            image.delete()
+            return JsonResponse({'result':'ok'})
