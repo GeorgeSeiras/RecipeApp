@@ -2,6 +2,8 @@ from rest_framework import serializers
 
 from user.models import User
 from .models import Recipe, Ingredient
+from image.serializers import RecipeImageSerializer
+
 
 class IngredientSerializer(serializers.ModelSerializer):
     amount = serializers.FloatField()
@@ -34,13 +36,13 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.Serializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    photo = serializers.ImageField(
-        required=False, allow_empty_file=True, max_length=None)
+    user = serializers.RelatedField(source='user.user', read_only=True)
+    images = serializers.ListField(
+        child=RecipeImageSerializer(), required=False)
     title = serializers.CharField()
     prep_time = serializers.IntegerField()
     cook_time = serializers.IntegerField()
-    desc = serializers.CharField(required=False, allow_null=True)
+    desc = serializers.CharField(required=False)
     ingredients = IngredientSerializer(many=True)
     servings = serializers.IntegerField()
     cuisine = serializers.ListField(child=serializers.CharField())
@@ -49,6 +51,11 @@ class RecipeSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         ingredient_data = validated_data.pop('ingredients')
+        if('images' in validated_data):
+            images_data = validated_data.pop('images')
+            image_serializer = RecipeImageSerializer(data=images_data)
+            image_serializer.is_valid(raise_exception=True)
+            image_serializer.save()
         recipe = Recipe.objects.create(**validated_data)
         ingredients = []
         for ingredient in ingredient_data:
@@ -75,6 +82,7 @@ class RecipePatchSerializer(serializers.Serializer):
     steps = serializers.ListField(
         required=False, child=serializers.CharField())
 
+
 class IngredientCreateSerializer(serializers.Serializer):
     amount = serializers.FloatField()
     unit = serializers.CharField(required=False)
@@ -85,6 +93,7 @@ class IngredientPatchSerializer(serializers.Serializer):
     amount = serializers.FloatField(required=False)
     unit = serializers.CharField(required=False)
     ingredient = serializers.CharField(required=False)
+
 
 class StepCreateSerializer(serializers.Serializer):
     step = serializers.CharField()

@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'rating',
     'list',
     'utils',
-    'comment'
+    'comment',
+    'image'
 ]
 
 AUTH_USER_MODEL = 'user.User'

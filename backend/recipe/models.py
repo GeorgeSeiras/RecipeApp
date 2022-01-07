@@ -5,6 +5,7 @@ from django.db import models, connection
 from django.contrib.postgres.fields import ArrayField
 from django.db.models.deletion import CASCADE
 from django.dispatch import receiver
+from image.models import RecipeImage
 
 from user.models import User
 
@@ -39,13 +40,9 @@ class Ingredient(models.Model):
         return list
 
 class Recipe(models.Model):
-    user = models.ForeignKey(User, on_delete=CASCADE)
+    user = models.ForeignKey('user.user', on_delete=CASCADE)
     title = models.CharField(
         max_length=100
-    )
-    photo = models.ImageField(
-        upload_to='media',
-        blank=True
     )
     prep_time = models.IntegerField()
     cook_time = models.IntegerField()
@@ -74,10 +71,6 @@ class Recipe(models.Model):
         dict['id'] = self.id
         dict['user'] = User.to_dict(self.user)
         dict['title'] = self.title
-        if(self.photo != ""):
-            dict['photo'] = json.dumps(str(self.photo))
-        else:
-            dict['photo'] = None
         dict['prep_time'] = self.prep_time
         dict['cook_time'] = self.cook_time
         dict['desc'] = self.desc
@@ -92,6 +85,11 @@ class Recipe(models.Model):
         for ingredient in ingredients:
             ingredient_list.append(ingredient.to_dict())
         dict['ingredients'] = ingredient_list
+        images = RecipeImage.objects.filter(recipe=self.pk)
+        image_list = []
+        for image in images:
+            image_list.append(image)
+        dict['images'] = image_list
         return dict
 
     def recipes_to_list(recipes):
@@ -99,33 +97,3 @@ class Recipe(models.Model):
         for recipe in recipes:
             list.append(Recipe.to_dict(recipe))
         return list
-
-@receiver(models.signals.post_delete, sender=Recipe)
-def auto_delete_file_on_delete(sender, instance, **kwargs):
-    """
-    Deletes file from filesystem
-    when corresponding `Recipe` object is deleted.
-    """
-    if instance.photo:
-        if os.path.isfile(instance.photo.path):
-            os.remove(instance.photo.path)
-
-@receiver(models.signals.pre_save, sender=Recipe)
-def auto_delete_file_on_change(sender, instance, **kwargs):
-    """
-    Deletes old file from filesystem
-    when corresponding `MediaFile` object is updated
-    with new file.
-    """
-    if not instance.pk:
-        return False
-
-    try:
-        old_file = Recipe.objects.get(pk=instance.pk).photo
-    except Recipe.DoesNotExist:
-        return False
-
-    new_file = instance.photo
-    if not old_file == new_file:
-        if os.path.isfile(old_file.path):
-            os.remove(old_file.path)
