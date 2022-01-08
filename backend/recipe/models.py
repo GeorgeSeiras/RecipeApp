@@ -1,10 +1,6 @@
-import json
-import os
-
 from django.db import models, connection
 from django.contrib.postgres.fields import ArrayField
 from django.db.models.deletion import CASCADE
-from django.dispatch import receiver
 from image.models import RecipeImage
 
 from user.models import User

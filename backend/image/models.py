@@ -52,9 +52,21 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 
 class UserImage(models.Model):
     image = models.ImageField(
-        upload_to='media'
+        upload_to=get_file_path
     )
 
+    def to_dict(self):
+        dict = {}
+        dict['id'] = self.id
+        dict['user'] = self.user.id
+        dict['image'] = self.image.path
+        return dict
+
+    def recipe_images_to_list(images):
+        list = []
+        for image in images:
+            list.append(image.to_dict())
+        return list
 
 @receiver(models.signals.post_delete, sender=UserImage)
 def auto_delete_file_on_delete(sender, instance, **kwargs):

@@ -9,9 +9,8 @@ class UserSerializer(serializers.ModelSerializer):
 class UserSerializerNoPassword(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id','email','username')
+        fields = ('id','email','username','image')
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.CharField()
     password = serializers.CharField()
-    
