@@ -48,8 +48,8 @@ class UserImageSerializer(serializers.Serializer):
     image = serializers.ImageField()
 
     def create(self):
-        print(self.validated_data.get('image'))
-        return UserImage.objects.create({
-            'image':self.validated_data.get('image'),
-            'user':self.validated_data.get('user')
-        })
+        object = {
+            "image": self.validated_data.get("image"),
+            "user": self.validated_data.get("user"),
+        }
+        return UserImage.objects.create(**object)

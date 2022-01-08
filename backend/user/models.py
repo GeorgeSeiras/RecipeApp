@@ -28,7 +28,8 @@ class User(AbstractUser):
         dict['id'] = self.pk
         dict['username'] = self.username
         dict['email'] = self.email
-        dict['image'] = self.image
+        if(self.image != None):
+            dict['image'] = self.image.to_dict()
         return dict
 
     def users_to_list(users):
@@ -48,11 +49,12 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
         return False
 
     try:
-        old_file = User.objects.get(pk=instance.pk).image
+        old_file = User.objects.get(pk=instance.pk).image.image
     except User.DoesNotExist:
         return False
 
     new_file = instance.image
     if not old_file == new_file:
-        if os.path.isfile(old_file.path):
-            os.remove(old_file.path)
+        if( hasattr(old_file,'path')):
+            if os.path.isfile(old_file.path):
+                os.remove(old_file.path)
