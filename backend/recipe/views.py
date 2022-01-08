@@ -16,11 +16,12 @@ class RecipeCreate(APIView):
 
     @user_required
     def post(self, request):
-        data = request.data
-        user = User.objects.get(username=request.user)
-        data['user'] = user.id
-        serializer = RecipeSerializer(data=data)
         with transaction.atomic():
+            user = User.objects.get(username=request.user)
+            data = request.data.dict()
+            data['user']=user
+            serializer = RecipeSerializer(data=data)
+            print(serializer.initial_data)
             serializer.is_valid(raise_exception=True)
             recipe = serializer.save()
             return JsonResponse({
@@ -50,10 +51,8 @@ class RecipeDetail(APIView):
             if(recipe.user.username != str(request.user)):
                 raise PermissionDenied(
                     {"You cannot modify another user's recipe"})
-            print(request.data)
             serializer = RecipePatchSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            print(serializer.validated_data)
             for key, value in serializer.validated_data.items():
                 # replaces existing ingredients
                 if(key == 'ingredients'):
@@ -64,10 +63,6 @@ class RecipeDetail(APIView):
                             self, ingredient, recipe)
                         ingredients.append(ingredient)
                     setattr(recipe, key, ingredients)
-                elif key == 'photo':
-                    setattr(recipe, key, value)
-                else:
-                    setattr(recipe, key, value)
             recipe.save()
             res = Recipe.objects.filter(pk=recipe.id)
             return JsonResponse({'result': Recipe.recipes_to_list(res)})
@@ -202,7 +197,7 @@ class StepCreateView(APIView):
             }, status=status.HTTP_201_CREATED)
 
 
-class RecipeCommentsView(APIView,LimitOffsetPagination):
+class RecipeCommentsView(APIView, LimitOffsetPagination):
 
     def get(self, request, recipe_id):
         try:
@@ -211,6 +206,6 @@ class RecipeCommentsView(APIView,LimitOffsetPagination):
             raise NotFound({'message': 'Recipe does not exist'})
         comments = Comment.objects.filter(recipe=recipe)
         objects = Comment.comments_to_list_sorted(comments)
-        page = self.paginate_queryset(objects,request)
+        page = self.paginate_queryset(objects, request)
         response = self.get_paginated_response(page)
         return response
