@@ -21,7 +21,7 @@ class RecipeImageView(APIView):
             return JsonResponse({"result": RecipeImage.recipe_images_to_list(images)})
 
     @user_required
-    def post(self, request, recipe_id):
+    def put(self, request, recipe_id):
         with transaction.atomic():
             try:
                 user = User.objects.get(username=request.user)
@@ -36,6 +36,7 @@ class RecipeImageView(APIView):
             serializer = RecipeImageSerializer(
                 data={**request.data, "recipe": recipe.id}
             )
+            print(request.data)
             serializer.is_valid(raise_exception=True)
             images = serializer.create()
             return JsonResponse({"result": RecipeImage.recipe_images_to_list(images)})
