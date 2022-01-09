@@ -84,7 +84,7 @@ class Recipe(models.Model):
         images = RecipeImage.objects.filter(recipe=self.pk)
         image_list = []
         for image in images:
-            image_list.append(image)
+            image_list.append(image.to_dict())
         dict['images'] = image_list
         return dict
 

@@ -1,15 +1,19 @@
 import Login from './components/Login/Login';
 import Signup from './components/Signup/Signup';
 import Home from './components/Home/Home';
-
+import Recipe from './components/Recipe/Recipe';
 export const privateRoutes = [
-    
+
 ]
 
 export const publicRoutes = [
     {
         path: '/',
         element: <Home />
+    },
+    {
+        path: '/recipe/:id',
+        element: <Recipe />
     }
 ]
 export const authRoutes = [
