@@ -12,8 +12,12 @@ const Navigation = () => {
     const [avatar, setAvatar] = useState(null);
 
     useEffect(() => {
-        setAvatar(userData?.user?.user?.avatar || NO_AVATAR)
-    }, [userData])
+        if(userData?.user?.user?.image?.image ){
+            setAvatar('http://localhost:8000/media/'+userData?.user?.user?.image?.image )
+        }else{
+            setAvatar(NO_AVATAR)
+        }
+    }, [userData?.user?.user?.image?.image])
 
     return (
         <>
@@ -36,7 +40,7 @@ const Navigation = () => {
                     {(userData.user.token && userData.user.user) &&
                         <Nav className="ms-auto">
                             <NavDropdown id="dropdown-basic-button" drop="start"
-                                title={<img className="avatar" src={avatar} alt='user pic' width="40px" height="auto" />}>
+                                title={<img className="avatar" src={avatar} alt="avatar" width="40px" height="auto" />}>
                                 <NavDropdown.Item href={'/user/' + userData.user.user.username}>Profile</NavDropdown.Item>
                                 <NavDropdown.Item onClick={()=>{
                                     userData.logout();

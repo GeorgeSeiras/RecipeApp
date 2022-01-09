@@ -49,12 +49,12 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
         return False
 
     try:
-        old_file = User.objects.get(pk=instance.pk).image.image
+        old_file = User.objects.get(pk=instance.pk).image
     except User.DoesNotExist:
         return False
 
     new_file = instance.image
     if not old_file == new_file:
-        if( hasattr(old_file,'path')):
-            if os.path.isfile(old_file.path):
-                os.remove(old_file.path)
+        if( hasattr(old_file,'image')):
+            if os.path.isfile(old_file.image.path):
+                os.remove(old_file.image.path)
