@@ -10,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 def get_file_path(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    return os.path.join('media', filename)
+    return filename
 
 
 class RecipeImageType(models.TextChoices):
@@ -30,7 +30,7 @@ class RecipeImage(models.Model):
         dict['id'] = self.id
         dict['type'] = self.type
         dict['recipe'] = self.recipe.id
-        dict['image'] = self.image.path
+        dict['image'] = str(self.image)
         return dict
 
     def recipe_images_to_list(images):
@@ -59,7 +59,7 @@ class UserImage(models.Model):
         dict = {}
         dict['id'] = self.id
         dict['user'] = self.user.id
-        dict['image'] = self.image.path
+        dict['image'] = str(self.image)
         return dict
 
     def recipe_images_to_list(images):
