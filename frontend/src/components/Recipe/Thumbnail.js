@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { UserContext } from '../Context/authContext';
 import Image from 'react-bootstrap/Image';
-import './Thumbnail.css';
 
 export default function Thumbnail(thumbnail) {
     const mediaPath = 'http://localhost:8000/media/'
