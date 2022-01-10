@@ -1,6 +1,7 @@
 import React, { useState, useReducer, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 import { getRecipe } from './actions';
+import RecipeCarousel from "./Carousel";
 import { RecipeReducer } from './reducer';
 
 export default function Recipe() {
@@ -8,7 +9,6 @@ export default function Recipe() {
     const [recipe, setRecipe] = useState(null);
     const { id } = useParams();
     const [gallery, setGallery] = useState([]);
-    const [galleryState, setGalleryState] = useState(0);
     const [thumbnail, setThumbnail] = useState();
     const mediaPath = 'http://localhost:8000/media/'
 
@@ -23,47 +23,27 @@ export default function Recipe() {
     }, [id])
 
     useEffect(() => {
+        setGallery([]);
         recipe?.images?.length > 0 &&
-            recipe.images.map((image) => {
+            recipe.images.forEach((image) => {
                 if (image.type === 'THUMBNAIL') {
                     setThumbnail(image.image);
                 } else if (image.type === 'GALLERY') {
                     setGallery(gallery => [...gallery, image.image]);
                 }
-                return true;
             })
     }, [recipe])
-
-    const onClickNext = () => {
-        if (galleryState + 1 === gallery.length) {
-            setGalleryState(0)
-        } else {
-            setGalleryState(galleryState + 1)
-        }
-    }
-
-    const onClickPrevious = () => {
-        if (galleryState - 1 === -1) {
-            setGalleryState(gallery.length - 1)
-        } else {
-            setGalleryState(galleryState - 1)
-        }
-    }
 
     return (
         <div className="recipe">
             {thumbnail &&
                 <h3>
-                    <img className="thumbnail" src={`${mediaPath}${thumbnail}`} alt="avatar" />
+                    <img className="thumbnail" src={`${mediaPath}${thumbnail}`} alt="thumbnail" />
                 </h3>
             }
-            {gallery.length > 0 &&
-                <div className="gallery">
-                    <img src={`${mediaPath}${gallery[galleryState]}`} alt="gallery" />
-                    <button onClick={onClickPrevious}>Previous</button>
-                    <button onClick={onClickNext}>Next</button>
-                </div>
-            }
+            <div className="carousel">
+                <RecipeCarousel data={gallery} />
+            </div>
         </div>
     )
 }
