@@ -8,8 +8,8 @@ import Nav from 'react-bootstrap/Nav';
 export default function RecipeInfo(props) {
     return (
         <div>
-            <Container >
-                <Row xs="auto">
+            <Container  >
+                <Row xs="auto" >
                     {props?.avatar &&
                         <Col style={{ paddingRight: "5" }}>
                             <Image
@@ -36,25 +36,24 @@ export default function RecipeInfo(props) {
                             </Nav.Item>
                         </Col>
                     }
-                </Row>
-                <Row xs="auto" >
-                    <Col style={{ paddingRight: "0", paddingLeft: "0" }}>
+                    <Col style={{position:'relative'}}>
                         {props?.createdAt &&
-                            <h6>
+                            <h6 style={{ paddingRight: "0", paddingLeft: "0", position: 'relative', top: '33%' }}>
                                 Posted: {props.createdAt.toLocaleString()}
                             </h6>
                         }
                     </Col>
-                    <Col style={{ paddingRight: "0" }}>
+                    <Col>
                         {props?.updatedAt &&
-                            <h6>
+                            <h6 style={{ paddingRight: "0", position: 'relative', top: '33%' }}>
                                 Updated: {props.updatedAt.toLocaleString()}
                             </h6>
                         }
                     </Col>
                 </Row>
+
             </Container>
-        </div>
+        </div >
 
     )
 }

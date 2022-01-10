@@ -1,10 +1,8 @@
-import React, { useContext } from 'react';
-import { UserContext } from '../Context/authContext';
+import React from 'react';
 import Image from 'react-bootstrap/Image';
 
 export default function Thumbnail(thumbnail) {
     const mediaPath = 'http://localhost:8000/media/'
-    const userData = useContext(UserContext);
 
     return (
         <div>
