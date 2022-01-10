@@ -36,7 +36,6 @@ class RecipeImageView(APIView):
             serializer = RecipeImageSerializer(
                 data={**request.data, "recipe": recipe.id}
             )
-            print(request.data)
             serializer.is_valid(raise_exception=True)
             images = serializer.create()
             return JsonResponse({"result": RecipeImage.recipe_images_to_list(images)})
