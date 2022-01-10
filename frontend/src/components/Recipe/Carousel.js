@@ -8,7 +8,7 @@ export default function RecipeCarousel(gallery) {
     return (
         <div>
             <Carousel>
-                {gallery.data.length > 0 &&
+                {gallery?.data.length > 0 &&
                     gallery.data.map((image, index) => {
                         return <Carousel.Item interval={5000} key={index}>
                             <img

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { getRecipe } from './actions';
 import RecipeCarousel from "./Carousel";
 import { RecipeReducer } from './reducer';
+import Thumbnail from "./Thumbnail";
 
 export default function Recipe() {
     const [state, dispatch] = useReducer(RecipeReducer);
@@ -10,7 +11,6 @@ export default function Recipe() {
     const { id } = useParams();
     const [gallery, setGallery] = useState([]);
     const [thumbnail, setThumbnail] = useState();
-    const mediaPath = 'http://localhost:8000/media/'
 
     useEffect(() => {
         (async () => {
@@ -36,11 +36,9 @@ export default function Recipe() {
 
     return (
         <div className="recipe">
-            {thumbnail &&
-                <h3>
-                    <img className="thumbnail" src={`${mediaPath}${thumbnail}`} alt="thumbnail" />
-                </h3>
-            }
+            <div className="thumbnail">
+                <Thumbnail data={thumbnail} />
+            </div>
             <div className="carousel">
                 <RecipeCarousel data={gallery} />
             </div>
