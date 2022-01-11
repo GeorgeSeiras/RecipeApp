@@ -7,6 +7,7 @@ import RecipeCarousel from "./Carousel";
 import { RecipeReducer } from './reducer';
 import Thumbnail from "./Thumbnail";
 import RecipeInfo from "./RecipeInfo";
+import ActualRecipe from "./ActualRecipe";
 import NO_AVATAR from '../../static/no_avatar.svg';
 
 export default function Recipe() {
@@ -59,10 +60,13 @@ export default function Recipe() {
                 <RecipeInfo recipe={recipe} avatar={avatar} userData={userData} />
             </div>
             <div className="thumbnail">
-                <Thumbnail data={thumbnail} />
+                <Thumbnail thumbnail={thumbnail} />
             </div>
             <div className="carousel">
-                <RecipeCarousel data={gallery} />
+                <RecipeCarousel gallery={gallery} />
+            </div>
+            <div className="actualRecipe">
+                <ActualRecipe recipe={recipe}/>
             </div>
         </div >
     )

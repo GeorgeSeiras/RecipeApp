@@ -2,7 +2,7 @@ import React from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import Image from 'react-bootstrap/Image'
 
-export default function RecipeCarousel(gallery) {
+export default function RecipeCarousel(props) {
     const mediaPath = 'http://localhost:8000/media/';
 
     return (
@@ -15,8 +15,8 @@ export default function RecipeCarousel(gallery) {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center'}}>
-                {gallery?.data.length > 0 &&
-                    gallery.data.map((image, index) => {
+                {props?.gallery.length > 0 &&
+                   props.gallery.map((image, index) => {
                         return (
                             <Carousel.Item
                                 interval={5000}
