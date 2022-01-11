@@ -12,7 +12,7 @@ export default function ActualRecipe(props) {
 
     /*
     ** This function takes seconds as input and returns
-    ** a string with
+    ** a string in the format x hours x minutes
     */
     function secondsToHms(seconds) {
         var result = ""
@@ -21,10 +21,18 @@ export default function ActualRecipe(props) {
         var m = Math.floor(seconds % 3600 / 60);
 
         if (h !== 0) {
-            result = result.concat(h.toString().slice(-2) + " hours ")
+            if (h === 1) {
+                result = result.concat(h.toString().slice(-2) + " hour ")
+            } else {
+                result = result.concat(h.toString().slice(-2) + " hours ")
+            }
         }
         if (m !== 0) {
-            result = result.concat(m.toString().slice(-2) + " minutes ")
+            if (m === 1) {
+                result = result.concat(m.toString().slice(-2) + " minute ")
+            } else {
+                result = result.concat(m.toString().slice(-2) + " minutes ")
+            }
         }
         return result
     }
