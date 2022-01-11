@@ -12,6 +12,7 @@ export default function RecipeCarousel(gallery) {
                 width: "700px",
                 height: "auto",
                 margin: "auto",
+                paddingTop: "5%",
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center'}}>

@@ -1,6 +1,5 @@
 import React, { useState, useReducer, useEffect, useContext } from "react";
 import { useParams } from 'react-router-dom';
-import { DateTime } from 'luxon';
 
 import { getRecipe } from './actions';
 import { UserContext } from '../Context/authContext';
@@ -19,8 +18,7 @@ export default function Recipe() {
     const [thumbnail, setThumbnail] = useState();
     const mediaPath = 'http://localhost:8000/media/';
     const [avatar, setAvatar] = useState(null);
-    const [createdAt, setCreatedAt] = useState(null);
-    const [updatedAt, setUpdatedAt] = useState(null);
+    
 
 
     useEffect(() => {
@@ -29,13 +27,8 @@ export default function Recipe() {
         } else {
             setAvatar(NO_AVATAR)
         }
-        if (recipe?.updated_at) {
-            setUpdatedAt(DateTime.fromSQL(recipe?.updated_at).toFormat('dd LLL yyyy'));
-        }
-        if (recipe?.created_at) {
-            setCreatedAt(DateTime.fromSQL(recipe?.created_at).toFormat('dd LLL yyyy'));
-        }
-    }, [userData?.user?.user?.image?.image, recipe])
+        
+    }, [userData?.user?.user?.image?.image])
 
     useEffect(() => {
         (async () => {
@@ -63,7 +56,7 @@ export default function Recipe() {
     return (
         <div className="recipe" style={{ margin: 'auto' }}>
             <div className="recipeInfo">
-                <RecipeInfo avatar={avatar} userData={userData} createdAt={createdAt} updatedAt={updatedAt}/>
+                <RecipeInfo recipe={recipe} avatar={avatar} userData={userData} />
             </div>
             <div className="thumbnail">
                 <Thumbnail data={thumbnail} />
