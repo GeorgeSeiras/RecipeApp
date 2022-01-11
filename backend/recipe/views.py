@@ -60,10 +60,12 @@ class RecipeDetail(APIView):
                     Ingredient.objects.filter(recipe=recipe.id).delete()
                     for ingredient in value:
                         ingredient = IngredientSerializer.create(
-                            self, ingredient, recipe
+                            ingredient, recipe
                         )
                         ingredients.append(ingredient)
                     setattr(recipe, key, ingredients)
+                else:
+                    setattr(recipe,key,value)
             recipe.save()
             res = Recipe.objects.filter(pk=recipe.id)
             return JsonResponse({"result": Recipe.recipes_to_list(res)})
