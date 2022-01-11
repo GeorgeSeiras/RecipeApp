@@ -19,6 +19,7 @@ export default function RecipeInfo(props) {
         }
     }, [props.recipe])
 
+    console.log(props.recipe)
     return (
         <div>
             <Container  >
