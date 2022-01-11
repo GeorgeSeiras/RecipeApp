@@ -125,7 +125,6 @@ export default function RecipeInfo(props) {
                         }
                     </Col>
                 </Row>
-
             </Container>
         </div >
 

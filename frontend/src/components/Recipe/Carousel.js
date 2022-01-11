@@ -1,7 +1,6 @@
 import React from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import Image from 'react-bootstrap/Image'
-// import './Carousel.css'
 
 export default function RecipeCarousel(gallery) {
     const mediaPath = 'http://localhost:8000/media/';
