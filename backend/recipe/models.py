@@ -70,7 +70,7 @@ class Recipe(models.Model):
         dict['prep_time'] = self.prep_time
         dict['cook_time'] = self.cook_time
         dict['desc'] = self.desc
-        dict['sercings'] = self.servings
+        dict['servings'] = self.servings
         dict['cuisine'] = self.cuisine
         dict['course'] = self.course
         dict['created_at'] = str(self.created_at)
@@ -84,7 +84,7 @@ class Recipe(models.Model):
         images = RecipeImage.objects.filter(recipe=self.pk)
         image_list = []
         for image in images:
-            image_list.append(image)
+            image_list.append(image.to_dict())
         dict['images'] = image_list
         return dict
 

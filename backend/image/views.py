@@ -21,7 +21,7 @@ class RecipeImageView(APIView):
             return JsonResponse({"result": RecipeImage.recipe_images_to_list(images)})
 
     @user_required
-    def post(self, request, recipe_id):
+    def put(self, request, recipe_id):
         with transaction.atomic():
             try:
                 user = User.objects.get(username=request.user)

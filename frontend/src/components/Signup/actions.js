@@ -9,15 +9,15 @@ export async function register(dispatch, payload) {
     };
 
     try {
-        await dispatch({ type: 'REGISTER_REQUEST' });
+        dispatch({ type: 'REGISTER_REQUEST' });
         let response = await fetch(`${ROOT_URL}/user/register`, requestOptions);
         let data = await response.json();
         if (data?.result) {
-            await dispatch({ type: 'REGISTER_SUCCESS', payload: data.result })
+            dispatch({ type: 'REGISTER_SUCCESS', payload: data.result })
             return data
         }
-        await dispatch({ type: 'REGISTER_ERROR', errorMessage: data })
+        dispatch({ type: 'REGISTER_ERROR', errorMessage: data })
     } catch (error) {
-        await dispatch({ type: 'REGISTER_ERROR', errorMessage: error })
+        dispatch({ type: 'REGISTER_ERROR', errorMessage: error })
     }
 }
