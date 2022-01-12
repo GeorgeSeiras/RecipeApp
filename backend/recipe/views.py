@@ -18,6 +18,7 @@ from recipe.serializers import (
     StepCreateSerializer,
     RecipesQuerySerializer,
 )
+from utils.customPagination import myPagination
 from .enum import sort_choices
 from backend.decorators import admin_required, user_required
 
@@ -211,7 +212,7 @@ class RecipeCommentsView(APIView, LimitOffsetPagination):
         return response
 
 
-class RecipesQuery(APIView, LimitOffsetPagination):
+class RecipesQuery(APIView, myPagination):
     def get(self, request):
         serializer = RecipesQuerySerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
@@ -227,12 +228,12 @@ class RecipesQuery(APIView, LimitOffsetPagination):
             query &= Q(course__contains=[serializer.validated_data["course"]])
         sort = "-created_at"
         if "sort" in serializer.validated_data:
-            if serializer.validated_data['sort'] == choices["asc"]:
+            if serializer.validated_data["sort"] == choices["asc"]:
                 sort = "created_at"
-            elif serializer.validated_data['sort'] == choices['desc']:
+            elif serializer.validated_data["sort"] == choices["desc"]:
                 sort = "-created_at"
         recipes = Recipe.objects.filter(query).order_by(sort)
         objects = Recipe.recipes_to_list(recipes)
-        page = self.paginate_queryset(objects,request)
+        page = self.paginate_queryset(objects, request)
         response = self.get_paginated_response(page)
         return response
