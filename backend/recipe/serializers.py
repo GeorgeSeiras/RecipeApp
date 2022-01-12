@@ -1,8 +1,9 @@
+from typing import Optional
 from rest_framework import serializers
 
 from user.models import User
 from .models import Recipe, Ingredient
-from image.serializers import RecipeImageSerializer
+from .enum import sort_choices, query_rating_choices
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -15,7 +16,7 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
         fields = "__all__"
 
-    def create( validated_data, recipe):
+    def create(validated_data, recipe):
         return Ingredient.objects.create(**validated_data, recipe=recipe)
 
 
@@ -50,7 +51,7 @@ class RecipeSerializer(serializers.Serializer):
 
     def create(self):
         ingredient_data = self.validated_data.pop("ingredients")
-        recipe = Recipe.objects.create( **self.validated_data)
+        recipe = Recipe.objects.create(**self.validated_data)
         ingredients = []
         for ingredient in ingredient_data:
             created_ingredient = IngredientSerializer.create(ingredient, recipe)
@@ -86,3 +87,12 @@ class IngredientPatchSerializer(serializers.Serializer):
 class StepCreateSerializer(serializers.Serializer):
     step = serializers.CharField()
     pos = serializers.IntegerField(required=False)
+
+
+class RecipesQuerySerializer(serializers.Serializer):
+    user = serializers.CharField(required=False)
+    title = serializers.CharField(required=False)
+    cuisine = serializers.CharField(required=False)
+    course = serializers.CharField(required=False)
+    rating = serializers.ChoiceField(choices=query_rating_choices, required=False)
+    sort = serializers.ChoiceField(choices=sort_choices, required=False)
