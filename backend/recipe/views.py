@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.exceptions import NotFound, PermissionDenied
 from django.db import transaction
+from django.db.models import Q
 
 from comment.models import Comment
 from recipe.models import Recipe, Ingredient
@@ -15,7 +16,9 @@ from recipe.serializers import (
     RecipeSerializer,
     RecipePatchSerializer,
     StepCreateSerializer,
+    RecipesQuerySerializer,
 )
+from .enum import sort_choices
 from backend.decorators import admin_required, user_required
 
 
@@ -24,9 +27,7 @@ class RecipeCreate(APIView):
     def post(self, request):
         with transaction.atomic():
             user = User.objects.get(username=request.user)
-            serializer = RecipeSerializer(
-                data={**request.data, "user": user.id}
-            )
+            serializer = RecipeSerializer(data={**request.data, "user": user.id})
             serializer.is_valid(raise_exception=True)
             recipe = serializer.create()
             return JsonResponse(
@@ -59,13 +60,11 @@ class RecipeDetail(APIView):
                     ingredients = []
                     Ingredient.objects.filter(recipe=recipe.id).delete()
                     for ingredient in value:
-                        ingredient = IngredientSerializer.create(
-                            ingredient, recipe
-                        )
+                        ingredient = IngredientSerializer.create(ingredient, recipe)
                         ingredients.append(ingredient)
                     setattr(recipe, key, ingredients)
                 else:
-                    setattr(recipe,key,value)
+                    setattr(recipe, key, value)
             recipe.save()
             res = Recipe.objects.filter(pk=recipe.id)
             return JsonResponse({"result": Recipe.recipes_to_list(res)})
@@ -208,5 +207,32 @@ class RecipeCommentsView(APIView, LimitOffsetPagination):
         comments = Comment.objects.filter(recipe=recipe)
         objects = Comment.comments_to_list_sorted(comments)
         page = self.paginate_queryset(objects, request)
+        response = self.get_paginated_response(page)
+        return response
+
+
+class RecipesQuery(APIView, LimitOffsetPagination):
+    def get(self, request):
+        serializer = RecipesQuerySerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        choices = {value: key for key, value in sort_choices}
+        query = Q()
+        if "user" in serializer.validated_data:
+            query &= Q(user__username__iexact=serializer.validated_data["user"])
+        if "title" in serializer.validated_data:
+            query &= Q(title__icontains=serializer.validated_data["title"])
+        if "cuisine" in serializer.validated_data:
+            query &= Q(cuisine__contains=[serializer.validated_data["cuisine"]])
+        if "course" in serializer.validated_data:
+            query &= Q(course__contains=[serializer.validated_data["course"]])
+        sort = "-created_at"
+        if "sort" in serializer.validated_data:
+            if serializer.validated_data['sort'] == choices["asc"]:
+                sort = "created_at"
+            elif serializer.validated_data['sort'] == choices['desc']:
+                sort = "-created_at"
+        recipes = Recipe.objects.filter(query).order_by(sort)
+        objects = Recipe.recipes_to_list(recipes)
+        page = self.paginate_queryset(objects,request)
         response = self.get_paginated_response(page)
         return response
