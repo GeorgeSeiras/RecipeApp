@@ -27,15 +27,7 @@ export default function Home(props) {
 
     
 
-    const handleSubmit = async (event) => {
-        // payload.forEach((key, value, index) => {
-        //     if (index === 0) {
-        //         queryParams = queryParams.concat(`?${key}=${value}`)
-        //     } else {
-        //         queryParams = queryParams.concat(`&${key}=${value}`)
-        //     }
-        // })
-    }
+    
 
     return (
         <Container>

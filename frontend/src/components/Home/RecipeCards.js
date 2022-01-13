@@ -28,7 +28,7 @@ export default function RecipeCards(props) {
     return (
         <div>
             {props?.response?.results &&
-                <Row xs={2} md={3} className='g-4' style={{ paddingLeft: '5%', paddingRight: '5%' }}>
+                <Row xs={2} md={3} lg={5} className='g-4' style={{ paddingLeft: '1em', paddingRight: '1em' }}>
                     {props.response.results.map((recipe, index) => {
                         return (
                             <Col key={index}>
@@ -47,7 +47,7 @@ export default function RecipeCards(props) {
                                         src={`${thumbnails[index]}`}
                                         alt='card image' />
                                     <Card.Body style={{ paddingTop: '0.4em' }}>
-                                        <Card.Title style={{}}>{recipe.title}</Card.Title>
+                                        <Card.Title >{recipe.title}</Card.Title>
                                         <Card.Subtitle style={{ height: '0.1em' }}>
                                             <Card.Link className="text-muted" href={`/user/${recipe.user.username}`}
                                                 style={{
