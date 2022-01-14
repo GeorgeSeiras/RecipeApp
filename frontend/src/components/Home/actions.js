@@ -11,7 +11,6 @@ export async function getRecipes(dispatch, queryParams) {
     try {
         dispatch({ type: 'GET_RECIPES_REQUEST' });
         let response = null
-        console.log(queryParams)
         if (!queryParams) {
             response = await fetch(`${ROOT_URL}/recipes`, requestOptions);
         } else {

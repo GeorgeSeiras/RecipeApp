@@ -5,11 +5,13 @@ import IMAGE_NOT_FOUND from "../../static/image_not_found.svg"
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { useNavigate } from 'react-router-dom';
 
 export default function RecipeCards(props) {
 
     const [thumbnails, setThumbnails] = useState([])
     const mediaPath = 'http://localhost:8000/media/'
+    const navigate = useNavigate();
 
     useEffect(() => {
         setThumbnails([])
@@ -31,10 +33,13 @@ export default function RecipeCards(props) {
                 <Row xs={2} md={3} lg={5} className='g-4' style={{ paddingLeft: '1em', paddingRight: '1em' }}>
                     {props.response.results.map((recipe, index) => {
                         return (
-                            <Col key={index}>
+                            <Col key={index} >
                                 <Card
+                                    id={recipe.id}
+                                    onClick={(e) => navigate(`/recipe/${e.target.parentNode.id}`)}
                                     border="dark"
                                     style={{
+                                        cursor: "pointer",
                                         height: '23em',
                                         width: '13em',
                                         paddingTop: '0.1em',
