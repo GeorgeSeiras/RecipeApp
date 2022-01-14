@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useState } from 'react';
 import { RecipesReducer } from './reducer';
 import { getRecipes } from "./actions";
 import RecipeCards from './RecipeCards';
-import SearchBar from './searchBar';
+import SearchBar from './SearchBar';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -17,26 +17,21 @@ export default function Home(props) {
 
     useEffect(() => {
         (async () => {
-            const response = await getRecipes(dispatch, queryParams);
-            if (response) {
-                setResponse(response);
+            const res = await getRecipes(dispatch, queryParams);
+            if (res) {
+                setResponse(res);
             }
-            
         })()
     }, [queryParams])
-
-    
-
-    
 
     return (
         <Container>
             <Row>
-                <SearchBar setQueryParams={setQueryParams}/>
+                <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} />
             </Row>
             <Row>
                 <Col>
-                    <RecipeCards response={response}/>
+                    <RecipeCards response={response} />
                 </Col>
             </Row>
         </Container>
