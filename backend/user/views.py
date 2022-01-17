@@ -28,9 +28,18 @@ class UserList(APIView, LimitOffsetPagination):
         return paginated_result
 
 
+class UserByUsername(APIView):
+
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+            return JsonResponse({'result': UserSerializerNoPassword(user).data})
+        except User.DoesNotExist:
+            raise NotFound({"message": "User not found"})
+
+
 class UserDetail(APIView):
 
-    @admin_required
     def get(self, request, pk, format=None):
         try:
             user = User.objects.get(pk=pk)
@@ -102,4 +111,4 @@ class UserMe(APIView):
             user = User.objects.get(username=request.user)
         except User.DoesNotExist:
             raise NotFound({"message": "User not found"})
-        return JsonResponse({'user':user.to_dict()})
+        return JsonResponse({'user': user.to_dict()})
