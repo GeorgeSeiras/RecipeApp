@@ -34,7 +34,14 @@ export default function SearchBar(props) {
             }
             query = query.concat(`title=${titleAdvanced}`)
         }
-        if (username) {
+        if (props.username) {
+            if (query) {
+                query = query.concat(`&`)
+            } else {
+                query = query.concat('?')
+            }
+            query = query.concat(`username=${props.username}`)
+        } else if (username) {
             if (query) {
                 query = query.concat(`&`)
             } else {
@@ -118,18 +125,20 @@ export default function SearchBar(props) {
                                             />
                                         </Form.Group>
                                     </Col>
-                                    <Col>
-                                        <Form.Group controlId='username'>
-                                            <Form.Label>Username</Form.Label>
-                                            <Form.Control
-                                                type="search"
-                                                placeholder="Username"
-                                                className='me-2'
-                                                value={username}
-                                                onChange={(e) => setUsername(e.target.value)}
-                                            />
-                                        </Form.Group>
-                                    </Col>
+                                    {!props?.username &&
+                                        <Col>
+                                            <Form.Group controlId='username'>
+                                                <Form.Label>Username</Form.Label>
+                                                <Form.Control
+                                                    type="search"
+                                                    placeholder="Username"
+                                                    className='me-2'
+                                                    value={username}
+                                                    onChange={(e) => setUsername(e.target.value)}
+                                                />
+                                            </Form.Group>
+                                        </Col>
+                                    }
                                     <Col>
                                         <Form.Group controlId='cuisine'>
                                             <Form.Label style={{ paddingTop: '0.5em' }}>Cuisine</Form.Label>

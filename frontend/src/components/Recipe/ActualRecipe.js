@@ -34,6 +34,10 @@ export default function ActualRecipe(props) {
                 result = result.concat(m.toString().slice(-2) + " minutes ")
             }
         }
+        if(h === 0 && m === 0 ){
+            result = '1 minute'
+        }
+        console.log(result)
         return result
     }
 
@@ -45,7 +49,8 @@ export default function ActualRecipe(props) {
         }
 
         console.log(prep)
-    }, [props.recipe,prep,cook,total])
+    }, [props.recipe])
+
 
     return (
         <div>
@@ -73,7 +78,7 @@ export default function ActualRecipe(props) {
                             <h6>Prep:</h6>
                         </Col>
                         <Col style={{ paddingLeft: '0' }}>
-                            <h6 style={{ fontStyle: 'italic' }}>{prep}</h6>
+                                <h6 style={{ fontStyle: 'italic' }}>{prep}</h6>
                         </Col>
                         <Col>
                             <h6>Cook:</h6>

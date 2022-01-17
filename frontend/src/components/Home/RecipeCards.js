@@ -27,6 +27,8 @@ export default function RecipeCards(props) {
         })
     }, [props?.response?.results])
 
+    console.log(props)
+
     return (
         <div>
             {props?.response?.results &&
