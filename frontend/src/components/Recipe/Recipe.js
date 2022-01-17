@@ -12,24 +12,13 @@ import NO_AVATAR from '../../static/no_avatar.svg';
 
 export default function Recipe() {
     const [state, dispatch] = useReducer(RecipeReducer);
-    const userData = useContext(UserContext);
     const [recipe, setRecipe] = useState(null);
+    const [user,setUser] = useState();
     const { id } = useParams();
     const [gallery, setGallery] = useState([]);
     const [thumbnail, setThumbnail] = useState();
     const mediaPath = 'http://localhost:8000/media/';
     const [avatar, setAvatar] = useState(null);
-    
-
-
-    useEffect(() => {
-        if (userData?.user?.user?.image?.image) {
-            setAvatar(mediaPath + userData?.user?.user?.image?.image)
-        } else {
-            setAvatar(NO_AVATAR)
-        }
-        
-    }, [userData?.user?.user?.image?.image])
 
     useEffect(() => {
         (async () => {
@@ -37,10 +26,20 @@ export default function Recipe() {
             const response = await getRecipe(dispatch, payload)
             if (response?.result) {
                 setRecipe(response.result)
+                setUser(response.result.user)
             }
         })()
     }, [id])
 
+    useEffect(() => {
+        if (user?.image) {
+            setAvatar(mediaPath + user?.image?.image)
+        } else {
+            setAvatar(NO_AVATAR)
+        }
+        
+    }, [user])
+    
     useEffect(() => {
         setGallery([]);
         recipe?.images?.length > 0 &&
@@ -57,7 +56,7 @@ export default function Recipe() {
     return (
         <div className="recipe" style={{ margin: 'auto' }}>
             <div className="recipeInfo">
-                <RecipeInfo recipe={recipe} avatar={avatar} userData={userData} />
+                <RecipeInfo recipe={recipe} avatar={avatar} userData={user} />
             </div>
             <div className="thumbnail">
                 <Thumbnail thumbnail={thumbnail} />

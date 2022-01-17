@@ -1,5 +1,5 @@
 export const initialState = {
-    user: null,
+    recipe: null,
     loading: false,
     errorMessage: null
 }
@@ -15,7 +15,7 @@ export const RecipeReducer = (initialState, action) => {
         case 'RECIPE_SUCCESS':
             return {
                 ...initialState,
-                user: action.payload.user
+                recipe: action.payload.recipe
             };
         case 'RECIPE_ERROR':
             return {
