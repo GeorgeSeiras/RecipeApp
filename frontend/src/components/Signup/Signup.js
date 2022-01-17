@@ -45,7 +45,6 @@ export default function Signup() {
             initialState.current = false;
             return
         }
-        console.log(state)
         if (state?.errorMessage) {
             if (state.errorMessage?.email) {
                 setEmailError(state.errorMessage.email);
