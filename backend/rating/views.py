@@ -8,7 +8,7 @@ from django.db.models import Avg
 from rest_framework import status
 
 from utils.custom_exceptions import CustomException
-from .serializers import RateRecipeSerializer
+from .serializers import RateRecipeSerializer, RecipesRatingAverageSerializer
 from .models import Rating
 from user.models import User
 from recipe.models import Recipe
@@ -92,3 +92,18 @@ class RecipeRatingAverage(APIView):
             rating_avg = Rating.objects.filter(
                 recipe=recipe_id).aggregate(Avg('rating'))
             return JsonResponse({'status': 'ok', 'data': {'rating_avg': rating_avg}})
+
+
+class RecipesRatingAverage(APIView):
+
+    def get(self, request):
+        with transaction.atomic():
+            serializer = RecipesRatingAverageSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            recipes_averages = {}
+            for recipe in serializer.validated_data['recipes']:
+                print(recipe)
+                rating_avg = Rating.objects.filter(
+                    recipe=recipe.id).aggregate(Avg('rating'))
+                recipes_averages[recipe.id] = rating_avg['rating__avg']
+            return JsonResponse({"results": recipes_averages})
