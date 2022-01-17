@@ -1,8 +1,10 @@
 from django.db import models, connection
 from django.contrib.postgres.fields import ArrayField
 from django.db.models.deletion import CASCADE
-from image.models import RecipeImage
+from django.db.models import Avg
 
+from rating.models import Rating
+from image.models import RecipeImage
 from user.models import User
 
 class Ingredient(models.Model):
@@ -86,6 +88,8 @@ class Recipe(models.Model):
         for image in images:
             image_list.append(image.to_dict())
         dict['images'] = image_list
+        dict['rating_avg'] = Rating.objects.filter(
+                recipe=self.id).aggregate(Avg('rating'))
         return dict
 
     def recipes_to_list(recipes):
