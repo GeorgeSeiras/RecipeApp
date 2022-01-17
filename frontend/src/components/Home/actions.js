@@ -1,8 +1,7 @@
 const ROOT_URL = 'http://localhost:8000/api';
 
-export async function getRecipes(dispatch, queryParams) {
+export async function getRecipes(dispatch, queryParams, pageClicked) {
 
-    let payload = {}
     const requestOptions = {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
@@ -11,10 +10,19 @@ export async function getRecipes(dispatch, queryParams) {
     try {
         dispatch({ type: 'GET_RECIPES_REQUEST' });
         let response = null
-        if (!queryParams) {
-            response = await fetch(`${ROOT_URL}/recipes`, requestOptions);
+        if (queryParams.length === 0) {
+            if (pageClicked) {
+                response = await fetch(`${ROOT_URL}/recipes?page=${pageClicked}`, requestOptions);
+
+            } else {
+                response = await fetch(`${ROOT_URL}/recipes`, requestOptions);
+            }
         } else {
-            response = await fetch(`${ROOT_URL}/recipes${queryParams}`, requestOptions);
+            if (pageClicked) {
+                response = await fetch(`${ROOT_URL}/recipes${queryParams}&page=${pageClicked}`, requestOptions);
+            } else {
+                response = await fetch(`${ROOT_URL}/recipes${queryParams}`, requestOptions);
+            }
         }
         let data = await response.json();
         if (data) {

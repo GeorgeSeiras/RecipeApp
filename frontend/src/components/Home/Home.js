@@ -3,6 +3,7 @@ import { RecipesReducer } from './reducer';
 import { getRecipes } from "./actions";
 import RecipeCards from './RecipeCards';
 import SearchBar from './SearchBar';
+import PaginationBar from './Pagination';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -13,16 +14,21 @@ export default function Home(props) {
     const [state, dispatch] = useReducer(RecipesReducer);
     const [queryParams, setQueryParams] = useState([]);
     const [response, setResponse] = useState()
+    const [active, setActive] = useState(1);
+    const [pageClicked,setPageClicked] = useState();
 
 
     useEffect(() => {
         (async () => {
-            const res = await getRecipes(dispatch, queryParams);
+            const res = await getRecipes(dispatch, queryParams, pageClicked);
             if (res) {
                 setResponse(res);
+                if(pageClicked){
+                    setActive(pageClicked);
+                }
             }
         })()
-    }, [queryParams])
+    }, [queryParams,pageClicked])
 
     return (
         <Container>
@@ -34,6 +40,7 @@ export default function Home(props) {
                     <RecipeCards response={response} />
                 </Col>
             </Row>
+            <PaginationBar response={response} active={active} setPageClicked={setPageClicked}/>
         </Container>
     )
 }
