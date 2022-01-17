@@ -89,7 +89,7 @@ class Recipe(models.Model):
             image_list.append(image.to_dict())
         dict['images'] = image_list
         dict['rating_avg'] = Rating.objects.filter(
-                recipe=self.id).aggregate(Avg('rating'))
+                recipe=self.id).aggregate(Avg('rating'))['rating__avg']
         return dict
 
     def recipes_to_list(recipes):
