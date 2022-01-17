@@ -2,7 +2,6 @@ import React, { useState, useReducer, useEffect, useContext } from "react";
 import { useParams } from 'react-router-dom';
 
 import { getRecipe } from './actions';
-import { UserContext } from '../Context/authContext';
 import RecipeCarousel from "./Carousel";
 import { RecipeReducer } from './reducer';
 import Thumbnail from "./Thumbnail";

@@ -24,7 +24,7 @@ export default function RecipeInfo(props) {
             <Container  >
                 <Row xs="auto">
                     <Col style={{
-                        paddingTop: "2%",
+                        paddingTop: "1em",
                         margin: "auto",
                         display: 'flex',
                         justifyContent: 'center',
@@ -37,7 +37,7 @@ export default function RecipeInfo(props) {
                     margin: "auto",
                     display: 'flex',
                     justifyContent: 'center',
-                    alignItems: 'center'
+                    alignItems: 'center',
                 }}>
                     {props.recipe?.course &&
                         <Col style={{ paddingRight: "1%" }}>
@@ -97,14 +97,14 @@ export default function RecipeInfo(props) {
                             Written By:
                         </h6>
                     </Col>
-                    {props?.userData?.user?.user &&
+                    {props?.userData &&
                         <Col style={{ paddingRight: "0", paddingLeft: "0" }}>
                             <h6>
                                 <Nav.Item  >
                                     <Nav.Link
                                         style={{ color: 'black'}}
-                                        href={`/user/${props.userData.user.user.username}`}>
-                                        {props.userData.user.user.username}
+                                        href={`/user/${props.userData.username}`}>
+                                        {props.userData.username}
                                     </Nav.Link>
                                 </Nav.Item>
                             </h6>

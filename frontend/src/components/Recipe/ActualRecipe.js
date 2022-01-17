@@ -44,7 +44,8 @@ export default function ActualRecipe(props) {
             setTotal(secondsToHms(props.recipe.prep_time + props.recipe.cook_time))
         }
 
-    }, [props.recipe])
+        console.log(prep)
+    }, [props.recipe,prep,cook,total])
 
     return (
         <div>
