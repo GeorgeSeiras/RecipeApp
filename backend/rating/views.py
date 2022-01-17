@@ -105,5 +105,5 @@ class RecipesRatingAverage(APIView):
                 print(recipe)
                 rating_avg = Rating.objects.filter(
                     recipe=recipe.id).aggregate(Avg('rating'))
-                recipes_averages[recipe.id] = rating_avg
+                recipes_averages[recipe.id] = rating_avg['rating__avg']
             return JsonResponse({"results": recipes_averages})
