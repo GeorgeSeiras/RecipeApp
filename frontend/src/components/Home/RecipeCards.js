@@ -55,7 +55,7 @@ export default function RecipeCards(props) {
                                         src={`${thumbnails[index]}`}
                                         alt='card image' />
                                     <Row >
-                                        <RatingStars rating={recipe.rating_avg} votes={recipe.votes} />
+                                        <RatingStars size={'small'} rating={recipe.rating_avg} votes={recipe.votes} />
                                     </Row>
                                     <Card.Body style={{ paddingTop: '0' }}>
                                         <Card.Title >{recipe.title}</Card.Title>

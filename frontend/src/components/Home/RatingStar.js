@@ -60,12 +60,18 @@ export default function RatingStars(props) {
     return (
         <Container>
             <Col style={{
-                fontSize: 'small',
+                fontSize: props.size,
                 display: 'flex',
                 justifyContent: 'center',
                 paddingTop: '0.2em'}}>
                 {renderStars()}
-                ({props.rating || 0})
+                ({(()=>{
+                    if(props?.rating){
+                        return(parseFloat(props.rating).toFixed(1))
+                    }else{
+                        return(0)
+                    }
+                })()}) 
                 votes: {props.votes || 0}
             </Col>
         </Container>
