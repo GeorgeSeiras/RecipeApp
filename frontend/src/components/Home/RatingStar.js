@@ -9,7 +9,6 @@ import STAR from '../../static/star.svg';
 
 export default function RatingStars(props) {
 
-
     const renderStars = () => {
         const stars = []
         if (props.rating === null) {
@@ -25,8 +24,7 @@ export default function RatingStars(props) {
             }
             return stars
         }
-        for (var i = 1; i <= 5; i++) {
-            console.log(props.rating, i)
+        for (i = 1; i <= 5; i++) {
             if (i > props.rating) {
                 stars.push(
                     <Image
@@ -61,12 +59,15 @@ export default function RatingStars(props) {
 
     return (
         <Container>
-            <Row>
-                <Col>
-                    {renderStars()}
-
-                </Col>
-            </Row>
+            <Col style={{
+                fontSize: 'small',
+                display: 'flex',
+                justifyContent: 'center',
+                paddingTop: '0.2em'}}>
+                {renderStars()}
+                ({props.rating || 0})
+                votes: {props.votes || 0}
+            </Col>
         </Container>
     )
 }

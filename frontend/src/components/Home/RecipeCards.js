@@ -49,24 +49,15 @@ export default function RecipeCards(props) {
                                         paddingLeft: '0.1em',
                                         paddingRight: '0.1em',
                                     }}>
-                                    <Row >
-                                        <RatingStars rating={recipe.rating_avg}/>
-                                        {/* <Col style={{ display: 'flex', justifyContent: 'left' }}>
-                                            <h6>
-                                                rating: {recipe.rating_avg || '-'}
-                                            </h6>
-                                        </Col>
-                                        <Col style={{ display: 'flex', justifyContent: 'right' }}>
-                                            <h6>
-                                                votes: {recipe.votes || 0}
-                                            </h6>
-                                        </Col> */}
-                                    </Row>
+
                                     <Card.Img variant="top"
                                         style={{ width: 'auto', height: '10em', paddingBottom: '0' }}
                                         src={`${thumbnails[index]}`}
                                         alt='card image' />
-                                    <Card.Body style={{ paddingTop: '0.4em' }}>
+                                    <Row >
+                                        <RatingStars rating={recipe.rating_avg} votes={recipe.votes} />
+                                    </Row>
+                                    <Card.Body style={{ paddingTop: '0' }}>
                                         <Card.Title >{recipe.title}</Card.Title>
                                         <Card.Subtitle style={{ height: '0.1em' }}>
                                             <Card.Link className="text-muted" href={`/user/${recipe.user.username}`}
