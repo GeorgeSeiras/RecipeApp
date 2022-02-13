@@ -6,6 +6,7 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useNavigate } from 'react-router-dom';
+import RatingStars from './RatingStar';
 
 export default function RecipeCards(props) {
 
@@ -15,6 +16,7 @@ export default function RecipeCards(props) {
 
     useEffect(() => {
         setThumbnails([])
+        const idList = {}
         props?.response?.results.forEach((recipe, key) => {
             const img = recipe.images.find((image) => {
                 return image.type === "THUMBNAIL"
@@ -26,8 +28,6 @@ export default function RecipeCards(props) {
             }
         })
     }, [props?.response?.results])
-
-    console.log(props)
 
     return (
         <div>
@@ -49,11 +49,15 @@ export default function RecipeCards(props) {
                                         paddingLeft: '0.1em',
                                         paddingRight: '0.1em',
                                     }}>
+
                                     <Card.Img variant="top"
                                         style={{ width: 'auto', height: '10em', paddingBottom: '0' }}
                                         src={`${thumbnails[index]}`}
                                         alt='card image' />
-                                    <Card.Body style={{ paddingTop: '0.4em' }}>
+                                    <Row >
+                                        <RatingStars rating={recipe.rating_avg} votes={recipe.votes} />
+                                    </Row>
+                                    <Card.Body style={{ paddingTop: '0' }}>
                                         <Card.Title >{recipe.title}</Card.Title>
                                         <Card.Subtitle style={{ height: '0.1em' }}>
                                             <Card.Link className="text-muted" href={`/user/${recipe.user.username}`}
@@ -61,7 +65,8 @@ export default function RecipeCards(props) {
                                                     color: 'black',
                                                     textDecoration: 'none'
                                                 }}>
-                                                {recipe.user.username}</Card.Link>
+                                                {recipe.user.username}
+                                            </Card.Link>
                                         </Card.Subtitle>
                                     </Card.Body>
                                     <Card.Footer className="text-muted" style={{ display: 'flex', justifyContent: 'center', height: '4em' }}>

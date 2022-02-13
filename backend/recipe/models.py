@@ -1,9 +1,12 @@
 from django.db import models, connection
 from django.contrib.postgres.fields import ArrayField
 from django.db.models.deletion import CASCADE
-from image.models import RecipeImage
+from django.db.models import Avg
 
+from rating.models import Rating
+from image.models import RecipeImage
 from user.models import User
+
 
 class Ingredient(models.Model):
     amount = models.DecimalField(max_digits=8, decimal_places=2)
@@ -34,6 +37,7 @@ class Ingredient(models.Model):
             dict['recipe'] = ingredient.recipe.pk
             list.append(dict)
         return list
+
 
 class Recipe(models.Model):
     user = models.ForeignKey('user.user', on_delete=CASCADE)
@@ -86,10 +90,13 @@ class Recipe(models.Model):
         for image in images:
             image_list.append(image.to_dict())
         dict['images'] = image_list
+        ratings = Rating.objects.filter(recipe=self.id)
+        dict['rating_avg'] = ratings.aggregate(Avg('rating'))['rating__avg']
+        dict['votes'] = ratings.count()
         return dict
 
     def recipes_to_list(recipes):
-        list=[]
+        list = []
         for recipe in recipes:
             list.append(Recipe.to_dict(recipe))
         return list
