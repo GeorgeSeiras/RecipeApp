@@ -1,5 +1,8 @@
 import React, { useState, useReducer, useEffect, useContext } from "react";
 import { useParams } from 'react-router-dom';
+import Container from 'react-bootstrap/Container'
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 
 import { getRecipe } from './actions';
 import RecipeCarousel from "./Carousel";
@@ -7,12 +10,13 @@ import { RecipeReducer } from './reducer';
 import Thumbnail from "./Thumbnail";
 import RecipeInfo from "./RecipeInfo";
 import ActualRecipe from "./ActualRecipe";
+import RatingStars from '../Home/RatingStar';
 import NO_AVATAR from '../../static/no_avatar.svg';
 
 export default function Recipe() {
     const [state, dispatch] = useReducer(RecipeReducer);
     const [recipe, setRecipe] = useState(null);
-    const [user,setUser] = useState();
+    const [user, setUser] = useState();
     const { id } = useParams();
     const [gallery, setGallery] = useState([]);
     const [thumbnail, setThumbnail] = useState();
@@ -36,9 +40,9 @@ export default function Recipe() {
         } else {
             setAvatar(NO_AVATAR)
         }
-        
+
     }, [user])
-    
+
     useEffect(() => {
         setGallery([]);
         recipe?.images?.length > 0 &&
@@ -53,19 +57,26 @@ export default function Recipe() {
     }, [recipe])
 
     return (
-        <div className="recipe" style={{ margin: 'auto' }}>
-            <div className="recipeInfo">
+        <Container className="recipe" style={{ margin: 'auto' }}>
+            <Col>
                 <RecipeInfo recipe={recipe} avatar={avatar} userData={user} />
-            </div>
-            <div className="thumbnail">
-                <Thumbnail thumbnail={thumbnail} />
-            </div>
-            <div className="carousel">
-                <RecipeCarousel gallery={gallery} />
-            </div>
-            <div className="actualRecipe">
-                <ActualRecipe recipe={recipe}/>
-            </div>
-        </div >
+            </Col>
+            <Col style={{ paddingTop: '0'}}>
+                <RatingStars size={'medium'} rating={recipe?.rating_avg} votes={recipe?.votes} />
+            </Col>
+            {thumbnail &&
+                <Col style={{paddingTop:'1em', paddingBottom:'0'}}>
+                    <Thumbnail thumbnail={thumbnail} />
+                </Col>
+            }
+            {gallery.length>0 &&
+                <Col>
+                    <RecipeCarousel gallery={gallery} />
+                </Col>
+            }
+            <Col >
+                <ActualRecipe recipe={recipe} />
+            </Col>
+        </Container >
     )
 }

@@ -37,7 +37,6 @@ export default function ActualRecipe(props) {
         if(h === 0 && m === 0 ){
             result = '1 minute'
         }
-        console.log(result)
         return result
     }
 
@@ -48,7 +47,6 @@ export default function ActualRecipe(props) {
             setTotal(secondsToHms(props.recipe.prep_time + props.recipe.cook_time))
         }
 
-        console.log(prep)
     }, [props.recipe])
 
 
