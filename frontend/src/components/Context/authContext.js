@@ -5,7 +5,7 @@ import Cookies from 'universal-cookie';
 export const UserContext = React.createContext({ token: null });
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState({ user: null, token: null });
+    const [user, setUser] = useState({ user: null, token: {} });
 
     const ROOT_URL = 'http://localhost:8000/api';
 

@@ -29,7 +29,7 @@ const Navigation = () => {
                 <Navbar.Toggle aria-controls='responsive-navbar-nav' />
                 <Navbar.Collapse id='responsive-navbar-nav'>
                     <Nav className="container-fluid ml-auto">
-                        <Nav.Link href='/recipes'>Recipes</Nav.Link>
+                        <Nav.Link href='/'>Recipes</Nav.Link>
                         {(!userData.user.token || !userData.user.user) &&
                             < Nav className="ms-auto">
                                 <Nav.Link href='/login'>Login</Nav.Link>

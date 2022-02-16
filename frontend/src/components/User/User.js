@@ -1,5 +1,7 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
 
 import { UserReducer } from './reducer';
 import { RecipesReducer } from '../Home/reducer';
@@ -19,6 +21,7 @@ export default function User() {
     const [active, setActive] = useState(1);
     const [pageClicked, setPageClicked] = useState();
     const [queryParams, setQueryParams] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         (async () => {
@@ -45,14 +48,24 @@ export default function User() {
                 recipesResponse = await getRecipes(recipesDispatch, queryParams, pageClicked)
             }
             if (recipesResponse) {
+                if(pageClicked){
+                    setActive(pageClicked)
+                }
                 setRecipes(recipesResponse)
             }
         })();
     }, [queryParams, pageClicked])
 
+    console.log(pageClicked)
     return (
         <div>
             <UserInfo user={user} />
+            {user?.username === window.location.pathname.split('/').pop() &&
+                <Button variant="success"
+                    style={{ display: 'flex', justifyContent: 'center', width: '100%' }}
+                    onClick={(e) => navigate('/recipe/new')}>
+                    Create Recipe
+                </Button>}
             <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} username={username} />
             <RecipeCards response={recipes} />
             <Pagination response={recipes} active={active} setPageClicked={setPageClicked} />
