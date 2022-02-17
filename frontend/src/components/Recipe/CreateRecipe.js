@@ -4,6 +4,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
+import UploadImageCard from './UploadImageCard';
 
 export default function CreateRecipe() {
     const [title, setTitle] = useState();
@@ -15,6 +16,8 @@ export default function CreateRecipe() {
     const [servings, setServings] = useState();
     const [ingredients, setIngredients] = useState([['', '', '']]);
     const [steps, setSteps] = useState(['']);
+    const [thumbnail, setThumbnail] = useState(null);
+    const [carousel, setCarousel] = useState([null]);
 
     const updateIngredients = (row, col, value) => {
         var copy = ingredients.map(function (arr) {
@@ -43,6 +46,7 @@ export default function CreateRecipe() {
         copy.splice(index, 1);
         setSteps(copy);
     }
+
     return (
         <Form style={{
             flexDirection: 'column',
@@ -58,6 +62,17 @@ export default function CreateRecipe() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)} />
             </Form.Group>
+
+            <Form.Group className="mb-3" >
+                <Form.Label>Thumbnail</Form.Label>
+                <UploadImageCard images={thumbnail} setImages={setThumbnail} type={'single'} />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+                <Form.Label>Carousel Images</Form.Label>
+                <UploadImageCard images={carousel} setImages={setCarousel} type={'many'} />
+            </Form.Group>
+
             <Form.Group className='mb-3'>
                 <Form.Label>Description</Form.Label>
                 <Form.Control as="textarea" rows={9} maxLength='500'
@@ -67,6 +82,7 @@ export default function CreateRecipe() {
                     onChange={(e) => setDescription(e.target.value)}
                 />
             </Form.Group>
+
             <Form.Group className="mb-3" as={Row}>
                 <Form.Label>Prep Time</Form.Label>
                 <Col>
@@ -86,6 +102,7 @@ export default function CreateRecipe() {
                         onChange={(e) => setPrepMins(e.target.value)} />
                 </Col>
             </Form.Group>
+
             <Form.Group className="mb-3" as={Row}>
                 <Form.Label>Cook Time</Form.Label>
                 <Col>
@@ -105,6 +122,7 @@ export default function CreateRecipe() {
                         onChange={(e) => setCookMins(e.target.value)} />
                 </Col>
             </Form.Group>
+
             <Form.Group className="mb-3">
                 <Form.Label column>Servings</Form.Label>
                 <Form.Control
@@ -114,6 +132,7 @@ export default function CreateRecipe() {
                     onKeyDown={(e) => typeof e.key === 'string' && e.preventDefault()}
                     onChange={(e) => setServings(e.target.value)} />
             </Form.Group>
+
             <Form.Group as={Row}>
                 <Form.Label>Ingredients</Form.Label>
                 <Table>
