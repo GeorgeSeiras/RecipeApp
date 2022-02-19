@@ -3,7 +3,7 @@ import Signup from './components/Signup/Signup';
 import Home from './components/Home/Home';
 import Recipe from './components/Recipe/Recipe';
 import User from './components/User/User';
-import CreateRecipe from './components/Recipe/CreateRecipe';
+import CreateRecipe from './components/CreateRecipe/CreateRecipe';
 
 export const privateRoutes = [
     {
