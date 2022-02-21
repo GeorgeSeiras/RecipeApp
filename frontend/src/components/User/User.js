@@ -56,7 +56,6 @@ export default function User() {
         })();
     }, [queryParams, pageClicked])
 
-    console.log(pageClicked)
     return (
         <div>
             <UserInfo user={user} />

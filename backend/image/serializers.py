@@ -7,40 +7,26 @@ from .models import RecipeImageType, RecipeImage, UserImage
 from utils.custom_exceptions import CustomException
 
 
+class ImageSerializer(serializers.Serializer):
+    image = serializers.ImageField()
+    type = serializers.CharField()
+
+
 class RecipeImageSerializer(serializers.Serializer):
-    images = serializers.ListField(child=serializers.ImageField())
-    imagesData = serializers.JSONField()
+    images = serializers.ListField(child=ImageSerializer())
     recipe = serializers.PrimaryKeyRelatedField(
         many=False, queryset=Recipe.objects.all()
     )
 
     def create(self):
         created = []
-        imageTypes = []
-        types = []
-        for key, value in RecipeImageType.choices:
-            imageTypes.append(key)
-        data = json.loads(self.validated_data.get("imagesData")[0])
-        if len(data) != len(self.validated_data.get("images")):
-            raise CustomException(
-                "Number of images must match that of image types",
-                status.HTTP_400_BAD_REQUEST,
-            )
-        for type in data:
-            if type["type"] not in imageTypes:
-                raise CustomException(
-                    "Invalid image type " + type["type"], status.HTTP_400_BAD_REQUEST
-                )
-            types.append(type["type"])
-        i = 0
         for image in self.validated_data.get("images"):
             object = {
-                "image": image,
-                "type": types[i],
+                "image": image['image'],
+                "type": image['type'],
                 "recipe": self.validated_data.get("recipe"),
             }
             created.append(RecipeImage.objects.create(**object))
-            i += 1
         return created
 
 

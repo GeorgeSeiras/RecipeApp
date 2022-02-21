@@ -7,8 +7,8 @@ from .enum import sort_choices, query_rating_choices
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-    amount = serializers.FloatField()
-    unit = serializers.CharField(required=False)
+    amount = serializers.CharField(required=False,allow_blank=True)
+    unit = serializers.CharField(required=False,allow_blank=True)
     ingredient = serializers.CharField()
     recipe = serializers.RelatedField(source="recipe.recipe", read_only=True)
 
@@ -73,14 +73,14 @@ class RecipePatchSerializer(serializers.Serializer):
 
 
 class IngredientCreateSerializer(serializers.Serializer):
-    amount = serializers.FloatField()
-    unit = serializers.CharField(required=False)
+    amount = serializers.CharField(required=False,allow_blank=True)
+    unit = serializers.CharField(required=False,allow_blank=True)
     ingredient = serializers.CharField()
 
 
 class IngredientPatchSerializer(serializers.Serializer):
-    amount = serializers.FloatField(required=False)
-    unit = serializers.CharField(required=False)
+    amount = serializers.CharField(required=False,allow_blank=True)
+    unit = serializers.CharField(required=False,allow_blank=True)
     ingredient = serializers.CharField(required=False)
 
 

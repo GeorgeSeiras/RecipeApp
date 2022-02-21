@@ -35,7 +35,6 @@ export default function ImageUploadCard(props) {
                 return;
             case 'many':
                 var copy = [...props.images];
-                console.log(copy)
                 copy[e.target.parentNode.id] = fileUploaded;
                 copy.push(null);
                 props.setImages(copy);
@@ -45,7 +44,7 @@ export default function ImageUploadCard(props) {
 
     const removeCarouselImage = (e) => {
         var copy = [...props.images];
-        copy.splice(e.target.parentNode.id, 1);
+        copy.splice(e.target.parentNode.parentNode.id, 1);
         if (copy.length === 0) {
             copy.push(null)
         }
@@ -152,7 +151,7 @@ export default function ImageUploadCard(props) {
                                 <Form.Control
                                     type="file"
                                     ref={hiddenInputs[index]}
-                                    onChange={uploadImage}
+                                    onChange={(e)=>uploadImage(e)}
                                     style={{ display: 'none' }} />
 
                             </Container>

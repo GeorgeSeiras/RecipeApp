@@ -9,9 +9,9 @@ from user.models import User
 
 
 class Ingredient(models.Model):
-    amount = models.DecimalField(max_digits=8, decimal_places=2)
-    unit = models.CharField(max_length=20, blank=True)
-    ingredient = models.CharField(max_length=50,)
+    amount = models.CharField(max_length=15, blank=True)
+    unit = models.CharField(max_length=15, blank=True)
+    ingredient = models.CharField(max_length=50)
     recipe = models.ForeignKey('recipe.recipe', on_delete=CASCADE)
 
     class Meta:
@@ -20,7 +20,7 @@ class Ingredient(models.Model):
     def to_dict(self):
         dict = {}
         dict['id'] = self.pk
-        dict['amount'] = float(self.amount)
+        dict['amount'] = self.amount
         dict['unit'] = self.unit
         dict['ingredient'] = self.ingredient
         dict['recipe'] = self.recipe.pk
@@ -31,7 +31,7 @@ class Ingredient(models.Model):
         for ingredient in ingredients:
             dict = {}
             dict['id'] = ingredient.pk
-            dict['amount'] = float(ingredient.amount)
+            dict['amount'] = ingredient.amount
             dict['unit'] = ingredient.unit
             dict['ingredient'] = ingredient.ingredient
             dict['recipe'] = ingredient.recipe.pk

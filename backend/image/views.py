@@ -2,7 +2,9 @@ from django.db import transaction
 from django.http.response import JsonResponse
 from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.views import APIView
+from rest_framework import status
 
+from utils.custom_exceptions import CustomException
 from backend.decorators import user_required
 from user.models import User
 from recipe.models import Recipe
@@ -22,6 +24,7 @@ class RecipeImageView(APIView):
 
     @user_required
     def put(self, request, recipe_id):
+
         with transaction.atomic():
             try:
                 user = User.objects.get(username=request.user)
@@ -32,9 +35,25 @@ class RecipeImageView(APIView):
             except Recipe.DoesNotExist:
                 raise NotFound({"message": "Recipe not found"})
             if user.id != recipe.user.id:
-                raise PermissionDenied({"You cannot modify another user's recipe"})
+                raise PermissionDenied(
+                    {"You cannot modify another user's recipe"})
+            images_list = []
+            if(float(len(request.data))//2 != len(request.data)):
+                raise CustomException(
+                    'Image or type is missing', status.HTTP_400_BAD_REQUEST)
+
+            for i in range(0, len(request.data)//2):
+                if not ('images['+str(i)+'].image' in request.data
+                        | 'images['+str(i)+'].type' in request.data):
+                    raise CustomException(
+                        'Image or type is missing', status.HTTP_400_BAD_REQUEST
+                    )
+                image_dict = {}
+                image_dict['image'] = request.data['images['+str(i)+'].image']
+                image_dict['type'] = request.data['images['+str(i)+'].type']
+                images_list.append(image_dict)
             serializer = RecipeImageSerializer(
-                data={**request.data, "recipe": recipe.id}
+                data={'images': images_list, "recipe": recipe.id}
             )
             serializer.is_valid(raise_exception=True)
             images = serializer.create()
@@ -54,7 +73,8 @@ class RecipeImageDetail(APIView):
             except RecipeImage.DoesNotExist:
                 raise NotFound({"message": "Image not found"})
             if user.id != image.recipe.user.id:
-                raise PermissionDenied({"You cannot modify another user's recipe"})
+                raise PermissionDenied(
+                    {"You cannot modify another user's recipe"})
             image.delete()
             return JsonResponse({"result": "ok"})
 
