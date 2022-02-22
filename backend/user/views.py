@@ -11,7 +11,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from .models import User
 from recipe.models import Recipe
 from list.models import List, RecipesInList
-from .serializers import UserSerializer, UserSerializerNoPassword
+from .serializers import UserSerializer, UserSerializerNoPassword, UserPatchSerializer
 from backend.decorators import user_required, admin_required
 
 
@@ -26,6 +26,20 @@ class UserList(APIView, LimitOffsetPagination):
         users_list = User.users_to_list(paginated_queryset)
         paginated_result = self.get_paginated_response(users_list)
         return paginated_result
+
+    @user_required
+    def patch(self, request):
+        try:
+            with transaction.atomic():
+                user = User.objects.get(username=request.user)
+                serializer = UserPatchSerializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
+                for key, value in serializer.validated_data.items():
+                    setattr(user, key, value)
+                user.save()
+                return JsonResponse({'result': user.to_dict()})
+        except User.DoesNotExist:
+            raise NotFound({'message': 'User not found'})
 
 
 class UserByUsername(APIView):
