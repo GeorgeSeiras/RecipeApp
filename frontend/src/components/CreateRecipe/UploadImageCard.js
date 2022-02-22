@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, createRef } from 'react';
+import React, { useState, useEffect, createRef } from 'react';
 import Image from 'react-bootstrap/Image'
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
@@ -38,6 +38,9 @@ export default function ImageUploadCard(props) {
                 copy[e.target.parentNode.id] = fileUploaded;
                 copy.push(null);
                 props.setImages(copy);
+                return;
+            default:
+                console.log('This component accepts only single and many as its options')
                 return;
         }
     }
@@ -151,7 +154,7 @@ export default function ImageUploadCard(props) {
                                 <Form.Control
                                     type="file"
                                     ref={hiddenInputs[index]}
-                                    onChange={(e)=>uploadImage(e)}
+                                    onChange={(e) => uploadImage(e)}
                                     style={{ display: 'none' }} />
 
                             </Container>

@@ -37,7 +37,7 @@ export default function User() {
                 setRecipes(recipesResponse)
             }
         })();
-    }, [])
+    }, [pageClicked, username])
 
     useEffect(() => {
         (async () => {
@@ -48,7 +48,7 @@ export default function User() {
                 recipesResponse = await getRecipes(recipesDispatch, queryParams, pageClicked)
             }
             if (recipesResponse) {
-                if(pageClicked){
+                if (pageClicked) {
                     setActive(pageClicked)
                 }
                 setRecipes(recipesResponse)

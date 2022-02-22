@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useContext, useEffect } from 'react';
+import React, { useState, useReducer, useContext } from 'react';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -6,7 +6,6 @@ import Button from 'react-bootstrap/Button';
 import Table from 'react-bootstrap/Table';
 import UploadImageCard from './UploadImageCard';
 import { useNavigate } from 'react-router-dom';
-import { serialize } from 'object-to-formdata';
 
 import { CreateRecipeReducer, UploadImageReducer, DeleteRecipeReducer } from './reducer';
 import { createRecipe, uploadRecipeImages, deleteRecipe } from './actions';
@@ -148,10 +147,11 @@ export default function CreateRecipe() {
         if (recipeResponse?.result) {
             const imageResponse = await uploadRecipeImages(dispatchImages, form, userData.user.token.key, recipeResponse.result.recipe.id);
             if (imageResponse?.result) {
-                // navigate(`/recipe/${recipeResponse.result.recipe.id}`)
+                navigate(`/recipe/${recipeResponse.result.recipe.id}`)
             } else {
                 const deleteResponse = await deleteRecipe(dispatchDelete, recipeResponse.result.recipe.id, userData.user.token.key)
                 if (deleteResponse?.status === 'ok') {
+                    //show error message about problem with the images
                     console.log('Recipe deleted')
                 }
             }

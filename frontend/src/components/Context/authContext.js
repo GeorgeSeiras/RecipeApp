@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
                 setUser({ ...user, isAuth: false })
             }
         })()
-    }, [])
+    }, [user])
 
     const login = (data) => {
         setUser((user) => ({

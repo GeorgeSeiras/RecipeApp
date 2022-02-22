@@ -1,8 +1,7 @@
-import React, { useState, useReducer, useEffect, useContext } from "react";
+import React, { useState, useReducer, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 import Container from 'react-bootstrap/Container'
 import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
 
 import { getRecipe } from './actions';
 import RecipeCarousel from "./Carousel";
