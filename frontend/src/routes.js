@@ -3,9 +3,13 @@ import Signup from './components/Signup/Signup';
 import Home from './components/Home/Home';
 import Recipe from './components/Recipe/Recipe';
 import User from './components/User/User';
+import CreateRecipe from './components/CreateRecipe/CreateRecipe';
 
 export const privateRoutes = [
-
+    {
+        path: '/recipe/new',
+        element: <CreateRecipe/>
+    }
 ]
 
 export const publicRoutes = [
@@ -18,8 +22,8 @@ export const publicRoutes = [
         element: <Recipe />
     },
     {
-        path:'/user/:username',
-        element:<User/>
+        path: '/user/:username',
+        element: <User />
     }
 ]
 export const authRoutes = [

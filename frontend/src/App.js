@@ -4,14 +4,14 @@ import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import { authRoutes, publicRoutes, privateRoutes, } from './routes';
 import { AuthProvider } from './components/Context/authContext';
 import { PrivateRoute, NoLoggedInRoute } from './components/CustomRoutes'
-import  Navigation  from './components/NavBar/NavBar';
+import Navigation from './components/NavBar/NavBar';
 
 function App() {
+
   return (
     <AuthProvider>
       <BrowserRouter>
-      <Navigation />
-
+        <Navigation />
         <Routes>
           {privateRoutes.map((route) => (
             <Route

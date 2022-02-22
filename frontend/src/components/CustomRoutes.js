@@ -4,10 +4,16 @@ import { UserContext } from './Context/authContext'
 
 export const PrivateRoute = ({ children }) => {
     const { user } = useContext(UserContext);
-    return user?.token ? children : <Navigate to='/login' />
+    if (user.isAuth === null) {
+        return null
+    }
+    return user.isAuth ? children : <Navigate to='/login' />
 }
 
 export const NoLoggedInRoute = ({ children }) => {
     const { user } = useContext(UserContext);
-    return user?.token ? <Navigate to='/' /> : children
+    if (user.isAuth === null) {
+        return null
+    }
+    return user.isAuth ? <Navigate to='/' /> : children
 }

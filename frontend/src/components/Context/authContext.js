@@ -1,56 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext } from 'react';
 import Cookies from 'universal-cookie';
 
 
-export const UserContext = React.createContext({ token: null });
+export const UserContext = createContext({ user: null, token: null, isAuth: null });
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState({ user: null, token: null });
-
-    const ROOT_URL = 'http://localhost:8000/api';
 
     const cookies = new Cookies();
 
-    useEffect(() => {
-        const token = cookies.get('token')
+    const [user, setUser] = useState({
+        user: null,
+        token: cookies.get('token')
             ? cookies.get('token')
-            : null;
-        if (token) {
+            : null,
+        isAuth: null
+    });
+    const ROOT_URL = 'http://localhost:8000/api';
 
-            const requestOptions = {
-                method: 'GET',
-                headers: {
-                    'Content-type': 'application/json',
-                    'Authorization': 'Bearer '.concat(token.key)
-                }
-            };
-            fetch(`${ROOT_URL}/user/me`, requestOptions)
-                .then(res => res.json())
-                .then(data => setUser({
-                    user: data.user,
-                    token: token
-                }))
-        }
+    useEffect(() => {
+        (async () => {
+            if (user.token) {
+                const requestOptions = {
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json',
+                        'Authorization': 'Bearer '.concat(user.token.key)
+                    }
+                };
+                await fetch(`${ROOT_URL}/user/me`, requestOptions)
+                    .then(res => res.json())
+                    .then(data => {
+                        setUser({...user,
+                            user: data.user,
+                            isAuth:true
+                        })
+                    }).catch(() => setUser({ ...user, isAuth: false }))
+            } else {
+                setUser({ ...user, isAuth: false })
+            }
+        })()
     }, [])
 
     const login = (data) => {
         setUser((user) => ({
             token: data.token,
-            user: data.user
+            user: data.user,
+            isAuth: true
         }));
     };
 
     const logout = () => {
         setUser((user) => ({
             token: null,
-            user: null
+            user: null,
+            isAuth: false
         }));
-        cookies.remove('token',{path:'/'});
+        cookies.remove('token', { path: '/' });
     };
 
     return (
         <UserContext.Provider value={{ user, login, logout }}>
             {children}
-        </UserContext.Provider>
+        </ UserContext.Provider>
     );
 };
