@@ -11,8 +11,9 @@ from rest_framework.pagination import LimitOffsetPagination
 from .models import User
 from recipe.models import Recipe
 from list.models import List, RecipesInList
-from .serializers import UserSerializer, UserSerializerNoPassword, UserPatchSerializer
+from .serializers import UserSerializer, UserSerializerNoPassword, UserPatchSerializer, ChangePasswordSerializer
 from backend.decorators import user_required, admin_required
+from utils.custom_exceptions import CustomException
 
 
 class UserList(APIView, LimitOffsetPagination):
@@ -126,3 +127,25 @@ class UserMe(APIView):
         except User.DoesNotExist:
             raise NotFound({"message": "User not found"})
         return JsonResponse({'user': user.to_dict()})
+
+
+class ChangePassword(APIView):
+
+    @user_required
+    def patch(self, request):
+        try:
+            user = User.objects.get(username=request.user)
+            serializer = ChangePasswordSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            if not user.check_password(serializer.validated_data['password']):
+                raise CustomException(
+                    'Wrong password', status.HTTP_400_BAD_REQUEST)
+            if serializer.validated_data['newPassword1'] != serializer.validated_data['newPassword2']:
+                raise CustomException(
+                    'Passwords must match', status.HTTP_400_BAD_REQUEST)
+            setattr(user, 'password', make_password(
+                serializer.validated_data['newPassword1']))
+            user.save()
+            return JsonResponse({'result': user.to_dict()})
+        except User.DoesNotExist:
+            raise NotFound({'message': 'User not found'})

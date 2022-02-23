@@ -22,3 +22,8 @@ class UserLoginSerializer(serializers.Serializer):
 class UserPatchSerializer(serializers.Serializer):
     email = serializers.CharField(required=False)
     username = serializers.CharField(required=False)
+
+class ChangePasswordSerializer(serializers.Serializer):
+    password = serializers.CharField()
+    newPassword1 = serializers.CharField()
+    newPassword2 = serializers.CharField()
