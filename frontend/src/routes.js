@@ -4,11 +4,16 @@ import Home from './components/Home/Home';
 import Recipe from './components/Recipe/Recipe';
 import User from './components/User/User';
 import CreateRecipe from './components/CreateRecipe/CreateRecipe';
+import EditUser from './components/EditUser/EditUser';
 
 export const privateRoutes = [
     {
         path: '/recipe/new',
-        element: <CreateRecipe/>
+        element: <CreateRecipe />
+    },
+    {
+        path: '/user/:username/edit',
+        element: <EditUser />
     }
 ]
 
