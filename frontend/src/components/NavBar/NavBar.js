@@ -41,8 +41,10 @@ const Navigation = () => {
                         <Nav className="ms-auto">
                             <NavDropdown id="dropdown-basic-button" drop="start"
                                 title={<img className="avatar" src={avatar} alt="avatar" width="40px" height="auto" />}>
-                                <NavDropdown.Item href={'/user/' + userData.user.user.username}>Profile</NavDropdown.Item>
-                                <NavDropdown.Item href={'/user/'+userData.user.user.username+'/edit'}>Edit Profile</NavDropdown.Item>
+                                <NavDropdown.ItemText>{userData.user.user.username}</NavDropdown.ItemText>
+                                <NavDropdown.Divider/>
+                                <NavDropdown.Item href={'/user/' + userData.user.user.id}>Profile</NavDropdown.Item>
+                                <NavDropdown.Item href={'/user/'+userData.user.user.id+'/edit'}>Edit Profile</NavDropdown.Item>
                                 <NavDropdown.Item onClick={()=>{
                                     userData.logout();
                                 }}>Logout</NavDropdown.Item>

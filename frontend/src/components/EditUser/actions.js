@@ -7,7 +7,8 @@ export async function editUser(dispatch, payload, token) {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer '.concat(token)
-        }
+        },
+        body:JSON.stringify(payload)
     };
 
     try {
@@ -46,5 +47,29 @@ export async function changePassword(dispatch, payload, token) {
         dispatch({ type: 'CHANGE_PASSWORD_ERROR', errorMessage: data })
     } catch (error) {
         dispatch({ type: 'CHANGE_PASSWORD_ERROR', errorMessage: error })
+    }
+}
+
+export async function changeImage(dispatch, payload, token) {
+
+    const requestOptions = {
+        method: 'PUT',
+        headers: {
+            'Authorization': 'Bearer '.concat(token)
+        },
+        body:payload
+    };
+
+    try {
+        dispatch({ type: 'CHANGE_IMAGE_REQUEST' });
+        let response = await fetch(`${ROOT_URL}/image/user`, requestOptions);
+        let data = await response.json();
+        if (data?.result) {
+            dispatch({ type: 'CHANGE_IMAGE_SUCCESS', payload: data.result })
+            return data
+        }
+        dispatch({ type: 'CHANGE_IMAGE_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'CHANGE_IMAGE_ERROR', errorMessage: error })
     }
 }

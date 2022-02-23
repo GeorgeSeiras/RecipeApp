@@ -80,6 +80,7 @@ class RecipeImageDetail(APIView):
 
 
 class UserImageView(APIView):
+
     @user_required
     def put(self, request):
         with transaction.atomic():
@@ -87,10 +88,11 @@ class UserImageView(APIView):
                 user = User.objects.get(username=request.user)
             except User.DoesNotExist:
                 raise NotFound({"message": "User not found"})
-            serializer = UserImageSerializer(data=request.data)
+            serializer = UserImageSerializer(
+                data={**request.data.dict(), 'user': user})
             serializer.is_valid(raise_exception=True)
             image = serializer.create()
-            user.image = image
+            setattr(user, 'image', image)
             user.save()
             return JsonResponse({"result": user.to_dict()})
 

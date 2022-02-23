@@ -10,20 +10,17 @@ export async function getRecipes(dispatch, queryParams, pageClicked) {
     try {
         dispatch({ type: 'GET_RECIPES_REQUEST' });
         let response = null
-        if (queryParams.length === 0) {
-            if (pageClicked) {
-                response = await fetch(`${ROOT_URL}/recipes?page=${pageClicked}`, requestOptions);
-
-            } else {
-                response = await fetch(`${ROOT_URL}/recipes`, requestOptions);
+        if (pageClicked) {
+            if(queryParams === ''){
+                queryParams = `?page=${pageClicked}`;
+            }else{
+                queryParams.concat(`&page=${pageClicked}`);
             }
+            response = await fetch(`${ROOT_URL}/recipes${queryParams}`, requestOptions);
         } else {
-            if (pageClicked) {
-                response = await fetch(`${ROOT_URL}/recipes${queryParams}&page=${pageClicked}`, requestOptions);
-            } else {
-                response = await fetch(`${ROOT_URL}/recipes${queryParams}`, requestOptions);
-            }
+            response = await fetch(`${ROOT_URL}/recipes${queryParams}`, requestOptions);
         }
+
         let data = await response.json();
         if (data) {
             dispatch({ type: 'GET_RECIPES_SUCCESS', payload: data })

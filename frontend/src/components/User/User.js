@@ -1,65 +1,51 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 
-import { UserReducer } from './reducer';
 import { RecipesReducer } from '../Home/reducer';
-import { getUser } from './actions'
 import { getRecipes } from '../Home/actions';
 import UserInfo from './UserInfo';
 import RecipeCards from '../Home/RecipeCards';
 import Pagination from '../Home/Pagination';
 import SearchBar from '../Home/SearchBar';
+import { UserContext } from '../Context/authContext';
 
 export default function User() {
-    const [state, dispatch] = useReducer(UserReducer);
     const [recipesState, recipesDispatch] = useReducer(RecipesReducer)
     const { username } = useParams();
-    const [user, setUser] = useState();
     const [recipes, setRecipes] = useState();
     const [active, setActive] = useState(1);
     const [pageClicked, setPageClicked] = useState();
-    const [queryParams, setQueryParams] = useState([]);
+    const [queryParams, setQueryParams] = useState('');
     const navigate = useNavigate();
 
-    useEffect(() => {
-        (async () => {
-            const payload = {
-                'username': username
-            }
-            const response = await getUser(dispatch, payload)
-            if (response?.result) {
-                setUser(response.result)
-            }
-            const recipesResponse = await getRecipes(recipesDispatch, [`?username=${username}`], pageClicked)
-            if (recipesResponse?.result) {
-                setRecipes(recipesResponse)
-            }
-        })();
-    }, [pageClicked, username])
+    const userData = useContext(UserContext);
 
     useEffect(() => {
         (async () => {
-            var recipesResponse;
-            if (queryParams.length === 0) {
-                recipesResponse = await getRecipes(recipesDispatch, queryParams, pageClicked)
-            } else {
-                recipesResponse = await getRecipes(recipesDispatch, queryParams, pageClicked)
-            }
-            if (recipesResponse) {
-                if (pageClicked) {
-                    setActive(pageClicked)
+            if (userData?.user?.user) {
+                var query = queryParams
+                if(query === ''){
+                    query = `?username=${userData.user.user.username}`
+                }else{
+                    query.concat = `&username=${userData.user.user.username}`
                 }
-                setRecipes(recipesResponse)
+                const recipesResponse = await getRecipes(recipesDispatch, query, pageClicked);
+                if (recipesResponse) {
+                    if (pageClicked) {
+                        setActive(pageClicked);
+                    }
+                    setRecipes(recipesResponse);
+                }
             }
         })();
-    }, [queryParams, pageClicked])
+    }, [queryParams, pageClicked, userData?.user?.user?.username])
 
     return (
         <div>
-            <UserInfo user={user} />
-            {user?.username === window.location.pathname.split('/').pop() &&
+            <UserInfo user={userData.user.user} />
+            {window.location.pathname.split('/').pop() === String(userData?.user?.user?.id) &&
                 <Button variant="success"
                     style={{ display: 'flex', justifyContent: 'center', width: '100%' }}
                     onClick={(e) => navigate('/recipe/new')}>

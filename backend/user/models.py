@@ -6,20 +6,22 @@ from django.dispatch.dispatcher import receiver
 from django.utils.translation import ugettext_lazy as _
 
 from image.models import UserImage
+
+
 class User(AbstractUser):
     username = models.CharField(
-        max_length = 100,
-        unique = True,
+        max_length=100,
+        unique=True,
     )
     email = models.EmailField(_('email address'), unique=True)
     image = models.OneToOneField(UserImage, on_delete=CASCADE, null=True)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
-    
+
     first_name = None
     last_name = None
-    
+
     def __str__(self):
         return "{}".format(self.username)
 

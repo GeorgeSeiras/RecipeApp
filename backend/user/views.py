@@ -58,7 +58,7 @@ class UserDetail(APIView):
     def get(self, request, pk, format=None):
         try:
             user = User.objects.get(pk=pk)
-            return JsonResponse({'result': UserSerializerNoPassword(user).data})
+            return JsonResponse({'result': user.to_dict()})
         except User.DoesNotExist:
             raise NotFound({"message": "User not found"})
 

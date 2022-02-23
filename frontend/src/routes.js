@@ -12,7 +12,7 @@ export const privateRoutes = [
         element: <CreateRecipe />
     },
     {
-        path: '/user/:username/edit',
+        path: '/user/:id/edit',
         element: <EditUser />
     }
 ]
