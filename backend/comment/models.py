@@ -26,7 +26,7 @@ class Comment(models.Model):
     def to_dict(self):
         dict = {}
         dict['id'] = self.id
-        dict['user'] = self.user.to_dict()
+        dict['user'] = self.user
         dict['recipe'] = self.recipe.id
         dict['text'] = self.text
         dict['deleted'] = self.deleted
@@ -39,11 +39,11 @@ class Comment(models.Model):
     def to_dict_no_parent_population(self):
         dict = {}
         dict['id'] = self.id
-        # dict['user'] = self.user.to_dict()
-        # dict['recipe'] = self.recipe.id
-        # dict['text'] = self.text
+        dict['user'] = self.user.id
+        dict['recipe'] = self.recipe.id
+        dict['text'] = self.text
         dict['parent'] = self.parent
-        # dict['deleted'] = self.deleted
+        dict['deleted'] = self.deleted
         return dict
 
     def to_list(comments):
