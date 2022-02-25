@@ -10,6 +10,9 @@ import Thumbnail from "./Thumbnail";
 import RecipeInfo from "./RecipeInfo";
 import ActualRecipe from "./ActualRecipe";
 import RatingStars from '../Home/RatingStar';
+import Comments from '../Comment/Comments';
+import {getRecipeComments} from '../Comment/actions';
+import {RecipeCommentsReducer} from '../Comment/reducer';
 import NO_AVATAR from '../../static/no_avatar.svg';
 
 export default function Recipe() {
@@ -60,15 +63,15 @@ export default function Recipe() {
             <Col>
                 <RecipeInfo recipe={recipe} avatar={avatar} userData={user} />
             </Col>
-            <Col style={{ paddingTop: '0'}}>
+            <Col style={{ paddingTop: '0' }}>
                 <RatingStars size={'medium'} rating={recipe?.rating_avg} votes={recipe?.votes} />
             </Col>
             {thumbnail &&
-                <Col style={{paddingTop:'1em', paddingBottom:'0'}}>
+                <Col style={{ paddingTop: '1em', paddingBottom: '0' }}>
                     <Thumbnail thumbnail={thumbnail} />
                 </Col>
             }
-            {gallery.length>0 &&
+            {gallery.length > 0 &&
                 <Col>
                     <RecipeCarousel gallery={gallery} />
                 </Col>
@@ -76,6 +79,7 @@ export default function Recipe() {
             <Col >
                 <ActualRecipe recipe={recipe} />
             </Col>
+            <Comments/>
         </Container >
     )
 }

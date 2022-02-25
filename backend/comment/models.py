@@ -26,7 +26,7 @@ class Comment(models.Model):
     def to_dict(self):
         dict = {}
         dict['id'] = self.id
-        dict['user'] = self.user
+        dict['user'] = self.user.to_dict()
         dict['recipe'] = self.recipe.id
         dict['text'] = self.text
         dict['deleted'] = self.deleted

@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.exceptions import NotFound, PermissionDenied
 from django.db import transaction
 from django.db.models import Q
+from comment.serializers import CreateCommentSerializer
 
 from comment.models import Comment
 from recipe.models import Recipe, Ingredient
@@ -28,7 +29,8 @@ class RecipeCreate(APIView):
     def post(self, request):
         with transaction.atomic():
             user = User.objects.get(username=request.user)
-            serializer = RecipeSerializer(data={**request.data, "user": user.id})
+            serializer = RecipeSerializer(
+                data={**request.data, "user": user.id})
             serializer.is_valid(raise_exception=True)
             recipe = serializer.create()
             return JsonResponse(
@@ -52,7 +54,8 @@ class RecipeDetail(APIView):
             except Recipe.DoesNotExist:
                 raise NotFound({"message": "Recipe not found"})
             if recipe.user.username != str(request.user):
-                raise PermissionDenied({"You cannot modify another user's recipe"})
+                raise PermissionDenied(
+                    {"You cannot modify another user's recipe"})
             serializer = RecipePatchSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             for key, value in serializer.validated_data.items():
@@ -61,7 +64,8 @@ class RecipeDetail(APIView):
                     ingredients = []
                     Ingredient.objects.filter(recipe=recipe.id).delete()
                     for ingredient in value:
-                        ingredient = IngredientSerializer.create(ingredient, recipe)
+                        ingredient = IngredientSerializer.create(
+                            ingredient, recipe)
                         ingredients.append(ingredient)
                     setattr(recipe, key, ingredients)
                 else:
@@ -114,7 +118,8 @@ class IngredientCreate(APIView):
             recipe = Recipe.objects.get(pk=recipe_id)
             if recipe.user.id != user.id:
                 raise PermissionDenied
-            res = IngredientSerializer.create(self, serializer.validated_data, recipe)
+            res = IngredientSerializer.create(
+                self, serializer.validated_data, recipe)
             return JsonResponse(
                 {"result": res.to_dict()}, status=status.HTTP_201_CREATED
             )
@@ -199,7 +204,7 @@ class StepCreateView(APIView):
             )
 
 
-class RecipeCommentsView(APIView, LimitOffsetPagination):
+class RecipeCommentsView(APIView, myPagination):
     def get(self, request, recipe_id):
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
@@ -219,11 +224,13 @@ class RecipesQuery(APIView, myPagination):
         choices = {value: key for key, value in sort_choices}
         query = Q()
         if "user" in serializer.validated_data:
-            query &= Q(user__username__iexact=serializer.validated_data["user"])
+            query &= Q(
+                user__username__iexact=serializer.validated_data["user"])
         if "title" in serializer.validated_data:
             query &= Q(title__icontains=serializer.validated_data["title"])
         if "cuisine" in serializer.validated_data:
-            query &= Q(cuisine__contains=[serializer.validated_data["cuisine"]])
+            query &= Q(cuisine__contains=[
+                       serializer.validated_data["cuisine"]])
         if "course" in serializer.validated_data:
             query &= Q(course__contains=[serializer.validated_data["course"]])
         sort = "-created_at"
@@ -237,3 +244,20 @@ class RecipesQuery(APIView, myPagination):
         page = self.paginate_queryset(objects, request)
         response = self.get_paginated_response(page)
         return response
+
+
+class createCommentView(APIView):
+
+    @user_required
+    def post(self, request, recipe_id):
+        with transaction.atomic():
+            try:
+                user = User.objects.get(username=request.user)
+            except User.DoesNotExist:
+                raise NotFound({'message': 'User not found'})
+            serializer = CreateCommentSerializer(
+                    data={**request.data, 'recipe': recipe_id})
+            not serializer.is_valid(raise_exception=True)
+            comment = Comment.objects.create(
+                user=user, **serializer.validated_data)
+            return JsonResponse({'result': comment.to_dict()})
