@@ -21,10 +21,10 @@ export default function Comments() {
     const [parentIds, setParentIds] = useState([]);
     const [createdComment, setCreatedComment] = useState(false)
     const [successAlert, setSuccessAlert] = useState(null);
-    
+
     useEffect(() => {
         (async () => {
-            if(createdComment){
+            if (createdComment) {
                 setSuccessAlert(true)
             }
             const responseComments = await getRecipeComments(dispatchComments, id);
@@ -58,7 +58,7 @@ export default function Comments() {
                     if (depth <= 8) {
                         return (
                             <Comment comment={comment} depth={depth} renderNestedComments={renderNestedComments}
-                                key={comment.id} setCreatedComment={setCreatedComment} createdComment={createdComment} />
+                                key={comment.id} setCreatedComment={setCreatedComment} createdComment={createdComment}/>
                         )
                     } else if (depth === 9) {
                         return (
@@ -90,7 +90,7 @@ export default function Comments() {
 
         <Container>
             {successAlert &&
-                <Alert variant={'success'} onClose={()=>{setSuccessAlert(null)}} dismissible>
+                <Alert variant={'success'} onClose={() => { setSuccessAlert(null) }} dismissible>
                     Comment Successfuly Created!
                 </Alert>}
             <CreateComment setCreatedComment={setCreatedComment} createdComment={createdComment} />

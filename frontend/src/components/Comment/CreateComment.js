@@ -19,7 +19,7 @@ export default function Comments(props) {
         e.preventDefault()
         const payload = {
             'text': newComment,
-            'parent': props?.parentId
+            'parent': props?.parentId 
         }
         const response = await postComment(dispatch, payload, userData.user.token.key, id)
         if (response?.result) {
