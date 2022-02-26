@@ -61,3 +61,26 @@ export async function postComment(dispatch, payload, token, recipeId) {
         dispatch({ type: 'CREATE_COMMENT_ERROR', errorMessage: error })
     }
 }
+
+export async function deleteComment(dispatch, token, commentId) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '.concat(token),
+        }
+    }
+
+    try {
+        dispatch({ type: 'DELETE_COMMENT_REQUEST' });
+        let response = await fetch(`${ROOT_URL}/comment/${commentId}`, requestOptions);
+        let data = await response.json();
+        if (data) {
+            dispatch({ type: 'DELETE_COMMENT_SUCCESS', payload: data.result })
+            return data
+        }
+        dispatch({ type: 'DELETE_COMMENT_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'DELETE_COMMENT_ERROR', errorMessage: error })
+    }
+}
