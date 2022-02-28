@@ -1,7 +1,6 @@
 const ROOT_URL = 'http://localhost:8000/api';
 
 export async function getRecipes(dispatch, queryParams, pageClicked) {
-
     const requestOptions = {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
@@ -11,7 +10,7 @@ export async function getRecipes(dispatch, queryParams, pageClicked) {
         dispatch({ type: 'GET_RECIPES_REQUEST' });
         let response = null
         if (pageClicked) {
-            if(queryParams === ''){
+            if(queryParams ===''){
                 queryParams = `?page=${pageClicked}`;
             }else{
                 queryParams.concat(`&page=${pageClicked}`);

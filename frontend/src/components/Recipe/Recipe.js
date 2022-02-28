@@ -9,10 +9,10 @@ import { RecipeReducer } from './reducer';
 import Thumbnail from "./Thumbnail";
 import RecipeInfo from "./RecipeInfo";
 import ActualRecipe from "./ActualRecipe";
-import RatingStars from '../Home/RatingStar';
+import RateableStars from './RateableStars';
 import Comments from '../Comment/Comments';
-import {getRecipeComments} from '../Comment/actions';
-import {RecipeCommentsReducer} from '../Comment/reducer';
+import { getRecipeComments } from '../Comment/actions';
+import { RecipeCommentsReducer } from '../Comment/reducer';
 import NO_AVATAR from '../../static/no_avatar.svg';
 
 export default function Recipe() {
@@ -57,14 +57,16 @@ export default function Recipe() {
             })
 
     }, [recipe])
-
+    
     return (
         <Container className="recipe" style={{ margin: 'auto' }}>
             <Col>
                 <RecipeInfo recipe={recipe} avatar={avatar} userData={user} />
             </Col>
             <Col style={{ paddingTop: '0' }}>
-                <RatingStars size={'medium'} rating={recipe?.rating_avg} votes={recipe?.votes} />
+                {recipe?.rating_avg  &&
+                    <RateableStars rating={recipe?.rating_avg} votes={recipe?.votes} setRecipe={setRecipe}/>
+                }
             </Col>
             {thumbnail &&
                 <Col style={{ paddingTop: '1em', paddingBottom: '0' }}>
@@ -79,7 +81,7 @@ export default function Recipe() {
             <Col >
                 <ActualRecipe recipe={recipe} />
             </Col>
-            <Comments/>
+            <Comments />
         </Container >
     )
 }
