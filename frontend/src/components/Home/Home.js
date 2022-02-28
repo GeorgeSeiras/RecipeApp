@@ -12,10 +12,10 @@ import Col from 'react-bootstrap/Col';
 export default function Home(props) {
 
     const [state, dispatch] = useReducer(RecipesReducer);
-    const [queryParams, setQueryParams] = useState([]);
+    const [queryParams, setQueryParams] = useState('');
     const [response, setResponse] = useState()
     const [active, setActive] = useState(1);
-    const [pageClicked,setPageClicked] = useState();
+    const [pageClicked,setPageClicked] = useState(1);
 
 
     useEffect(() => {

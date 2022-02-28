@@ -36,7 +36,7 @@ class RateRecipe(APIView):
                     'You have already rated this recipe', status.HTTP_400_BAD_REQUEST)
             rating = Rating.objects.create(
                 recipe=recipe, user=user, rating=serializer.data['rating'])
-            return JsonResponse({'status': 'ok', 'data': rating.to_dict()})
+            return JsonResponse({'result': rating.to_dict()})
 
     @user_required
     def patch(self, request, recipe_id):
@@ -57,7 +57,7 @@ class RateRecipe(APIView):
                 raise NotFound({'message': 'Rating does not exist'})
             setattr(rating, 'rating', serializer.data['rating'])
             rating.save()
-            return JsonResponse({'status': 'ok', 'data': rating.to_dict()})
+            return JsonResponse({'result': rating.to_dict()})
 
     @user_required
     def delete(self, request, recipe_id):
@@ -91,4 +91,4 @@ class RecipeRatingAverage(APIView):
                 raise NotFound({'message': 'Recipe does not exist'})
             rating_avg = Rating.objects.filter(
                 recipe=recipe_id).aggregate(Avg('rating'))
-            return JsonResponse({'status': 'ok', 'data': {'rating_avg': rating_avg}})
+            return JsonResponse({'result':  rating_avg})
