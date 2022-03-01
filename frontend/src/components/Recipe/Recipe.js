@@ -11,8 +11,6 @@ import RecipeInfo from "./RecipeInfo";
 import ActualRecipe from "./ActualRecipe";
 import RateableStars from './RateableStars';
 import Comments from '../Comment/Comments';
-import { getRecipeComments } from '../Comment/actions';
-import { RecipeCommentsReducer } from '../Comment/reducer';
 import NO_AVATAR from '../../static/no_avatar.svg';
 
 export default function Recipe() {

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useReducer } from 'react';
+import React, { useState, useContext, useReducer, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container'
@@ -10,15 +10,30 @@ import STAR_FIRST_HALF_FULL from '../../static/STAR_FIRST_HALF_FULL.jpg';
 import STAR_SECOND_HALF_FULL from '../../static/STAR_SECOND_HALF_FULL.jpg';
 
 import { UserContext } from '../Context/authContext';
-import { rateRecipe } from './actions';
-import { RateRecipeReducer } from './reducer';
+import { rateRecipe, getUserRecipeRating } from './actions';
+import { RateRecipeReducer, UserRecipeRatingReducer } from './reducer';
 
 export default function RateableStars(props) {
-    const [ratingToRender, setRatingToRender] = useState(props.rating)
+    const [ratingToRender, setRatingToRender] = useState(0)
+    const [userRating,setUserRating] = useState(null)
     const userData = useContext(UserContext);
     const [state, dispatch] = useReducer(RateRecipeReducer);
+    const [stateUserRating, dispatchUserRating] = useReducer(UserRecipeRatingReducer);
     const { id } = useParams();
-    const [alert,setAlert] = useState(null);
+    const [alert, setAlert] = useState(null);
+
+    useEffect(() => {
+        async function getUserRating() {
+            const response = await getUserRecipeRating(dispatchUserRating, userData.user.token.key, id);
+            if(response?.result){
+                setUserRating(response.result.rating)
+                setRatingToRender(response.result.rating)
+            }else{
+                setRatingToRender(props?.rating)
+            }
+        }
+        getUserRating();
+    }, [])
 
     function getStar(star, key) {
         return (
@@ -40,7 +55,7 @@ export default function RateableStars(props) {
     }
 
     const onMouseOut = (e) => {
-        setRatingToRender(props?.rating)
+        setRatingToRender(userRating || props?.rating)
     }
 
     const handleClick = async (e) => {
@@ -58,7 +73,6 @@ export default function RateableStars(props) {
         var key = 0
         if (rating === null || rating === undefined) {
             for (var i = 1; i <= 5; i++) {
-                console.log('wrong')
                 stars.push(getStar(STAR_FIRST_HALF_EMPTY, key += 0.5));
                 stars.push(getStar(STAR_SECOND_HALF_EMPTY, key += 0.5));
             }
@@ -86,7 +100,7 @@ export default function RateableStars(props) {
                 fontSize: props.size,
                 display: 'flex',
                 justifyContent: 'center',
-                paddingBottom:'0.4em'
+                paddingBottom: '0.4em'
             }}>
                 {renderStars(ratingToRender)}
                 ({(() => {
@@ -100,7 +114,7 @@ export default function RateableStars(props) {
             </Col>
             {alert &&
                 <Alert variant={'success'} onClose={() => { setAlert(null) }} dismissible
-                style={{textAlign:'center'}}>
+                    style={{ textAlign: 'center' }}>
                     Rating Submited!
                 </Alert>}
         </Container>

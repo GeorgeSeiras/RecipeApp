@@ -24,7 +24,7 @@ export async function getRecipe(dispatch, payload) {
 export async function rateRecipe(dispatch, payload, token, recipeId) {
 
     const requestOptions = {
-        method: 'PATCH',
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer '.concat(token),
@@ -43,5 +43,27 @@ export async function rateRecipe(dispatch, payload, token, recipeId) {
         dispatch({ type: 'RATE_RECIPE_ERROR', errorMessage: data })
     } catch (error) {
         dispatch({ type: 'RATE_RECIPE_ERROR', errorMessage: error })
+    }
+}
+
+export async function getUserRecipeRating(dispatch, token, recipeId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer '.concat(token),
+        },
+    };
+
+    try {
+        dispatch({ type: 'GET_USER_RECIPE_RATING_REQUEST' });
+        let response = await fetch(`${ROOT_URL}/recipe/${recipeId}/rating`, requestOptions);
+        let data = await response.json();
+        if (data?.result) {
+            dispatch({ type: 'GET_USER_RECIPE_RATING_SUCCESS', payload: data.result })
+            return data
+        }
+        dispatch({ type: 'GET_USER_RECIPE_RATING_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'GET_USER_RECIPE_RATING_ERROR', errorMessage: error })
     }
 }

@@ -17,7 +17,7 @@ from recipe.models import Recipe
 class RateRecipe(APIView):
 
     @user_required
-    def post(self, request, recipe_id):
+    def get(self, request, recipe_id):
         with transaction.atomic():
             try:
                 user = User.objects.get(username=request.user)
@@ -27,19 +27,14 @@ class RateRecipe(APIView):
                 recipe = Recipe.objects.get(pk=recipe_id)
             except Recipe.DoesNotExist:
                 raise NotFound({'message': 'Recipe does not exist'})
-            serializer = RateRecipeSerializer(data=request.data)
-            not serializer.is_valid(raise_exception=True)
-            rating_exists_check = Rating.objects.filter(
-                recipe=recipe, user=user)
-            if rating_exists_check:
-                raise CustomException(
-                    'You have already rated this recipe', status.HTTP_400_BAD_REQUEST)
-            rating = Rating.objects.create(
-                recipe=recipe, user=user, rating=serializer.data['rating'])
+            try:
+                rating = Rating.objects.get(user=user, recipe=recipe)
+            except Rating.DoesNotExist:
+                return JsonResponse({'result': None})
             return JsonResponse({'result': rating.to_dict()})
 
     @user_required
-    def patch(self, request, recipe_id):
+    def put(self, request, recipe_id):
         with transaction.atomic():
             try:
                 user = User.objects.get(username=request.user)
@@ -54,7 +49,9 @@ class RateRecipe(APIView):
             try:
                 rating = Rating.objects.get(user=request.user, recipe=recipe)
             except Rating.DoesNotExist:
-                raise NotFound({'message': 'Rating does not exist'})
+                rating = Rating.objects.create(
+                    recipe=recipe, user=user, rating=serializer.validated_data['rating'])
+                return JsonResponse({'result': rating.to_dict()})
             setattr(rating, 'rating', serializer.data['rating'])
             rating.save()
             return JsonResponse({'result': rating.to_dict()})
