@@ -1,4 +1,4 @@
-const ROOT_URL = 'http://localhost:8000/api';
+const API_URL = process.env.REACT_APP_API_URL;
 
 export async function createRecipe(dispatch, payload, token) {
 
@@ -13,7 +13,7 @@ export async function createRecipe(dispatch, payload, token) {
 
     try {
         dispatch({ type: 'CREATE_RECIPE_REQUEST' });
-        const response = await fetch(`${ROOT_URL}/recipe`, requestOptions);
+        const response = await fetch(`${API_URL}/recipe`, requestOptions);
         const data = await response.json();
         if (data?.result) {
             dispatch({ type: 'CREATE_RECIPE_SUCCESS', payload: data.result })
@@ -35,7 +35,7 @@ export async function uploadRecipeImages(dispatch, payload, token, recipeId) {
     }
 
     try {
-        const response = await fetch(`${ROOT_URL}/recipe/${recipeId}/image`, requestOptions);
+        const response = await fetch(`${API_URL}/recipe/${recipeId}/image`, requestOptions);
         const data = await response.json();
         if (data?.result) {
             dispatch({ type: 'UPLOAD_RECIPE_IMAGE_SUCCESS', payload: data.result })
@@ -58,7 +58,7 @@ export async function deleteRecipe(dispatch, recipeId, token) {
 
     try {
         dispatch({ type: 'DELETE_RECIPE_REQUEST' });
-        const response = await fetch(`${ROOT_URL}/recipe/${recipeId}`, requestOptions);
+        const response = await fetch(`${API_URL}/recipe/${recipeId}`, requestOptions);
         const data = await response.json();
         if (data) {
             dispatch({ type: 'DELETE_RECIPE_SUCCESS', payload: data })

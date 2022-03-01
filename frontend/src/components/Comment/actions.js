@@ -1,4 +1,4 @@
-const ROOT_URL = 'http://localhost:8000/api';
+const API_URL = process.env.REACT_APP_API_URL
 
 export async function getRecipeComments(dispatch, id) {
     const requestOptions = {
@@ -7,7 +7,7 @@ export async function getRecipeComments(dispatch, id) {
 
     try {
         dispatch({ type: 'COMMENTS_REQUEST' });
-        let response = await fetch(`${ROOT_URL}/recipe/${id}/comments`, requestOptions);
+        let response = await fetch(`${API_URL}/recipe/${id}/comments`, requestOptions);
         let data = await response.json();
         if (data) {
             dispatch({ type: 'COMMENTS_SUCCESS', payload: data.result })
@@ -50,7 +50,7 @@ export async function postComment(dispatch, payload, token, recipeId) {
 
     try {
         dispatch({ type: 'CREATE_COMMENT_REQUEST' });
-        let response = await fetch(`${ROOT_URL}/recipe/${recipeId}/comment`, requestOptions);
+        let response = await fetch(`${API_URL}/recipe/${recipeId}/comment`, requestOptions);
         let data = await response.json();
         if (data) {
             dispatch({ type: 'CREATE_COMMENT_SUCCESS', payload: data.result })
@@ -73,7 +73,7 @@ export async function deleteComment(dispatch, token, commentId) {
 
     try {
         dispatch({ type: 'DELETE_COMMENT_REQUEST' });
-        let response = await fetch(`${ROOT_URL}/comment/${commentId}`, requestOptions);
+        let response = await fetch(`${API_URL}/comment/${commentId}`, requestOptions);
         let data = await response.json();
         if (data) {
             dispatch({ type: 'DELETE_COMMENT_SUCCESS', payload: data.result })

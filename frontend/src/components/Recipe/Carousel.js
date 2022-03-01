@@ -3,7 +3,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import Image from 'react-bootstrap/Image'
 
 export default function RecipeCarousel(props) {
-    const mediaPath = 'http://localhost:8000/media/';
+    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
 
     return (
         <div>
@@ -25,7 +25,7 @@ export default function RecipeCarousel(props) {
                                 <Image
 
                                     className="d-block w-100"
-                                    src={`${mediaPath}${image}`}
+                                    src={`${MEDIA_URL}${image}`}
                                     alt="carousel_item" />
                             </Carousel.Item>
                         )

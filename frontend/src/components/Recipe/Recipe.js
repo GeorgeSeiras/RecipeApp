@@ -20,7 +20,7 @@ export default function Recipe() {
     const { id } = useParams();
     const [gallery, setGallery] = useState([]);
     const [thumbnail, setThumbnail] = useState();
-    const mediaPath = 'http://localhost:8000/media/';
+    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
     const [avatar, setAvatar] = useState(null);
 
     useEffect(() => {
@@ -32,16 +32,16 @@ export default function Recipe() {
                 setUser(response.result.user)
             }
         })()
-    }, [id])
+    }, [id,MEDIA_URL])
 
     useEffect(() => {
         if (user?.image) {
-            setAvatar(mediaPath + user?.image?.image)
+            setAvatar(MEDIA_URL + user?.image?.image)
         } else {
             setAvatar(NO_AVATAR)
         }
 
-    }, [user])
+    }, [user,MEDIA_URL])
 
     useEffect(() => {
         setGallery([]);

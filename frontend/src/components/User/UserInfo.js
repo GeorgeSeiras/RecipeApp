@@ -9,14 +9,14 @@ import NO_AVATAR from '../../static/no_avatar.svg';
 export default function UserInfo(props) {
 
     const [avatar, setAvatar] = useState();
-    const MEDIA_URL = 'http://localhost:8000/media/'
+    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
     useEffect(() => {
         if (props.user?.image) {
             setAvatar(MEDIA_URL + props.user.image.image);
         } else {
             setAvatar(NO_AVATAR);
         }
-    }, [props.user])
+    }, [props.user,MEDIA_URL])
 
     return (
         <div>

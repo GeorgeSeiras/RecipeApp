@@ -40,7 +40,7 @@ export default function User() {
                 }
             }
         })();
-    }, [queryParams, pageClicked, userData?.user?.user?.username])
+    }, [queryParams, pageClicked, userData?.user?.user])
 
     return (
         <div>

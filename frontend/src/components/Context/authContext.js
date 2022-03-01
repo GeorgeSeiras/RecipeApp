@@ -5,7 +5,7 @@ import Cookies from 'universal-cookie';
 export const UserContext = createContext({ user: null, token: null, isAuth: null });
 
 export const AuthProvider = ({ children }) => {
-
+    const API_URL = process.env.REACT_APP_API_URL
     const cookies = new Cookies();
 
     const [user, setUser] = useState({
@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }) => {
             : null,
         isAuth: null
     });
-    const ROOT_URL = 'http://localhost:8000/api';
 
     useEffect(() => {
         (async () => {
@@ -27,7 +26,7 @@ export const AuthProvider = ({ children }) => {
                         'Authorization': 'Bearer '.concat(user.token.key)
                     }
                 };
-                await fetch(`${ROOT_URL}/user/me`, requestOptions)
+                await fetch(`${API_URL}/user/me`, requestOptions)
                     .then(res => res.json())
                     .then(data => {
                         setUser({...user,
