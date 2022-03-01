@@ -1,6 +1,6 @@
 import Cookies from 'universal-cookie';
 
-const ROOT_URL = 'http://localhost:8000/api';
+const API_URL = process.env.REACT_APP_API_URL;
 
 export async function userLogin(dispatch, payload, remember) {
     const cookies = new Cookies();
@@ -12,7 +12,7 @@ export async function userLogin(dispatch, payload, remember) {
 
     try {
         dispatch({ type: 'REQUEST_LOGIN' });
-        const response = await fetch(`${ROOT_URL}/token/`, requestOptions);
+        const response = await fetch(`${API_URL}/token/`, requestOptions);
         const data = await response.json();
         if (data.access) {
             dispatch({ type: 'LOGIN', payload: data.access })
@@ -48,7 +48,7 @@ export async function getMe(dispatch, token) {
     };
     try {
         dispatch({ type: 'GET_ME_REQUEST' });
-        const response = await fetch(`${ROOT_URL}/user/me`, requestOptions);
+        const response = await fetch(`${API_URL}/user/me`, requestOptions);
         const data = await response.json();
         if (data?.user) {
             dispatch({ type: 'GET_ME_SUCCESS', payload: data.user })

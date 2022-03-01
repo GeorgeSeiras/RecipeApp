@@ -1,4 +1,4 @@
-const ROOT_URL = 'http://localhost:8000/api';
+const API_URL = process.env.REACT_APP_API_URL;
 
 export async function getRecipes(dispatch, queryParams, pageClicked) {
     const requestOptions = {
@@ -15,9 +15,9 @@ export async function getRecipes(dispatch, queryParams, pageClicked) {
             }else{
                 queryParams.concat(`&page=${pageClicked}`);
             }
-            response = await fetch(`${ROOT_URL}/recipes${queryParams}`, requestOptions);
+            response = await fetch(`${API_URL}/recipes${queryParams}`, requestOptions);
         } else {
-            response = await fetch(`${ROOT_URL}/recipes${queryParams}`, requestOptions);
+            response = await fetch(`${API_URL}/recipes${queryParams}`, requestOptions);
         }
 
         let data = await response.json();

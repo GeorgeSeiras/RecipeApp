@@ -11,9 +11,8 @@ import RatingStars from './RatingStar';
 export default function RecipeCards(props) {
 
     const [thumbnails, setThumbnails] = useState([])
-    const mediaPath = 'http://localhost:8000/media/'
+    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
     const navigate = useNavigate();
-
     useEffect(() => {
         setThumbnails([])
         props?.response?.results.forEach((recipe, key) => {
@@ -21,12 +20,12 @@ export default function RecipeCards(props) {
                 return image.type === "THUMBNAIL"
             })?.image
             if (img) {
-                setThumbnails(thumbnails => [...thumbnails, `${mediaPath}${img}`]);
+                setThumbnails(thumbnails => [...thumbnails, `${MEDIA_URL}${img}`]);
             } else {
                 setThumbnails(thumbnails => [...thumbnails, IMAGE_NOT_FOUND]);
             }
         })
-    }, [props?.response?.results])
+    }, [props?.response?.results,MEDIA_URL])
 
     return (
         <div>

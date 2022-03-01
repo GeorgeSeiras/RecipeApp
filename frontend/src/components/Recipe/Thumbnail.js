@@ -2,15 +2,14 @@ import React from 'react';
 import Image from 'react-bootstrap/Image';
 
 export default function Thumbnail(props) {
-    const mediaPath = 'http://localhost:8000/media/'
-
+    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
     return (
         <div>
             {props?.thumbnail &&
                 <Image
                     width="500"
                     className="mx-auto d-block"
-                    src={`${mediaPath}${props.thumbnail}`}
+                    src={`${MEDIA_URL}${props.thumbnail}`}
                     alt="thumbnail" />
             }
         </div>

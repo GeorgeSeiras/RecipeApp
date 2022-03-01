@@ -15,7 +15,7 @@ import { RateRecipeReducer, UserRecipeRatingReducer } from './reducer';
 
 export default function RateableStars(props) {
     const [ratingToRender, setRatingToRender] = useState(0)
-    const [userRating,setUserRating] = useState(null)
+    const [userRating, setUserRating] = useState(null)
     const userData = useContext(UserContext);
     const [state, dispatch] = useReducer(RateRecipeReducer);
     const [stateUserRating, dispatchUserRating] = useReducer(UserRecipeRatingReducer);
@@ -25,22 +25,24 @@ export default function RateableStars(props) {
     useEffect(() => {
         async function getUserRating() {
             const response = await getUserRecipeRating(dispatchUserRating, userData.user.token.key, id);
-            if(response?.result){
+            if (response?.result) {
                 setUserRating(response.result.rating)
                 setRatingToRender(response.result.rating)
-            }else{
+            } else {
                 setRatingToRender(props?.rating)
             }
         }
         getUserRating();
-    }, [])
+    }, [props?.rating, id, userData?.user?.token.key])
 
     function getStar(star, key) {
         return (
             <Image
-                style={{ paddingLeft: '0', paddingRight: '0' }}
                 key={key} id={key}
-                style={{ width: '0.75em', height: 'auto' }}
+                style={{
+                    width: '0.75em', height: 'auto',
+                    paddingLeft: '0', paddingRight: '0'
+                }}
                 src={star}
                 alt=''
                 onClick={(e) => handleClick(e)}

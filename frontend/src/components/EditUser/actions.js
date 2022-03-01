@@ -1,4 +1,4 @@
-const ROOT_URL = 'http://localhost:8000/api';
+const API_URL = process.env.REACT_APP_API_URL;
 
 export async function editUser(dispatch, payload, token) {
 
@@ -13,7 +13,7 @@ export async function editUser(dispatch, payload, token) {
 
     try {
         dispatch({ type: 'EDIT_USER_REQUEST' });
-        let response = await fetch(`${ROOT_URL}/user`, requestOptions);
+        let response = await fetch(`${API_URL}/user`, requestOptions);
         let data = await response.json();
         if (data?.result) {
             dispatch({ type: 'EDIT_USER_SUCCESS', payload: data.result })
@@ -38,7 +38,7 @@ export async function changePassword(dispatch, payload, token) {
 
     try {
         dispatch({ type: 'CHANGE_PASSWORD_REQUEST' });
-        let response = await fetch(`${ROOT_URL}/user/password`, requestOptions);
+        let response = await fetch(`${API_URL}/user/password`, requestOptions);
         let data = await response.json();
         if (data?.result) {
             dispatch({ type: 'CHANGE_PASSWORD_SUCCESS', payload: data.result })
@@ -62,7 +62,7 @@ export async function changeImage(dispatch, payload, token) {
 
     try {
         dispatch({ type: 'CHANGE_IMAGE_REQUEST' });
-        let response = await fetch(`${ROOT_URL}/image/user`, requestOptions);
+        let response = await fetch(`${API_URL}/image/user`, requestOptions);
         let data = await response.json();
         if (data?.result) {
             dispatch({ type: 'CHANGE_IMAGE_SUCCESS', payload: data.result })

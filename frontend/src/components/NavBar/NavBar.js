@@ -10,14 +10,15 @@ import './NavBar.css'
 const Navigation = () => {
     const userData = useContext(UserContext);
     const [avatar, setAvatar] = useState(null);
-
+    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
+    
     useEffect(() => {
         if(userData?.user?.user?.image?.image ){
-            setAvatar('http://localhost:8000/media/'+userData?.user?.user?.image?.image )
+            setAvatar(`${MEDIA_URL}${userData?.user?.user?.image?.image} `)
         }else{
             setAvatar(NO_AVATAR)
         }
-    }, [userData?.user?.user?.image?.image])
+    }, [userData?.user?.user?.image?.image,MEDIA_URL])
 
     return (
         <>

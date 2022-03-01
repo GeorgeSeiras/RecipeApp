@@ -1,4 +1,4 @@
-const ROOT_URL = 'http://localhost:8000/api';
+const API_URL = process.env.REACT_APP_API_URL;
 
 export async function register(dispatch, payload) {
 
@@ -10,7 +10,7 @@ export async function register(dispatch, payload) {
 
     try {
         dispatch({ type: 'REGISTER_REQUEST' });
-        let response = await fetch(`${ROOT_URL}/user/register`, requestOptions);
+        let response = await fetch(`${API_URL}/user/register`, requestOptions);
         let data = await response.json();
         if (data?.result) {
             dispatch({ type: 'REGISTER_SUCCESS', payload: data.result })
