@@ -90,7 +90,7 @@ class StepCreateSerializer(serializers.Serializer):
 
 
 class RecipesQuerySerializer(serializers.Serializer):
-    user = serializers.CharField(required=False)
+    username = serializers.CharField(required=False)
     title = serializers.CharField(required=False)
     cuisine = serializers.CharField(required=False)
     course = serializers.CharField(required=False)
