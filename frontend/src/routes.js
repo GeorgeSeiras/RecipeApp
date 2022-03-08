@@ -5,6 +5,7 @@ import Recipe from './components/Recipe/Recipe';
 import User from './components/User/User';
 import CreateRecipe from './components/CreateRecipe/CreateRecipe';
 import EditUser from './components/EditUser/EditUser';
+import List from './components/RecipeList/List';
 
 export const privateRoutes = [
     {
@@ -29,6 +30,10 @@ export const publicRoutes = [
     {
         path: '/user/:username',
         element: <User />
+    },
+    {
+        path: '/user/:userId/list/:listId',
+        element: <List/>
     }
 ]
 export const authRoutes = [

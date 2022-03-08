@@ -105,10 +105,10 @@ class UserRecipes(APIView, LimitOffsetPagination):
 
 
 class UserLists(APIView, LimitOffsetPagination):
-    @user_required
-    def get(self, request):
+
+    def get(self, request,user_id):
         try:
-            user = User.objects.get(username=request.user)
+            user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
             raise NotFound({"message": "User not found"})
         lists = List.objects.filter(user=user.id)

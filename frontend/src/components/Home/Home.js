@@ -23,9 +23,7 @@ export default function Home(props) {
             const res = await getRecipes(dispatch, queryParams, pageClicked);
             if (res) {
                 setResponse(res);
-                if(pageClicked){
                     setActive(pageClicked);
-                }
             }
         })()
     }, [queryParams,pageClicked])

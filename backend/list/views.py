@@ -149,7 +149,7 @@ class ListRecipes(APIView, myPagination):
         query &=Q(list=list_id)
         if "username" in serializer.validated_data:
             query &= Q(
-                recipe_user__username__iexact=serializer.validated_data["username"])
+                recipe__user__username__iexact=serializer.validated_data["username"])
         if "title" in serializer.validated_data:
             query &= Q(recipe__title__icontains=serializer.validated_data["title"])
         if "cuisine" in serializer.validated_data:
@@ -157,13 +157,13 @@ class ListRecipes(APIView, myPagination):
                        serializer.validated_data["cuisine"]])
         if "course" in serializer.validated_data:
             query &= Q(recipe__course__contains=[serializer.validated_data["course"]])
-        sort = "-created_at"
+        sort = "-recipe__created_at"
         if "sort" in serializer.validated_data:
             if serializer.validated_data["sort"] == choices["asc"]:
                 sort = "recipe__created_at"
             elif serializer.validated_data["sort"] == choices["desc"]:
                 sort = "-recipe__created_at"
-        recipes = RecipesInList.objects.filter(query).order_by('recipe__created_at')
+        recipes = RecipesInList.objects.filter(query).order_by(sort)
         objects = RecipesInList.recipes_in_list_to_list(recipes)
         page = self.paginate_queryset(objects, request)
         response = self.get_paginated_response(page)

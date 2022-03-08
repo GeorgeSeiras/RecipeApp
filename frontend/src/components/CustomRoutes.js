@@ -17,3 +17,11 @@ export const NoLoggedInRoute = ({ children }) => {
     }
     return user.isAuth ? <Navigate to='/' /> : children
 }
+
+export const NormalRoute = ({ children }) => {
+    const { user } = useContext(UserContext);
+    if (user.isAuth === null) {
+        return null
+    }
+    return children
+}

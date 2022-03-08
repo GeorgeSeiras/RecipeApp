@@ -3,7 +3,7 @@ import './App.css';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import { authRoutes, publicRoutes, privateRoutes, } from './routes';
 import { AuthProvider } from './components/Context/authContext';
-import { PrivateRoute, NoLoggedInRoute } from './components/CustomRoutes'
+import { PrivateRoute, NoLoggedInRoute, NormalRoute } from './components/CustomRoutes'
 import Navigation from './components/NavBar/NavBar';
 
 function App() {
@@ -24,7 +24,7 @@ function App() {
             <Route
               key={route.path}
               exact path={route.path}
-              element={route.element}
+              element={<NormalRoute>{route.element}</NormalRoute>}
             />
           ))}
           {authRoutes.map((route) => (

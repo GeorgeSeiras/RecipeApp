@@ -39,9 +39,10 @@ export default function PaginationBar(props) {
                         ];
                     }
                 }
+                setPageArr(pageArr)
+            }else{
+                setPageArr([1])
             }
-            setPageArr(pageArr)
-
         }
     }, [props?.response, props.active, totalPages])
 
