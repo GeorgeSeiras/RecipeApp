@@ -4,8 +4,8 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-import { getList } from './actions';
-import { GetListReducer } from './reducer';
+import { getListRecipes, getList } from './actions';
+import { GetListRecipesReducer, GetListReducer } from './reducer';
 import { UserContext } from '../Context/authContext';
 import RecipeCards from '../Home/RecipeCards';
 import PaginationBar from '../Home/Pagination';
@@ -13,39 +13,57 @@ import SearchBar from '../Home/SearchBar';
 
 export default function List() {
     const userData = useContext(UserContext);
-    const [state, dispatch] = useReducer(GetListReducer);
-    const [response, setResponse] = useState();
+    const [state, dispatch] = useReducer(GetListRecipesReducer);
+    const [stateList, dispatchList] = useReducer(GetListReducer);
+    const [recipesResponse, setRecipeResponse] = useState();
+    const [list, setList] = useState();
     const { listId } = useParams();
     const [queryParams, setQueryParams] = useState('');
     const [active, setActive] = useState(1);
     const [pageClicked, setPageClicked] = useState(1);
 
     useEffect(() => {
-        async function getListApiCall() {
-            const res = await getList(dispatch, listId, userData.user.token.key, queryParams, pageClicked);
+        (async () => {
+            const response = await getList(dispatchList, listId);
+            if (response?.result) {
+                setList(response.result);
+            }
+        })()
+    }, []);
+
+    useEffect(() => {
+        async function getListRecipesApiCall() {
+            const res = await getListRecipes(dispatch, listId, userData.user.token.key, queryParams, pageClicked);
             if (res) {
                 const recipes = [];
                 res.results.forEach(item => {
                     recipes.push(item.recipe);
                 })
-                setResponse({ ...res, results: recipes });
+                setRecipeResponse({ ...res, results: recipes });
                 setActive(pageClicked);
             }
         }
-        getListApiCall();
-    }, [queryParams, pageClicked])
+        getListRecipesApiCall();
+    }, [queryParams, pageClicked]);
 
     return (
         <Container>
+            {list?.desc &&
+                <Row style={{
+                    margin: "auto",
+                }}>
+                    <h2 >{list.desc}</h2>
+                </Row>
+            }
             <Row>
                 <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} />
             </Row>
             <Row>
                 <Col>
-                    <RecipeCards response={response} />
+                    <RecipeCards response={recipesResponse} />
                 </Col>
             </Row>
-            <PaginationBar response={response} active={active} setPageClicked={setPageClicked} />
+            <PaginationBar response={recipesResponse} active={active} setPageClicked={setPageClicked} />
         </Container>
     )
 }

@@ -20,7 +20,7 @@ export async function getUserLists(dispatch, userId) {
     }
 }
 
-export async function getList(dispatch, id, token, queryParams, pageClicked) {
+export async function getListRecipes(dispatch, id, token, queryParams, pageClicked) {
 
     const requestOptions = {
         method: 'GET',
@@ -30,7 +30,7 @@ export async function getList(dispatch, id, token, queryParams, pageClicked) {
     };
 
     try {
-        dispatch({ type: 'GET_LIST_REQUEST' });
+        dispatch({ type: 'GET_LIST_RECIPES_REQUEST' });
         var response = null;
         if (pageClicked) {
             if (queryParams === '') {
@@ -44,12 +44,12 @@ export async function getList(dispatch, id, token, queryParams, pageClicked) {
         }
         let data = await response.json();
         if (data?.results) {
-            dispatch({ type: 'GET_LIST_SUCCESS', payload: data.results })
+            dispatch({ type: 'GET_LIST_RECIPES_SUCCESS', payload: data.results })
             return data
         }
-        dispatch({ type: 'GET_LIST_ERROR', errorMessage: data })
+        dispatch({ type: 'GET_LIST_RECIPES_ERROR', errorMessage: data })
     } catch (error) {
-        dispatch({ type: 'GET_LIST_ERROR', errorMessage: error })
+        dispatch({ type: 'GET_LIST_RECIPES_ERROR', errorMessage: error })
     }
 }
 
@@ -75,5 +75,25 @@ export async function createList(dispatch, token, payload) {
         dispatch({ type: 'CREATE_LIST_ERROR', errorMessage: data })
     } catch (error) {
         dispatch({ type: 'CREATE_LIST_ERROR', errorMessage: error })
+    }
+}
+
+export async function getList(dispatch, listId) {
+
+    const requestOptions = {
+        method: 'GET',
+    };
+
+    try {
+        dispatch({ type: 'GET_LIST_REQUEST' });
+        const response = await fetch(`${API_URL}/list/${listId}`, requestOptions);
+        const data = await response.json();
+        if (data?.result) {
+            dispatch({ type: 'GET_LIST_SUCCESS', payload: data.result })
+            return data
+        }
+        dispatch({ type: 'GET_LIST_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'GET_LIST_ERROR', errorMessage: error })
     }
 }
