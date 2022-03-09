@@ -111,7 +111,7 @@ class UserLists(APIView, LimitOffsetPagination):
             user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
             raise NotFound({"message": "User not found"})
-        lists = List.objects.filter(user=user.id)
+        lists = List.objects.filter(user=user.id).order_by('-id')
         paginated_queryset = self.paginate_queryset(lists, request)
         paginated_response = self.get_paginated_response(
             List.lists_to_list(paginated_queryset))

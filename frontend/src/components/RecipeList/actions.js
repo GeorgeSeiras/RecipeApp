@@ -44,11 +44,36 @@ export async function getList(dispatch, id, token, queryParams, pageClicked) {
         }
         let data = await response.json();
         if (data?.results) {
-            dispatch({ type: 'GET_LIST_SUCCESS', payload: data.result })
+            dispatch({ type: 'GET_LIST_SUCCESS', payload: data.results })
             return data
         }
         dispatch({ type: 'GET_LIST_ERROR', errorMessage: data })
     } catch (error) {
         dispatch({ type: 'GET_LIST_ERROR', errorMessage: error })
+    }
+}
+
+export async function createList(dispatch, token, payload) {
+
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer '.concat(token),
+            'Content-Type':'application/json'
+        },
+        body: JSON.stringify(payload)
+    };
+
+    try {
+        dispatch({ type: 'CREATE_LIST_REQUEST' });
+        const response = await fetch(`${API_URL}/list`, requestOptions);
+        const data = await response.json();
+        if (data?.result) {
+            dispatch({ type: 'CREATE_LIST_SUCCESS', payload: data.result })
+            return data
+        }
+        dispatch({ type: 'CREATE_LIST_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'CREATE_LIST_ERROR', errorMessage: error })
     }
 }

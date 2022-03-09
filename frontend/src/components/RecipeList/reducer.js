@@ -53,3 +53,31 @@ export const GetListReducer = (initialStateGetList, action) => {
             throw new Error(`Unhandled action type: ${action.type}`);
     }
 }
+
+export const initialStateCreateList = {
+    list: null,
+    loading: false,
+    errorMessage: null
+}
+
+export const CreateListReducer = (initialStateCreateList, action) => {
+    switch (action.type) {
+        case 'CREATE_LIST_REQUEST':
+            return {
+                ...initialStateCreateList,
+                loading: true
+            };
+        case 'CREATE_LIST_SUCCESS':
+            return {
+                ...initialStateCreateList,
+                list: action.payload?.result
+            };
+        case 'CREATE_LIST_ERROR':
+            return {
+                ...initialStateCreateList,
+                errorMessage: action.errorMessage
+            }
+        default:
+            throw new Error(`Unhandled action type: ${action.type}`);
+    }
+}

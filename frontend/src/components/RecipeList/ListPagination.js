@@ -1,39 +1,48 @@
-import React from 'react'
-import Pagination from 'react-bootstrap/Pagination'
+import React from 'react';
+import Pagination from 'react-bootstrap/Pagination';
+import Container from 'react-bootstrap/Container';
 
 export default function PaginationBar(props) {
 
     const disabled = (action) => {
         switch (action) {
             case 'previous':
-                return props?.response?.previous!== undefined;
+                return props?.previous;
             case 'next':
-                return props?.response?.next !== undefined;
+                return props?.next;
             default:
                 return false;
         }
     }
+
+    const handleClick = (action) => {
+        switch (action) {
+            case 1:
+                props?.setClicked(props?.next);
+                return;
+            case -1:
+                props?.setClicked(props?.previous);
+        }
+    }
     return (
-        <div>
-            {props?.response &&
+        <Container style={{ display: 'table-cell', paddingLeft: '0', paddingRight: '0' }}>
                 <Pagination style={{
                     flex: '1',
-                    paddingRight:'0'
+                    paddingRight: '0'
                 }}>
                     <Pagination.Prev
                         key={'prev'}
                         disabled={!disabled('previous')}
-                        onClick={() => props.setClicked(-1)}
-                        style={{ flex: '1',textAlign:'center' }}
+                        onClick={() => handleClick(-1)}
+                        style={{ flex: '1', textAlign: 'center' }}
                     />
                     <Pagination.Next
                         key={'next'}
                         disabled={!disabled('next')}
-                        onClick={() => props.setClicked(1)}
-                        style={{ flex: '1',textAlign:'center' }}
+                        onClick={() => handleClick(1)}
+                        style={{ flex: '1', textAlign: 'center' }}
                     />
                 </Pagination>
-            }
-        </div>
+        </Container>
     )
 }

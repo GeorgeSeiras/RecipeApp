@@ -27,10 +27,7 @@ class ListCreate(APIView):
             serializer = ListCreateSerializer(data=request.data)
             not serializer.is_valid(raise_exception=True)
             list = List.objects.create(user=user, **serializer.data)
-            return JsonResponse({
-                'status': 'ok',
-                'data': list.to_dict()
-            })
+            return JsonResponse({'result': list.to_dict()});
 
 
 class ListDetail(APIView):
@@ -146,17 +143,19 @@ class ListRecipes(APIView, myPagination):
         serializer.is_valid(raise_exception=True)
         choices = {value: key for key, value in sort_choices}
         query = Q()
-        query &=Q(list=list_id)
+        query &= Q(list=list_id)
         if "username" in serializer.validated_data:
             query &= Q(
                 recipe__user__username__iexact=serializer.validated_data["username"])
         if "title" in serializer.validated_data:
-            query &= Q(recipe__title__icontains=serializer.validated_data["title"])
+            query &= Q(
+                recipe__title__icontains=serializer.validated_data["title"])
         if "cuisine" in serializer.validated_data:
             query &= Q(recipe__cuisine__contains=[
                        serializer.validated_data["cuisine"]])
         if "course" in serializer.validated_data:
-            query &= Q(recipe__course__contains=[serializer.validated_data["course"]])
+            query &= Q(recipe__course__contains=[
+                       serializer.validated_data["course"]])
         sort = "-recipe__created_at"
         if "sort" in serializer.validated_data:
             if serializer.validated_data["sort"] == choices["asc"]:
