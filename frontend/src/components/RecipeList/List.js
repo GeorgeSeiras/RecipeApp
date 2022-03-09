@@ -1,11 +1,15 @@
 import React, { useState, useEffect, useReducer, useContext } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
-import { getListRecipes, getList } from './actions';
-import { GetListRecipesReducer, GetListReducer } from './reducer';
+import { getListRecipes, getList, deleteList } from './actions';
+import { GetListRecipesReducer, GetListReducer, DeleteListReducer } from './reducer';
 import { UserContext } from '../Context/authContext';
 import RecipeCards from '../Home/RecipeCards';
 import PaginationBar from '../Home/Pagination';
@@ -15,12 +19,16 @@ export default function List() {
     const userData = useContext(UserContext);
     const [state, dispatch] = useReducer(GetListRecipesReducer);
     const [stateList, dispatchList] = useReducer(GetListReducer);
+    const [stateDelete, dispatchDelete] = useReducer(DeleteListReducer);
     const [recipesResponse, setRecipeResponse] = useState();
     const [list, setList] = useState();
     const { listId } = useParams();
     const [queryParams, setQueryParams] = useState('');
     const [active, setActive] = useState(1);
     const [pageClicked, setPageClicked] = useState(1);
+    const [showModal, setShowModal] = useState(false);
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         (async () => {
@@ -32,7 +40,7 @@ export default function List() {
     }, []);
 
     useEffect(() => {
-        async function getListRecipesApiCall() {
+        (async () => {
             const res = await getListRecipes(dispatch, listId, userData.user.token.key, queryParams, pageClicked);
             if (res) {
                 const recipes = [];
@@ -42,13 +50,34 @@ export default function List() {
                 setRecipeResponse({ ...res, results: recipes });
                 setActive(pageClicked);
             }
-        }
-        getListRecipesApiCall();
+        })()
     }, [queryParams, pageClicked]);
+
+    const handleDeleteList = () => {
+        (async () => {
+            const response = await deleteList(dispatchDelete, listId, userData.user.token.key);
+            if (response?.result === 'ok') {
+                navigate(`/user/${userData.user.user.username}`);
+            }
+        })()
+    }
 
     return (
         <Container>
-            {list?.desc &&
+            {list?.user?.username === userData.user.user.username &&
+                <DropdownButton
+                    variant={'danger'}
+                    title={String.fromCharCode('8942')}
+                    style={{ paddingTop: '0.5em' }}
+                >
+                    <Dropdown.Item onClick={() => setShowModal(true)}>
+                        Delete List
+                    </Dropdown.Item>
+                </DropdownButton>
+
+            }
+            {
+                list?.desc &&
                 <Row style={{
                     margin: "auto",
                 }}>
@@ -64,6 +93,23 @@ export default function List() {
                 </Col>
             </Row>
             <PaginationBar response={recipesResponse} active={active} setPageClicked={setPageClicked} />
-        </Container>
+
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Delete List</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Are you sure you want to delete this list?
+                    This action is not reversible</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={() => handleDeleteList()}>
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </Container >
+
     )
 }

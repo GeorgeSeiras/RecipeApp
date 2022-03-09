@@ -58,7 +58,7 @@ class ListDetail(APIView):
             for key, value in serializer.data.items():
                 setattr(list, key, value)
             list.save()
-            return JsonResponse({'status': 'ok', 'data': list.to_dict()})
+            return JsonResponse({'result': list.to_dict()})
 
     @user_required
     def delete(self, request, list_id):
@@ -75,7 +75,7 @@ class ListDetail(APIView):
                 raise PermissionDenied(
                     {"message": "You cannot edit another user's lists"})
             list.delete()
-            return JsonResponse({'status': 'ok'})
+            return JsonResponse({'result': 'ok'})
 
 
 class ListRecipe(APIView):
