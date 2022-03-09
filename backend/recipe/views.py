@@ -223,9 +223,9 @@ class RecipesQuery(APIView, myPagination):
         serializer.is_valid(raise_exception=True)
         choices = {value: key for key, value in sort_choices}
         query = Q()
-        if "user" in serializer.validated_data:
+        if "username" in serializer.validated_data:
             query &= Q(
-                user__username__iexact=serializer.validated_data["user"])
+                user__username__iexact=serializer.validated_data["username"])
         if "title" in serializer.validated_data:
             query &= Q(title__icontains=serializer.validated_data["title"])
         if "cuisine" in serializer.validated_data:

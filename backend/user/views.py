@@ -81,7 +81,7 @@ class UserRegister(APIView):
         with transaction.atomic():
             serializer = UserSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            serializer.validated_data['password'] = make_password(
+            serializer.data['password'] = make_password(
                 serializer.validated_data['password'])
             serializer.save()
             res = serializer.data
@@ -105,13 +105,13 @@ class UserRecipes(APIView, LimitOffsetPagination):
 
 
 class UserLists(APIView, LimitOffsetPagination):
-    @user_required
-    def get(self, request):
+
+    def get(self, request,user_id):
         try:
-            user = User.objects.get(username=request.user)
+            user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
             raise NotFound({"message": "User not found"})
-        lists = List.objects.filter(user=user.id)
+        lists = List.objects.filter(user=user.id).order_by('-id')
         paginated_queryset = self.paginate_queryset(lists, request)
         paginated_response = self.get_paginated_response(
             List.lists_to_list(paginated_queryset))

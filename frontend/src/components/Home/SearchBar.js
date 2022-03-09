@@ -50,7 +50,6 @@ export default function SearchBar(props) {
             query = query.concat(`username=${username}`)
         }
         if (sort) {
-            console.log(sort)
             if (query) {
                 query = query.concat(`&`)
             } else {

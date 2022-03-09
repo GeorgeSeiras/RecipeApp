@@ -17,11 +17,6 @@ class List(models.Model):
         dict['user'] = self.user.to_dict()
         dict['name'] = self.name
         dict['desc'] = self.desc
-        recipes_in_list = RecipesInList.objects.filter(list=self.pk)
-        recipe_list = []
-        for recipe in recipes_in_list:
-            recipe_list.append(recipe.to_dict_no_list_population())
-        dict['recipes'] = recipe_list
         return dict
 
     def lists_to_list(lists):
@@ -40,15 +35,9 @@ class RecipesInList(models.Model):
         dict['recipe'] = self.recipe.to_dict()
         dict['list'] = self.list.to_dict()
         return dict 
-        
-    def to_dict_no_list_population(self):
-        dict = {}
-        dict['recipe'] = self.recipe.to_dict()
-        dict['list'] = self.list.pk
-        return dict
 
     def recipes_in_list_to_list(recipes_in_list):
         list = []
         for recipe_in_list in recipes_in_list:
-            list.append(recipe_in_list.to_dict_no_list_population())
+            list.append(recipe_in_list.to_dict())
         return list

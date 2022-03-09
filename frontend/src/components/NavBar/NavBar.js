@@ -44,7 +44,7 @@ const Navigation = () => {
                                 title={<img className="avatar" src={avatar} alt="avatar" width="40px" height="auto" />}>
                                 <NavDropdown.ItemText>{userData.user.user.username}</NavDropdown.ItemText>
                                 <NavDropdown.Divider/>
-                                <NavDropdown.Item href={'/user/' + userData.user.user.id}>Profile</NavDropdown.Item>
+                                <NavDropdown.Item href={'/user/' + userData.user.user.username}>Profile</NavDropdown.Item>
                                 <NavDropdown.Item href={'/user/'+userData.user.user.id+'/edit'}>Edit Profile</NavDropdown.Item>
                                 <NavDropdown.Item onClick={()=>{
                                     userData.logout();
