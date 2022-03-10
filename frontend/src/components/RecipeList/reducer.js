@@ -131,3 +131,25 @@ export const DeleteListReducer = (initialStateDelete, action) => {
             throw new Error(`Unhandled action type: ${action.type}`);
     }
 }
+
+export const DeleteRecipeFromListReducer = (initialStateDelete, action) => {
+    switch (action.type) {
+        case 'DELETE_RECIPE_FROM_LIST_REQUEST':
+            return {
+                ...initialStateDelete,
+                loading: true
+            };
+        case 'DELETE_RECIPE_FROM_LIST_SUCCESS':
+            return {
+                ...initialStateDelete,
+                result: action.payload?.result
+            };
+        case 'DELETE_RECIPE_FROM_LIST_ERROR':
+            return {
+                ...initialStateDelete,
+                errorMessage: action.errorMessage
+            }
+        default:
+            throw new Error(`Unhandled action type: ${action.type}`);
+    }
+}

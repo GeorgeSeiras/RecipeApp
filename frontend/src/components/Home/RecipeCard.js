@@ -12,7 +12,7 @@ export default function RecipeCard(props) {
     const navigate = useNavigate();
 
     return (
-        <Col key={props.index} >
+        <Col key={props.index} style={{paddingLeft:'2%',paddingRight:'2%'}}>
             <Card
                 id={props.recipe.id}
                 onClick={(e) => navigate(`/recipe/${e.target.parentNode.id}`)}

@@ -113,27 +113,29 @@ class ListRecipe(APIView):
             return JsonResponse({'result': recipe_in_list.to_dict()})
 
     @user_required
-    def delete(self, request, list_id):
+    def delete(self, request, list_id,recipe_id):
         with transaction.atomic():
             try:
                 user = User.objects.get(username=request.user)
             except User.DoesNotExist:
-                raise NotFound({'message': 'User does not exist'})
+                raise NotFound({'message': 'User not found'})
             try:
                 list = List.objects.get(pk=list_id)
             except List.DoesNotExist:
-                raise NotFound({'message': 'List does not exist'})
+                raise NotFound({'message': 'List not found'})
             if(user != list.user):
                 raise PermissionDenied(
                     {"message':'You cannot edit another user's lists"})
-            serializer = ListRecipeSerializer(data=request.data)
-            not serializer.is_valid(raise_exception=True)
+            try:
+                recipe = Recipe.objects.get(pk=recipe_id)
+            except Recipe.DoesNotExist:
+                raise NotFound({'message':'Recipe not found'})
             try:
                 recipe_in_list = RecipesInList.objects.get(
-                    recipe=serializer.data['recipe'], list=list).delete()
+                    recipe=recipe, list=list).delete()
             except RecipesInList.DoesNotExist:
                 raise NotFound({'message': 'Recipe is not part of the list'})
-            return JsonResponse({'status': 'ok'})
+            return JsonResponse({'result': 'ok'})
 
 
 class ListRecipes(APIView, myPagination):

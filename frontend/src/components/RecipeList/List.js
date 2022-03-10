@@ -27,8 +27,9 @@ export default function List() {
     const [active, setActive] = useState(1);
     const [pageClicked, setPageClicked] = useState(1);
     const [showModal, setShowModal] = useState(false);
+    const [rerender,setRerender] = useState(false);
+    
     const navigate = useNavigate();
-
 
     useEffect(() => {
         (async () => {
@@ -51,7 +52,7 @@ export default function List() {
                 setActive(pageClicked);
             }
         })()
-    }, [queryParams, pageClicked]);
+    }, [queryParams, pageClicked,rerender]);
 
     const handleDeleteList = () => {
         (async () => {
@@ -87,10 +88,11 @@ export default function List() {
             <Row>
                 <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} />
             </Row>
-            <Row>
-                <Col>
-                    <ListRecipeCards response={recipesResponse} />
-                </Col>
+            <Row style={{
+                paddingLeft: '2%',
+                paddingRight: '2%'
+            }}>
+                <ListRecipeCards response={recipesResponse} setRecipesResponse={setRecipesResponse} setRerender={setRerender} rerender={rerender}/>
             </Row>
             <PaginationBar response={recipesResponse} active={active} setPageClicked={setPageClicked} />
 
@@ -98,8 +100,10 @@ export default function List() {
                 <Modal.Header closeButton>
                     <Modal.Title>Delete List</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Are you sure you want to delete this list?
-                    This action is not reversible</Modal.Body>
+                <Modal.Body>
+                    Are you sure you want to delete this list?
+                    This action is not reversible
+                </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowModal(false)}>
                         Cancel
