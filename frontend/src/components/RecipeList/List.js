@@ -11,7 +11,7 @@ import Button from 'react-bootstrap/Button';
 import { getListRecipes, getList, deleteList } from './actions';
 import { GetListRecipesReducer, GetListReducer, DeleteListReducer } from './reducer';
 import { UserContext } from '../Context/authContext';
-import RecipeCards from '../Home/RecipeCards';
+import ListRecipeCards from './ListRecipeCards';
 import PaginationBar from '../Home/Pagination';
 import SearchBar from '../Home/SearchBar';
 
@@ -20,15 +20,16 @@ export default function List() {
     const [state, dispatch] = useReducer(GetListRecipesReducer);
     const [stateList, dispatchList] = useReducer(GetListReducer);
     const [stateDelete, dispatchDelete] = useReducer(DeleteListReducer);
-    const [recipesResponse, setRecipeResponse] = useState();
+    const [recipesResponse, setRecipesResponse] = useState();
     const [list, setList] = useState();
     const { listId } = useParams();
     const [queryParams, setQueryParams] = useState('');
     const [active, setActive] = useState(1);
     const [pageClicked, setPageClicked] = useState(1);
     const [showModal, setShowModal] = useState(false);
+    const [rerender,setRerender] = useState(false);
+    
     const navigate = useNavigate();
-
 
     useEffect(() => {
         (async () => {
@@ -47,11 +48,11 @@ export default function List() {
                 res.results.forEach(item => {
                     recipes.push(item.recipe);
                 })
-                setRecipeResponse({ ...res, results: recipes });
+                setRecipesResponse({ ...res, results: recipes });
                 setActive(pageClicked);
             }
         })()
-    }, [queryParams, pageClicked]);
+    }, [queryParams, pageClicked,rerender]);
 
     const handleDeleteList = () => {
         (async () => {
@@ -87,10 +88,11 @@ export default function List() {
             <Row>
                 <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} />
             </Row>
-            <Row>
-                <Col>
-                    <RecipeCards response={recipesResponse} />
-                </Col>
+            <Row style={{
+                paddingLeft: '2%',
+                paddingRight: '2%'
+            }}>
+                <ListRecipeCards response={recipesResponse} setRecipesResponse={setRecipesResponse} setRerender={setRerender} rerender={rerender}/>
             </Row>
             <PaginationBar response={recipesResponse} active={active} setPageClicked={setPageClicked} />
 
@@ -98,8 +100,10 @@ export default function List() {
                 <Modal.Header closeButton>
                     <Modal.Title>Delete List</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Are you sure you want to delete this list?
-                    This action is not reversible</Modal.Body>
+                <Modal.Body>
+                    Are you sure you want to delete this list?
+                    This action is not reversible
+                </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowModal(false)}>
                         Cancel

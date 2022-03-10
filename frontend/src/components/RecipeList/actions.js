@@ -120,3 +120,26 @@ export async function deleteList(dispatch, listId, token) {
         dispatch({ type: 'DELETE_LIST_ERROR', errorMessage: error })
     }
 }
+
+export async function deleteRecipeFromList(dispatch, listId, recipeId,token) {
+
+    const requestOptions = {
+        method: 'DELETE',
+        headers: {
+            'Authorization': 'Bearer '.concat(token),
+        }
+    };
+
+    try {
+        dispatch({ type: 'DELETE_RECIPE_FROM_LIST_REQUEST' });
+        const response = await fetch(`${API_URL}/list/${listId}/recipe/${recipeId}`, requestOptions);
+        const data = await response.json();
+        if (data?.result) {
+            dispatch({ type: 'DELETE_RECIPE_FROM_LIST_SUCCESS', payload: data.result })
+            return data
+        }
+        dispatch({ type: 'DELETE_RECIPE_FROM_LIST_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'DELETE_RECIPE_FROM_LIST_ERROR', errorMessage: error })
+    }
+}
