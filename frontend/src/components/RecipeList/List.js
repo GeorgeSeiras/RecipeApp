@@ -11,7 +11,7 @@ import Button from 'react-bootstrap/Button';
 import { getListRecipes, getList, deleteList } from './actions';
 import { GetListRecipesReducer, GetListReducer, DeleteListReducer } from './reducer';
 import { UserContext } from '../Context/authContext';
-import RecipeCards from '../Home/RecipeCards';
+import ListRecipeCards from './ListRecipeCards';
 import PaginationBar from '../Home/Pagination';
 import SearchBar from '../Home/SearchBar';
 
@@ -20,7 +20,7 @@ export default function List() {
     const [state, dispatch] = useReducer(GetListRecipesReducer);
     const [stateList, dispatchList] = useReducer(GetListReducer);
     const [stateDelete, dispatchDelete] = useReducer(DeleteListReducer);
-    const [recipesResponse, setRecipeResponse] = useState();
+    const [recipesResponse, setRecipesResponse] = useState();
     const [list, setList] = useState();
     const { listId } = useParams();
     const [queryParams, setQueryParams] = useState('');
@@ -47,7 +47,7 @@ export default function List() {
                 res.results.forEach(item => {
                     recipes.push(item.recipe);
                 })
-                setRecipeResponse({ ...res, results: recipes });
+                setRecipesResponse({ ...res, results: recipes });
                 setActive(pageClicked);
             }
         })()
@@ -89,7 +89,7 @@ export default function List() {
             </Row>
             <Row>
                 <Col>
-                    <RecipeCards response={recipesResponse} />
+                    <ListRecipeCards response={recipesResponse} />
                 </Col>
             </Row>
             <PaginationBar response={recipesResponse} active={active} setPageClicked={setPageClicked} />

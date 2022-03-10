@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { DateTime } from 'luxon';
-
-import IMAGE_NOT_FOUND from "../../static/image_not_found.svg"
-import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { useNavigate } from 'react-router-dom';
-import RatingStars from './RatingStar';
+import Container from 'react-bootstrap/Container';
+
+import IMAGE_NOT_FOUND from "../../static/image_not_found.svg";
+
+import RecipeCard from './RecipeCard';
 
 export default function RecipeCards(props) {
-
     const [thumbnails, setThumbnails] = useState([])
     const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
-    const navigate = useNavigate();
+
     useEffect(() => {
         setThumbnails([])
         props?.response?.results.forEach((recipe, key) => {
@@ -25,57 +22,19 @@ export default function RecipeCards(props) {
                 setThumbnails(thumbnails => [...thumbnails, IMAGE_NOT_FOUND]);
             }
         })
-    }, [props?.response?.results,MEDIA_URL])
+    }, [props?.response?.results, MEDIA_URL])
 
     return (
-        <div>
+        <Container style={{ paddingLeft: '0', paddingRight: '0' }}>
             {props?.response?.results &&
                 <Row xs={2} md={3} lg={5} className='g-4' style={{ paddingLeft: '1em', paddingRight: '1em' }}>
                     {props.response.results.map((recipe, index) => {
                         return (
-                            <Col key={index} >
-                                <Card
-                                    id={recipe.id}
-                                    onClick={(e) => navigate(`/recipe/${e.target.parentNode.id}`)}
-                                    border="dark"
-                                    style={{
-                                        cursor: "pointer",
-                                        height: '23em',
-                                        width: '13em',
-                                        paddingTop: '0.1em',
-                                        paddingBottom: '0.1em',
-                                        paddingLeft: '0.1em',
-                                        paddingRight: '0.1em',
-                                    }}>
-
-                                    <Card.Img variant="top"
-                                        style={{ width: 'auto', height: '10em', paddingBottom: '0' }}
-                                        src={`${thumbnails[index]}`}
-                                        alt='card image' />
-                                    <Row >
-                                        <RatingStars size={'small'} rating={recipe.rating_avg} votes={recipe.votes} />
-                                    </Row>
-                                    <Card.Body style={{ paddingTop: '0' }}>
-                                        <Card.Title >{recipe.title}</Card.Title>
-                                        <Card.Subtitle style={{ height: '0.1em' }}>
-                                            <Card.Link className="text-muted" href={`/user/${recipe.user.username}`}
-                                                style={{
-                                                    color: 'black',
-                                                    textDecoration: 'none'
-                                                }}>
-                                                {recipe.user.username}
-                                            </Card.Link>
-                                        </Card.Subtitle>
-                                    </Card.Body>
-                                    <Card.Footer className="text-muted" style={{ display: 'flex', justifyContent: 'center', height: '4em' }}>
-                                        {`Last updated ${DateTime.fromSQL(recipe.updated_at).toFormat('dd LLL yyyy').toLocaleString()}`}
-                                    </Card.Footer>
-                                </Card>
-                            </Col>
+                            <RecipeCard key={index}recipe={recipe} index={index} thumbnails={thumbnails} />
                         )
                     })}
                 </Row>
             }
-        </div>
+        </Container>
     )
 }
