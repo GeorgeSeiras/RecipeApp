@@ -32,7 +32,7 @@ export default function Recipe() {
                 setUser(response.result.user)
             }
         })()
-    }, [id,MEDIA_URL])
+    }, [id, MEDIA_URL])
 
     useEffect(() => {
         if (user?.image) {
@@ -41,7 +41,7 @@ export default function Recipe() {
             setAvatar(NO_AVATAR)
         }
 
-    }, [user,MEDIA_URL])
+    }, [user, MEDIA_URL])
 
     useEffect(() => {
         setGallery([]);
@@ -55,15 +55,17 @@ export default function Recipe() {
             })
 
     }, [recipe])
-    
+
     return (
         <Container className="recipe" style={{ margin: 'auto' }}>
-            <Col>
-                <RecipeInfo recipe={recipe} avatar={avatar} userData={user} />
-            </Col>
+                <Col>
+
+                    <RecipeInfo recipe={recipe} avatar={avatar} userData={user} />
+                </Col>
+
             <Col style={{ paddingTop: '0' }}>
-                {recipe?.rating_avg  &&
-                    <RateableStars rating={recipe?.rating_avg} votes={recipe?.votes} setRecipe={setRecipe}/>
+                {recipe?.rating_avg &&
+                    <RateableStars rating={recipe?.rating_avg} votes={recipe?.votes} setRecipe={setRecipe} />
                 }
             </Col>
             {thumbnail &&

@@ -6,6 +6,8 @@ import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import { DateTime } from 'luxon';
 
+import AddToList from './AddToList.js';
+
 export default function RecipeInfo(props) {
     const [createdAt, setCreatedAt] = useState(null);
     const [updatedAt, setUpdatedAt] = useState(null);
@@ -21,14 +23,18 @@ export default function RecipeInfo(props) {
 
     return (
         <div>
-            <Container  >
+            <Container >
+                <Row xs='auto' style={{ paddingTop: '0.5em', justifyContent: 'right' }}>
+                    <Col>
+                        <AddToList recipe={props.recipe} />
+                    </Col>
+                </Row>
                 <Row xs="auto">
                     <Col style={{
-                        paddingTop: "1em",
                         margin: "auto",
                         display: 'flex',
                         justifyContent: 'center',
-                        alignItems: 'center'
+                        alignItems: 'center',
                     }}>
                         <h2 >{props.recipe?.title}</h2>
                     </Col>
@@ -97,12 +103,13 @@ export default function RecipeInfo(props) {
                             Written By:
                         </h6>
                     </Col>
+
                     {props?.userData &&
                         <Col style={{ paddingRight: "0", paddingLeft: "0" }}>
                             <h6>
                                 <Nav.Item  >
                                     <Nav.Link
-                                        style={{ color: 'black'}}
+                                        style={{ color: 'black' }}
                                         href={`/user/${props.userData.username}`}>
                                         {props.userData.username}
                                     </Nav.Link>
@@ -125,7 +132,9 @@ export default function RecipeInfo(props) {
                         }
                     </Col>
                 </Row>
-            </Container>
+
+
+            </Container >
         </div >
 
     )

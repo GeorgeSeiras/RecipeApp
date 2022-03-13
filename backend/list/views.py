@@ -10,7 +10,7 @@ from recipe.enum import sort_choices
 from utils.custom_exceptions import CustomException
 from backend.decorators import user_required
 from recipe.models import Recipe
-from list.serializers import ListRecipeSerializer, ListCreateSerializer, ListPatchSerializer
+from list.serializers import ListCreateSerializer, ListPatchSerializer, RecipeInListsSerializer
 from list.models import List, RecipesInList
 from user.models import User
 
@@ -27,7 +27,7 @@ class ListCreate(APIView):
             serializer = ListCreateSerializer(data=request.data)
             not serializer.is_valid(raise_exception=True)
             list = List.objects.create(user=user, **serializer.data)
-            return JsonResponse({'result': list.to_dict()});
+            return JsonResponse({'result': list.to_dict()})
 
 
 class ListDetail(APIView):
@@ -81,7 +81,7 @@ class ListDetail(APIView):
 class ListRecipe(APIView):
 
     @user_required
-    def post(self, request, list_id):
+    def post(self, request, recipe_id, list_id):
         with transaction.atomic():
             try:
                 user = User.objects.get(username=request.user)
@@ -94,10 +94,8 @@ class ListRecipe(APIView):
             if(user != list.user):
                 raise PermissionDenied(
                     {"message':'You cannot edit another user's lists"})
-            serializer = ListRecipeSerializer(data=request.data)
-            not serializer.is_valid(raise_exception=True)
             try:
-                recipe = Recipe.objects.get(pk=serializer.data['recipe'])
+                recipe = Recipe.objects.get(pk=recipe_id)
             except Recipe.DoesNotExist:
                 raise NotFound({'message': 'Recipe does not exist'})
             try:
@@ -113,7 +111,7 @@ class ListRecipe(APIView):
             return JsonResponse({'result': recipe_in_list.to_dict()})
 
     @user_required
-    def delete(self, request, list_id,recipe_id):
+    def delete(self, request, list_id, recipe_id):
         with transaction.atomic():
             try:
                 user = User.objects.get(username=request.user)
@@ -129,7 +127,7 @@ class ListRecipe(APIView):
             try:
                 recipe = Recipe.objects.get(pk=recipe_id)
             except Recipe.DoesNotExist:
-                raise NotFound({'message':'Recipe not found'})
+                raise NotFound({'message': 'Recipe not found'})
             try:
                 recipe_in_list = RecipesInList.objects.get(
                     recipe=recipe, list=list).delete()
@@ -169,3 +167,23 @@ class ListRecipes(APIView, myPagination):
         page = self.paginate_queryset(objects, request)
         response = self.get_paginated_response(page)
         return response
+
+
+class UserListsWithRecipe(APIView):
+
+    @user_required
+    def get(self, request, recipe_id):
+        try:
+            user = User.objects.get(username=request.user)
+        except User.DoesNotExist:
+            raise NotFound({'message': 'User not found'})
+        try:
+            recipe = Recipe.objects.get(pk=recipe_id)
+        except:
+            raise NotFound({'message': 'Recipe not found'})
+        recipesInLists = RecipesInList.objects.filter(
+            list__user=user, recipe=recipe)
+        lists = []
+        for elem in recipesInLists.values():
+            lists.append(elem['list_id'])
+        return JsonResponse({'result': lists})
