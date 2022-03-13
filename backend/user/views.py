@@ -10,7 +10,7 @@ from rest_framework.pagination import LimitOffsetPagination
 
 from .models import User
 from recipe.models import Recipe
-from list.models import List, RecipesInList
+from list.models import List
 from .serializers import UserSerializer, UserSerializerNoPassword, UserPatchSerializer, ChangePasswordSerializer
 from backend.decorators import user_required, admin_required
 from utils.custom_exceptions import CustomException
@@ -106,7 +106,7 @@ class UserRecipes(APIView, LimitOffsetPagination):
 
 class UserLists(APIView, LimitOffsetPagination):
 
-    def get(self, request,user_id):
+    def get(self, request, user_id):
         try:
             user = User.objects.get(pk=user_id)
         except User.DoesNotExist:

@@ -25,7 +25,7 @@ export default function PaginationBar(props) {
         }
     }
     return (
-        <Container style={{ display: 'table-cell', paddingLeft: '0', paddingRight: '0' }}>
+        <Container style={{paddingLeft: '0', paddingRight: '0',marginBottom:'-1.5em' }}>
                 <Pagination style={{
                     flex: '1',
                     paddingRight: '0'

@@ -67,3 +67,47 @@ export async function getUserRecipeRating(dispatch, token, recipeId) {
         dispatch({ type: 'GET_USER_RECIPE_RATING_ERROR', errorMessage: error })
     }
 }
+
+export async function getListsWithRecipe(dispatch, token, recipeId) {
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer '.concat(token),
+        },
+    };
+
+    try {
+        dispatch({ type: 'GET_LISTS_WITH_RECIPE_REQUEST' });
+        const response = await fetch(`${API_URL}/lists/recipe/${recipeId}`, requestOptions);
+        const data = await response.json();
+        if (data?.result) {
+            dispatch({ type: 'GET_LISTS_WITH_RECIPE_SUCCESS', payload: data.result })
+            return data
+        }
+        dispatch({ type: 'GET_LISTS_WITH_RECIPE_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'GET_LISTS_WITH_RECIPE_ERROR', errorMessage: error })
+    }
+}
+
+export async function addRecipeToList(dispatch, token, listId, recipeId) {
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer '.concat(token),
+        },
+    };
+
+    try {
+        dispatch({ type: 'ADD_RECIPE_TO_LIST_REQUEST' });
+        const response = await fetch(`${API_URL}/list/${listId}/recipe/${recipeId}`, requestOptions);
+        const data = await response.json();
+        if (data?.result) {
+            dispatch({ type: 'ADD_RECIPE_TO_LIST_SUCCESS', payload: data.result })
+            return data
+        }
+        dispatch({ type: 'ADD_RECIPE_TO_LIST_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'ADD_RECIPE_TO_LIST_ERROR', errorMessage: error })
+    }
+}

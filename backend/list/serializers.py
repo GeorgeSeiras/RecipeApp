@@ -14,3 +14,7 @@ class ListPatchSerializer(serializers.Serializer):
 
 class ListRecipeSerializer(serializers.Serializer):
     recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all())
+
+class RecipeInListsSerializer(serializers.Serializer):
+    lists = serializers.ListField(child=serializers.PrimaryKeyRelatedField(queryset=List.objects.all()))
+    recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all())
