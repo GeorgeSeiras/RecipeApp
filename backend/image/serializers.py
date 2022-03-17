@@ -39,3 +39,6 @@ class UserImageSerializer(serializers.Serializer):
             "user": self.validated_data.get("user"),
         }
         return UserImage.objects.create(**object)
+
+class DeleteRecipeImagesSerializer(serializers.Serializer):
+    images = serializers.ListField(child=serializers.IntegerField())

@@ -71,8 +71,7 @@ class RecipeDetail(APIView):
                 else:
                     setattr(recipe, key, value)
             recipe.save()
-            res = Recipe.objects.filter(pk=recipe.id)
-            return JsonResponse({"result": Recipe.recipes_to_list(res)})
+            return JsonResponse({"result": recipe.to_dict()})
 
     @user_required
     def delete(self, request, pk):

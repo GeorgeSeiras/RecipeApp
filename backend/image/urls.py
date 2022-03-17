@@ -7,6 +7,7 @@ urlpatterns = [
     path("image/user", views.UserImageView.as_view()),
     path("recipe/image/<int:image_id>", views.RecipeImageDetail.as_view()),
     path("recipe/<int:recipe_id>/image", views.RecipeImageView.as_view()),
+    path("recipe/<int:recipe_id>/images", views.RecipeImagesView.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

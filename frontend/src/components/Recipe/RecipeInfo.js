@@ -6,7 +6,6 @@ import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
 import { DateTime } from 'luxon';
 
-import AddToList from './AddToList.js';
 
 export default function RecipeInfo(props) {
     const [createdAt, setCreatedAt] = useState(null);
@@ -24,11 +23,7 @@ export default function RecipeInfo(props) {
     return (
         <div>
             <Container >
-                <Row xs='auto' style={{ paddingTop: '0.5em', justifyContent: 'right' }}>
-                    <Col>
-                        <AddToList recipe={props.recipe} />
-                    </Col>
-                </Row>
+                
                 <Row xs="auto">
                     <Col style={{
                         margin: "auto",

@@ -111,3 +111,51 @@ export async function addRecipeToList(dispatch, token, listId, recipeId) {
         dispatch({ type: 'ADD_RECIPE_TO_LIST_ERROR', errorMessage: error })
     }
 }
+
+export async function updateRecipe(dispatch, payload, token,recipeId) {
+
+    const requestOptions = {
+        method: 'PATCH',
+        body: JSON.stringify(payload),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '.concat(token),
+        },
+    };
+
+    try {
+        dispatch({ type: 'UPDATE_RECIPE_REQUEST' });
+        const response = await fetch(`${API_URL}/recipe/${recipeId}`, requestOptions);
+        const data = await response.json();
+        if (data?.result) {
+            dispatch({ type: 'UPDATE_RECIPE_SUCCESS', payload: data.result })
+            return data
+        }
+        dispatch({ type: 'UPDATE_RECIPE_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'UPDATE_RECIPE_ERROR', errorMessage: error })
+    }
+}
+
+export async function deleteRecipeImages(dispatch, payload, token, recipeId) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '.concat(token),
+        },
+        body: JSON.stringify(payload)
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/recipe/${recipeId}/images`, requestOptions);
+        const data = await response.json();
+        if (data?.result) {
+            dispatch({ type: 'DELETE_RECIPE_IMAGES_SUCCESS', payload: data.result })
+            return data
+        }
+        dispatch({ type: 'DELETE_RECIPE_IMAGES_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'DELETE_RECIPE_IMAGES_ERROR', errorMessage: error })
+    }
+}

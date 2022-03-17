@@ -7,9 +7,12 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 
 import plus_sign from '../../static/plus_sign.svg'
+import { instanceOf } from 'prop-types';
 
 export default function ImageUploadCard(props) {
     const [hiddenInputs, setHiddenInputs] = useState([]);
+    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
+    const [images, setImages] = useState([]);
 
     useEffect(() => {
         if (props?.images && props?.images.length > 0) {
@@ -54,6 +57,35 @@ export default function ImageUploadCard(props) {
         props.setImages(copy);
     }
 
+    useEffect(() => {
+        (async () => {
+            setImages([])
+            if (props.type === 'single') {
+                if (!props.images) {
+                    setImages(plus_sign);
+                } else {
+                    if (props.images instanceof File) {
+                        setImages(URL.createObjectURL(props.images));
+                    } else {
+                        setImages(`${MEDIA_URL}${props.images}`);
+                    }
+                }
+            } else if (props.type === 'many') {
+                props?.images.forEach((image)=>{
+                    if (!image) {
+                        setImages(images=>[...images,plus_sign]);
+                    } else {
+                        if ( image instanceof File) {
+                            setImages(images=>[...images,URL.createObjectURL(image)]);
+                        } else {
+                            setImages(images=>[...images,`${MEDIA_URL}${image}`])
+                        }
+                    }
+                })
+            }
+        })();
+    }, [props.images, props.type]);
+
     return (
         <Row style={{ marginLeft: '0' }}>
             {props.type === 'single' && hiddenInputs.length > 0 &&
@@ -72,8 +104,8 @@ export default function ImageUploadCard(props) {
                                 maxHeight: '18em',
                                 cursor: 'pointer'
                             }}
-                            src={props.images != null ? URL.createObjectURL(props.images) : plus_sign}
-                            alt={plus_sign}
+                            src={images}
+                            alt='thumbnail'
                             onClick={(e) => { handleClick(e) }}
                         />
                         {props?.images != null &&
@@ -129,8 +161,8 @@ export default function ImageUploadCard(props) {
                                         cursor: 'pointer',
 
                                     }}
-                                    src={image != null ? URL.createObjectURL(image) : plus_sign}
-                                    alt={plus_sign}
+                                    src={images[index]}
+                                    alt='carousel'
                                     onClick={(e) => handleClick(e)}
                                 />
                                 {props?.images[index] != null &&

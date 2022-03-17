@@ -136,3 +136,61 @@ export const addRecipeToListReducer = (initialStateAddRecipeToList, action) => {
             throw new Error(`Unhandled action type: ${action.type}`);
     }
 }
+
+export const initialStateRecipe = {
+    recipe: null,
+    loading: false,
+    errorMessage: null
+}
+
+export const UpdateRecipeReducer = (initialStateRecipe, action) => {
+
+    switch (action.type) {
+        case 'UPDATE_RECIPE_REQUEST':
+            return {
+                ...initialStateRecipe,
+                loading: true
+            };
+        case 'UPDATE_RECIPE_SUCCESS':
+            return {
+                ...initialStateRecipe,
+                recipe: action.payload.recipe
+            };
+        case 'UPDATE_RECIPE_ERROR':
+            return {
+                ...initialStateRecipe,
+                errorMessage: action.errorMessage
+            }
+        default:
+            throw new Error(`Unhandled action type: ${action.type}`);
+    }
+}
+
+export const initialStateImages = {
+    images: null,
+    loading: false,
+    errorMessage: null
+}
+
+export const DeleteRecipeImagesReducer = (initialStateImages, action) => {
+
+    switch (action.type) {
+        case 'DELETE_RECIPE_IMAGES_REQUEST':
+            return {
+                ...initialStateImages,
+                loading: true
+            };
+        case 'DELETE_RECIPE_IMAGES_SUCCESS':
+            return {
+                ...initialStateImages,
+                images: action.payload.images
+            };
+        case 'DELETE_RECIPE_IMAGES_ERROR':
+            return {
+                ...initialStateImages,
+                errorMessage: action.errorMessage
+            }
+        default:
+            throw new Error(`Unhandled action type: ${action.type}`);
+    }
+}

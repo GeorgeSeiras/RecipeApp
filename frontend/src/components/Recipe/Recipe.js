@@ -1,7 +1,8 @@
-import React, { useState, useReducer, useEffect } from "react";
+import React, { useState, useReducer, useEffect, useContext } from "react";
 import { useParams } from 'react-router-dom';
 import Container from 'react-bootstrap/Container'
 import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 
 import { getRecipe } from './actions';
 import RecipeCarousel from "./Carousel";
@@ -12,11 +13,15 @@ import ActualRecipe from "./ActualRecipe";
 import RateableStars from './RateableStars';
 import Comments from '../Comment/Comments';
 import NO_AVATAR from '../../static/no_avatar.svg';
+import EditRecipe from "./EditRecipe";
+import AddToList from './AddToList.js';
+import { UserContext } from '../Context/authContext';
 
 export default function Recipe() {
     const [state, dispatch] = useReducer(RecipeReducer);
     const [recipe, setRecipe] = useState(null);
     const [user, setUser] = useState();
+    const userData = useContext(UserContext);
     const { id } = useParams();
     const [gallery, setGallery] = useState([]);
     const [thumbnail, setThumbnail] = useState();
@@ -57,11 +62,20 @@ export default function Recipe() {
     }, [recipe])
 
     return (
-        <Container className="recipe" style={{ margin: 'auto' }}>
-                <Col>
-
-                    <RecipeInfo recipe={recipe} avatar={avatar} userData={user} />
+        <Container style={{ margin: 'auto' }}>
+            <Row className='container-fluid ml-auto' style={{ paddingTop: '0.5em' }}>
+                <Col >
+                    {userData?.user?.user?.id === recipe?.user?.id &&
+                        <EditRecipe recipe={recipe} setRecipe={setRecipe}/>
+                    }
                 </Col>
+                <Col className='ms-auto' style={{ display: 'flex', justifyContent: 'right' }}>
+                    <AddToList recipe={recipe} />
+                </Col>
+            </Row>
+            <Col>
+                <RecipeInfo recipe={recipe} avatar={avatar} userData={user} />
+            </Col>
 
             <Col style={{ paddingTop: '0' }}>
                 {recipe?.rating_avg &&
