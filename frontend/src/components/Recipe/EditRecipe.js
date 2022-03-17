@@ -8,7 +8,7 @@ import EditableRecipeBody from './EditableRecipeBody';
 import { UpdateRecipeReducer, DeleteRecipeImagesReducer } from './reducer';
 import { updateRecipe, deleteRecipeImages } from './actions';
 import { UploadImageReducer } from '../CreateRecipe/reducer';
-import { deleteRecipe, uploadRecipeImages } from '../CreateRecipe/actions';
+import { uploadRecipeImages } from '../CreateRecipe/actions';
 import { UserContext } from '../Context/authContext';
 
 export default function EditRecipe(props) {
@@ -143,20 +143,25 @@ export default function EditRecipe(props) {
         console.log(toDelete)
         if (toDelete.length > 0) {
             const deleteImagesResponse = await deleteRecipeImages(dispatchDeleteImages, { 'images': toDelete }, userData.user.token.key, props.recipe.id);
+            if (deleteImagesResponse?.result) {
+                console.log('Error while modifying images')
+            }
         }
         const imageResponse = await uploadRecipeImages(dispatchImages, form, userData.user.token.key, props.recipe.id);
         const recipeResponse = await updateRecipe(dispatch, payload, userData.user.token.key, props.recipe.id);
-        if (imageResponse?.result || deleteImagesResponse?.result) {
+        if (imageResponse?.result) {
             console.log('Error while modifying images')
         }
         if (recipeResponse?.result) {
-            props.setRecipe(recipeResponse.result)
+            props.setRecipe(recipeResponse.result);
+            setShow(false)
         }
     }
 
     return (
-        <Container>
-            <Button size='sm' onClick={() => setShow(true)}>
+        <Container style={{width:'auto',paddingRight:'0',marginRight:'0'}}>
+        
+            <Button size='sm' onClick={() => setShow(true)} >
                 EDIT
             </Button>
             <Modal show={show} onHide={() => setShow(false)} >

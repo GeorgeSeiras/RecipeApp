@@ -75,20 +75,21 @@ class RecipeDetail(APIView):
 
     @user_required
     def delete(self, request, pk):
+        print(pk)
         try:
             recipe = Recipe.objects.get(pk=pk)
-        except User.DoesNotExist:
-            raise NotFound({"message": "User not found"})
+        except Recipe.DoesNotExist:
+            raise NotFound({"message": "Recipe not found"})
         try:
             user = User.objects.get(username=request.user)
-        except Recipe.DoesNotExist:
-            raise NotFound({"message": "recipe not found"})
+        except User.DoesNotExist:
+            raise NotFound({"message": "User not found"})
         if str(recipe.user) != user.username:
             raise PermissionDenied(
                 {"message": "You cannot delete another user's recipe"}
             )
         recipe.delete()
-        return JsonResponse({"status": "ok"})
+        return JsonResponse({"result": "ok"})
 
 
 """ is this needed???"""

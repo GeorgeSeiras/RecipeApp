@@ -16,6 +16,7 @@ import NO_AVATAR from '../../static/no_avatar.svg';
 import EditRecipe from "./EditRecipe";
 import AddToList from './AddToList.js';
 import { UserContext } from '../Context/authContext';
+import DeleteRecipe from "./deleteRecipe";
 
 export default function Recipe() {
     const [state, dispatch] = useReducer(RecipeReducer);
@@ -66,7 +67,14 @@ export default function Recipe() {
             <Row className='container-fluid ml-auto' style={{ paddingTop: '0.5em' }}>
                 <Col >
                     {userData?.user?.user?.id === recipe?.user?.id &&
-                        <EditRecipe recipe={recipe} setRecipe={setRecipe}/>
+                        <Row className='container-fluid ml-auto'>
+                            <Col style={{ display: 'flex', justifyContent: 'left' }}>
+                                <EditRecipe recipe={recipe} setRecipe={setRecipe}/>
+                            </Col>
+                            <Col style={{ display: 'flex', justifyContent: 'left' }}>
+                                <DeleteRecipe recipe={recipe}  userData={userData}/>
+                            </Col>
+                        </Row>
                     }
                 </Col>
                 <Col className='ms-auto' style={{ display: 'flex', justifyContent: 'right' }}>
