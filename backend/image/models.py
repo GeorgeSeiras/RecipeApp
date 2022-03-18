@@ -62,12 +62,6 @@ class UserImage(models.Model):
         dict['image'] = str(self.image)
         return dict
 
-    def recipe_images_to_list(images):
-        list = []
-        for image in images:
-            list.append(image.to_dict())
-        return list
-
 @receiver(models.signals.post_delete, sender=UserImage)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
