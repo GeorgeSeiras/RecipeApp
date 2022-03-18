@@ -15,7 +15,7 @@ export default function Home(props) {
     const [queryParams, setQueryParams] = useState('');
     const [response, setResponse] = useState()
     const [active, setActive] = useState(1);
-    const [pageClicked,setPageClicked] = useState(1);
+    const [pageClicked, setPageClicked] = useState(1);
 
 
     useEffect(() => {
@@ -23,22 +23,22 @@ export default function Home(props) {
             const res = await getRecipes(dispatch, queryParams, pageClicked);
             if (res) {
                 setResponse(res);
-                    setActive(pageClicked);
+                setActive(pageClicked);
             }
         })()
-    }, [queryParams,pageClicked])
+    }, [queryParams, pageClicked])
 
     return (
         <Container>
             <Row>
                 <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} />
             </Row>
-            <Row>
+            <Row style={{paddingBottom:'0.5em'}}>
                 <Col>
                     <RecipeCards response={response} />
                 </Col>
             </Row>
-            <PaginationBar response={response} active={active} setPageClicked={setPageClicked}/>
+                <PaginationBar response={response} active={active} setPageClicked={setPageClicked} />
         </Container>
     )
 }
