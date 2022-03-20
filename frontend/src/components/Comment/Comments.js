@@ -54,11 +54,11 @@ export default function Comments() {
     const renderNestedComments = (commentsToRender, depth) => {
         return (
             commentsToRender.map((comment, index) => {
-                if (index < comments.results.length - 1) {
+                if (index < comments.results.length - 1 || (index === 0 && comments.results.length === 1)) {
                     if (depth <= 8) {
                         return (
                             <Comment comment={comment} depth={depth} renderNestedComments={renderNestedComments}
-                                key={comment.id} setCreatedComment={setCreatedComment} createdComment={createdComment}/>
+                                key={comment.id} setCreatedComment={setCreatedComment} createdComment={createdComment} />
                         )
                     } else if (depth === 9) {
                         return (
@@ -82,7 +82,6 @@ export default function Comments() {
                     )
                 }
             })
-
         )
     }
 
