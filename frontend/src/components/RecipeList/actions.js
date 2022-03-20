@@ -20,13 +20,10 @@ export async function getUserLists(dispatch, userId) {
     }
 }
 
-export async function getListRecipes(dispatch, id, token, queryParams, pageClicked) {
+export async function getListRecipes(dispatch, id, queryParams, pageClicked) {
 
     const requestOptions = {
         method: 'GET',
-        headers: {
-            'Authorization': 'Bearer '.concat(token)
-        },
     };
 
     try {

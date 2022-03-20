@@ -58,6 +58,7 @@ export default function ListRecipeCards(props) {
                                 position: 'relative',
                             }}>
                                 <RecipeCard recipe={recipe} index={index} thumbnails={thumbnails} />
+                                {userData?.user?.isAuth && userData?.user?.user?.username === props?.user.username &&
                                 <Button
                                     variant="danger"
                                     style={{
@@ -72,6 +73,7 @@ export default function ListRecipeCards(props) {
                                     onClick={(e) => onClickHandler(e)}>
                                     X
                                 </Button>
+                    }
                             </Col>
                         )
                     })}

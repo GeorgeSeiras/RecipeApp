@@ -19,7 +19,7 @@ export default function Comments(props) {
         e.preventDefault()
         const payload = {
             'text': newComment,
-            'parent': props?.parentId 
+            'parent': props?.parentId
         }
         const response = await postComment(dispatch, payload, userData.user.token.key, id)
         if (response?.result) {
@@ -34,27 +34,27 @@ export default function Comments(props) {
 
     return (
         <Container style={{ paddingBottom: '1em' }}>
-            <Form onSubmit={(e) => handleSubmit(e)}>
-                <Card>
-                    <Card.Body style={{ paddingBottom: '0.5em' }}>
-                        <Form.Group className='mb-3'>
-                            <Form.Control as="textarea" rows={4} maxLength='250'
-                                type="text"
-                                placeholder="New Comment"
-                                value={newComment}
-                                onChange={(e) => setNewComment(e.target.value)}
-                            />
-                        </Form.Group>
-                        <Button
-                            type='submit'
-                            variant='success'
-                            disabled={validateForm()}
-                            style={{ paddingTop: '0', paddingBottom: '0' }}>
-                            Create Comment
-                        </Button>
-                    </Card.Body>
-                </Card>
-            </Form>
+                <Form onSubmit={(e) => handleSubmit(e)}>
+                    <Card>
+                        <Card.Body style={{ paddingBottom: '0.5em' }}>
+                            <Form.Group className='mb-3'>
+                                <Form.Control as="textarea" rows={4} maxLength='250'
+                                    type="text"
+                                    placeholder="New Comment"
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                />
+                            </Form.Group>
+                            <Button
+                                type='submit'
+                                variant='success'
+                                disabled={validateForm()}
+                                style={{ paddingTop: '0', paddingBottom: '0' }}>
+                                Create Comment
+                            </Button>
+                        </Card.Body>
+                    </Card>
+                </Form>
         </Container >
     )
 }

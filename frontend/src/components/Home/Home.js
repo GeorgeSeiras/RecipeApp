@@ -13,7 +13,6 @@ export default function Home(props) {
 
     const [state, dispatch] = useReducer(RecipesReducer);
     const [queryParams, setQueryParams] = useState('');
-    const [response, setResponse] = useState()
     const [active, setActive] = useState(1);
     const [pageClicked, setPageClicked] = useState(1);
 
@@ -22,7 +21,6 @@ export default function Home(props) {
         (async () => {
             const res = await getRecipes(dispatch, queryParams, pageClicked);
             if (res) {
-                setResponse(res);
                 setActive(pageClicked);
             }
         })()
@@ -33,12 +31,15 @@ export default function Home(props) {
             <Row>
                 <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} />
             </Row>
-            <Row style={{paddingBottom:'0.5em'}}>
-                <Col>
-                    <RecipeCards response={response} />
-                </Col>
-            </Row>
-                <PaginationBar response={response} active={active} setPageClicked={setPageClicked} />
+            {state?.recipes &&
+                <Row style={{ paddingBottom: '0.5em' }}>
+                    <Col>
+                        <RecipeCards response={state?.recipes} />
+                    </Col>
+                </Row>
+            }
+            <PaginationBar response={state?.recipes} active={active} setPageClicked={setPageClicked} />
+
         </Container>
     )
 }
