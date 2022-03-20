@@ -15,6 +15,7 @@ import RecipeLists from '../RecipeList/RecipeLists'
 import { UserContext } from '../Context/authContext';
 import { GetUserReducer } from './reducer';
 import { getUser } from './actions';
+import { useError } from '../ErrorHandler/ErrorHandler';
 
 export default function User() {
     const [recipesState, recipesDispatch] = useReducer(RecipesReducer);
@@ -26,6 +27,7 @@ export default function User() {
     const [pageClicked, setPageClicked] = useState();
     const [queryParams, setQueryParams] = useState('');
     const navigate = useNavigate();
+    const { setError } = useError();
 
     const userData = useContext(UserContext);
 
@@ -40,27 +42,34 @@ export default function User() {
                 query = `?username=${username}`
             } else {
                 query.concat = `&username=${username}`
-            }
-            const recipesResponse = await getRecipes(recipesDispatch, query, pageClicked);
-            if (recipesResponse) {
-                if (pageClicked) {
-                    setActive(pageClicked);
+
+                const recipesResponse = await getRecipes(recipesDispatch, query, pageClicked);
+                if (recipesResponse) {
+                    if (pageClicked) {
+                        setActive(pageClicked);
+                    }
+                    setRecipes(recipesResponse);
                 }
-                setRecipes(recipesResponse);
             }
         })();
     }, [queryParams, pageClicked, userData?.user?.user])
+
+    useEffect(() => {
+        if (userState?.errorMessage) {
+            setError(userState.errorMessage)
+        }
+    }, [userState]);
 
     return (
         <div>
             <UserInfo user={user} />
             {window.location.pathname.split('/').pop() === String(userData?.user?.user?.username) &&
                 <Button variant="success"
-                    style={{display:'flex',margin:'auto',width:'350px',justifyContent:'center'}}
+                    style={{ display: 'flex', margin: 'auto', width: '350px', justifyContent: 'center' }}
                     onClick={(e) => navigate('/recipe/new')}>
                     Create Recipe
                 </Button>}
-            <Row xs='auto' style={{margin:'auto'}}>
+            <Row xs='auto' style={{ margin: 'auto' }}>
                 <Col style={{ width: '20%', paddingTop: '0.5em' }}>
                     <RecipeLists user={user} />
                 </Col>

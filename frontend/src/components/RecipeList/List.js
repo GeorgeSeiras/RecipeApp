@@ -13,6 +13,7 @@ import { UserContext } from '../Context/authContext';
 import ListRecipeCards from './ListRecipeCards';
 import PaginationBar from '../Home/Pagination';
 import SearchBar from '../Home/SearchBar';
+import { useError } from '../ErrorHandler/ErrorHandler';
 
 export default function List() {
     const userData = useContext(UserContext);
@@ -26,32 +27,43 @@ export default function List() {
     const [active, setActive] = useState(1);
     const [pageClicked, setPageClicked] = useState(1);
     const [showModal, setShowModal] = useState(false);
-    const [rerender,setRerender] = useState(false);
-    
+    const [rerender, setRerender] = useState(false);
+    const { setError } = useError();
+
     const navigate = useNavigate();
 
     useEffect(() => {
         (async () => {
-            const response = await getList(dispatchList, listId);
-            if (response?.result) {
-                setList(response.result);
+            if (listId && !list) {
+                const response = await getList(dispatchList, listId);
+                if (response?.result) {
+                    setList(response.result);
+                }
             }
         })()
-    }, []);
+    }, [listId]);
 
     useEffect(() => {
         (async () => {
-            const res = await getListRecipes(dispatch, listId, userData.user.token.key, queryParams, pageClicked);
-            if (res) {
-                const recipes = [];
-                res.results.forEach(item => {
-                    recipes.push(item.recipe);
-                })
-                setRecipesResponse({ ...res, results: recipes });
-                setActive(pageClicked);
+            if (list && !recipesResponse) {
+                const res = await getListRecipes(dispatch, listId, queryParams, pageClicked);
+                if (res) {
+                    const recipes = [];
+                    res.results.forEach(item => {
+                        recipes.push(item.recipe);
+                    })
+                    setRecipesResponse({ ...res, results: recipes });
+                    setActive(pageClicked);
+                }
             }
         })()
-    }, [queryParams, pageClicked,rerender]);
+    }, [queryParams, pageClicked, rerender, list]);
+
+    useEffect(() => {
+        if (stateList?.errorMessage) {
+            setError(stateList.errorMessage)
+        }
+    }, [stateList])
 
     const handleDeleteList = () => {
         (async () => {
@@ -64,7 +76,7 @@ export default function List() {
 
     return (
         <Container>
-            {list?.user?.username === userData.user.user.username &&
+            {userData?.user?.isAuth && list?.user?.username === userData?.user?.user?.username &&
                 <DropdownButton
                     variant={'danger'}
                     title={String.fromCharCode('8942')}
@@ -91,7 +103,7 @@ export default function List() {
                 paddingLeft: '2%',
                 paddingRight: '2%'
             }}>
-                <ListRecipeCards response={recipesResponse} setRecipesResponse={setRecipesResponse} setRerender={setRerender} rerender={rerender}/>
+                <ListRecipeCards response={recipesResponse} setRecipesResponse={setRecipesResponse} setRerender={setRerender} rerender={rerender} user={list?.user} />
             </Row>
             <PaginationBar response={recipesResponse} active={active} setPageClicked={setPageClicked} />
 

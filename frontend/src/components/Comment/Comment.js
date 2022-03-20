@@ -1,4 +1,4 @@
-import React, { createRef, useState,useEffect, useContext } from 'react';
+import React, { createRef, useState, useEffect, useContext } from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
@@ -9,7 +9,7 @@ import CreateComment from './CreateComment';
 import DeleteComment from './DeleteComment';
 
 export default function Comment(props) {
-    const [commentDeleted,setCommentDeleted] = useState(false);
+    const [commentDeleted, setCommentDeleted] = useState(false);
     const ref = createRef(null);
     const userData = useContext(UserContext);
 
@@ -35,21 +35,23 @@ export default function Comment(props) {
         <Row key={props.comment.id} style={{ paddingBottom: '0.5em', marginLeft: `0.5em`, marginRight: '-0.81em' }}>
             <Card style={{ marginRight: '0' }}>
                 <Card.Body style={{ paddingBottom: '0.5em' }}>
-                    <Card.Text>{commentDeleted?'[deleted]':props.comment.text}</Card.Text>
+                    <Card.Text>{commentDeleted ? '[deleted]' : props.comment.text}</Card.Text>
                     <Row xs="auto" style={{ justifyContent: 'space-between' }}>
                         <Col>
-                            <Button
-                                variant='success'
-                                style={{ paddingTop: '0', paddingBottom: '0' }}
-                                onClick={(e) => toggleNewComment(e)}
-                            >
-                                reply
-                            </Button>
+                            {userData?.user?.isAuth &&
+                                <Button
+                                    variant='success'
+                                    style={{ paddingTop: '0', paddingBottom: '0' }}
+                                    onClick={(e) => toggleNewComment(e)}
+                                >
+                                    reply
+                                </Button>
+                            }
                         </Col>
-                        { props.comment.user === userData.user.user.id &&
+                        {props.comment.user === userData?.user?.user?.id &&
                             !props.comment.deleted && !commentDeleted &&
                             <Col>
-                                <DeleteComment commentId={props.comment.id} setCommentDeleted={setCommentDeleted}/>
+                                <DeleteComment commentId={props.comment.id} setCommentDeleted={setCommentDeleted} />
                             </Col>
                         }
                     </Row>

@@ -17,6 +17,7 @@ import EditRecipe from "./EditRecipe";
 import AddToList from './AddToList.js';
 import { UserContext } from '../Context/authContext';
 import DeleteRecipe from "./deleteRecipe";
+import { useError } from '../ErrorHandler/ErrorHandler';
 
 export default function Recipe() {
     const [state, dispatch] = useReducer(RecipeReducer);
@@ -28,6 +29,7 @@ export default function Recipe() {
     const [thumbnail, setThumbnail] = useState();
     const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
     const [avatar, setAvatar] = useState(null);
+    const { setError } = useError();
 
     useEffect(() => {
         (async () => {
@@ -39,6 +41,12 @@ export default function Recipe() {
             }
         })()
     }, [id, MEDIA_URL])
+
+    useEffect(() => {
+        if (state?.errorMessage) {
+            setError(state.errorMessage)
+        }
+    },[state])
 
     useEffect(() => {
         if (user?.image) {
@@ -66,13 +74,13 @@ export default function Recipe() {
         <Container style={{ margin: 'auto' }}>
             <Row className='container-fluid ml-auto' style={{ paddingTop: '0.5em' }}>
                 <Col >
-                    {userData?.user?.user?.id === recipe?.user?.id &&
+                    {userData?.user?.isAuth && userData?.user?.user?.id === recipe?.user?.id &&
                         <Row className='container-fluid ml-auto'>
                             <Col style={{ display: 'flex', justifyContent: 'left' }}>
-                                <EditRecipe recipe={recipe} setRecipe={setRecipe}/>
+                                <EditRecipe recipe={recipe} setRecipe={setRecipe} />
                             </Col>
                             <Col style={{ display: 'flex', justifyContent: 'left' }}>
-                                <DeleteRecipe recipe={recipe}  userData={userData}/>
+                                <DeleteRecipe recipe={recipe} userData={userData} />
                             </Col>
                         </Row>
                     }

@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useEffect } from 'react';
+import React, { useState, useReducer, useEffect,useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
@@ -10,6 +10,7 @@ import { loadMoreComments, getRecipeComments } from './actions';
 import { RecipeCommentsReducer } from './reducer';
 import CreateComment from './CreateComment';
 import Comment from './Comment';
+import { UserContext } from '../Context/authContext';
 
 export default function Comments() {
     const [newComment, setNewComment] = useState('')
@@ -21,6 +22,7 @@ export default function Comments() {
     const [parentIds, setParentIds] = useState([]);
     const [createdComment, setCreatedComment] = useState(false)
     const [successAlert, setSuccessAlert] = useState(null);
+    const userData = useContext(UserContext);
 
     useEffect(() => {
         (async () => {
@@ -53,7 +55,7 @@ export default function Comments() {
 
     const renderNestedComments = (commentsToRender, depth) => {
         return (
-            commentsToRender.map((comment, index) => {
+            commentsToRender?.map((comment, index) => {
                 if (index < comments.results.length - 1 || (index === 0 && comments.results.length === 1)) {
                     if (depth <= 8) {
                         return (
@@ -92,7 +94,9 @@ export default function Comments() {
                 <Alert variant={'success'} onClose={() => { setSuccessAlert(null) }} dismissible>
                     Comment Successfuly Created!
                 </Alert>}
-            <CreateComment setCreatedComment={setCreatedComment} createdComment={createdComment} />
+            {userData?.user?.isAuth &&
+                <CreateComment setCreatedComment={setCreatedComment} createdComment={createdComment} />
+            }
             {comments &&
                 renderNestedComments(comments?.results, 0)
             }
