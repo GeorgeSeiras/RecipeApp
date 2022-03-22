@@ -6,9 +6,9 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Alert from 'react-bootstrap/Alert';
 
-import { getUserLists } from '../RecipeList/actions';
+import { getUserLists } from '../../actions/ListActions';
 import { getListsWithRecipe, addRecipeToList } from './actions';
-import { GetUserListsReducer } from '../RecipeList/reducer';
+import { GetUserListsReducer } from '../../reducers/ListReducer';
 import { ListsWithRecipeReducer, addRecipeToListReducer } from './reducer';
 import ListPagination from '../RecipeList/ListPagination';
 

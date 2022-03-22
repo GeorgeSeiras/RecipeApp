@@ -4,8 +4,8 @@ import ListGroup from 'react-bootstrap/ListGroup';
 
 import ListPagination from './ListPagination';
 import CreateList from './CreateList';
-import { getUserLists } from './actions';
-import { GetUserListsReducer } from './reducer';
+import { getUserLists } from '../../actions/ListActions';
+import { GetUserListsReducer } from '../../reducers/ListReducer';
 import { UserContext } from '../Context/authContext';
 
 export default function RecipeList(props) {
@@ -41,7 +41,7 @@ export default function RecipeList(props) {
         <Container>
             <ListGroup>
                 {userData.user?.user?.id === props?.user?.id &&
-                    <CreateList lists={lists} setLists={setLists} userData={userData}/>
+                    <CreateList lists={lists} setLists={setLists} userData={userData} dispatch={dispatch}/>
                 }
                 {lists &&
                     lists.map((list, index) => {

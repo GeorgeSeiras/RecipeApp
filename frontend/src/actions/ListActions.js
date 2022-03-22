@@ -7,16 +7,15 @@ export async function getUserLists(dispatch, userId) {
     };
 
     try {
-        dispatch({ type: 'GET_USER_LISTS_REQUEST' });
         let response = await fetch(`${API_URL}/user/${userId}/list`, requestOptions);
         let data = await response.json();
         if (data?.results) {
-            dispatch({ type: 'GET_USER_LISTS_SUCCESS', payload: data.result })
+            dispatch({ type: 'GET_USER_LISTS', payload: data.result })
             return data
         }
-        dispatch({ type: 'GET_USER_LISTS_ERROR', errorMessage: data })
+        dispatch({ type: 'USER_LISTS_ERROR', errorMessage: data })
     } catch (error) {
-        dispatch({ type: 'GET_USER_LISTS_ERROR', errorMessage: error })
+        dispatch({ type: 'USER_LISTS_ERROR', errorMessage: error })
     }
 }
 
@@ -27,7 +26,6 @@ export async function getListRecipes(dispatch, id, queryParams, pageClicked) {
     };
 
     try {
-        dispatch({ type: 'GET_LIST_RECIPES_REQUEST' });
         var response = null;
         if (pageClicked) {
             if (queryParams === '') {
@@ -62,16 +60,15 @@ export async function createList(dispatch, token, payload) {
     };
 
     try {
-        dispatch({ type: 'CREATE_LIST_REQUEST' });
         const response = await fetch(`${API_URL}/list`, requestOptions);
         const data = await response.json();
         if (data?.result) {
-            dispatch({ type: 'CREATE_LIST_SUCCESS', payload: data.result })
+            dispatch({ type: 'CREATE_LIST', payload: data.result })
             return data
         }
-        dispatch({ type: 'CREATE_LIST_ERROR', errorMessage: data })
+        dispatch({ type: 'LIST_ERROR', errorMessage: data })
     } catch (error) {
-        dispatch({ type: 'CREATE_LIST_ERROR', errorMessage: error })
+        dispatch({ type: 'LIST_ERROR', errorMessage: error })
     }
 }
 
@@ -82,16 +79,15 @@ export async function getList(dispatch, listId) {
     };
 
     try {
-        dispatch({ type: 'GET_LIST_REQUEST' });
         const response = await fetch(`${API_URL}/list/${listId}`, requestOptions);
         const data = await response.json();
         if (data?.result) {
-            dispatch({ type: 'GET_LIST_SUCCESS', payload: data.result })
+            dispatch({ type: 'GET_LIST', payload: data.result })
             return data
         }
-        dispatch({ type: 'GET_LIST_ERROR', errorMessage: data })
+        dispatch({ type: 'LIST_ERROR', errorMessage: data })
     } catch (error) {
-        dispatch({ type: 'GET_LIST_ERROR', errorMessage: error })
+        dispatch({ type: 'LIST_ERROR', errorMessage: error })
     }
 }
 
@@ -105,16 +101,15 @@ export async function deleteList(dispatch, listId, token) {
     };
 
     try {
-        dispatch({ type: 'DELETE_LIST_REQUEST' });
         const response = await fetch(`${API_URL}/list/${listId}`, requestOptions);
         const data = await response.json();
         if (data?.result) {
-            dispatch({ type: 'DELETE_LIST_SUCCESS', payload: data.result })
+            dispatch({ type: 'DELETE_LIST', payload: data.result })
             return data
         }
-        dispatch({ type: 'DELETE_LIST_ERROR', errorMessage: data })
+        dispatch({ type: 'LIST_ERROR', errorMessage: data })
     } catch (error) {
-        dispatch({ type: 'DELETE_LIST_ERROR', errorMessage: error })
+        dispatch({ type: 'LIST_ERROR', errorMessage: error })
     }
 }
 
@@ -128,15 +123,14 @@ export async function deleteRecipeFromList(dispatch, listId, recipeId,token) {
     };
 
     try {
-        dispatch({ type: 'DELETE_RECIPE_FROM_LIST_REQUEST' });
         const response = await fetch(`${API_URL}/list/${listId}/recipe/${recipeId}`, requestOptions);
         const data = await response.json();
         if (data?.result) {
-            dispatch({ type: 'DELETE_RECIPE_FROM_LIST_SUCCESS', payload: data.result })
+            dispatch({ type: 'DELETE_RECIPE_FROM_LIST', payload: recipeId })
             return data
         }
-        dispatch({ type: 'DELETE_RECIPE_FROM_LIST_ERROR', errorMessage: data })
+        dispatch({ type: 'LIST_ERROR', errorMessage: data })
     } catch (error) {
-        dispatch({ type: 'DELETE_RECIPE_FROM_LIST_ERROR', errorMessage: error })
+        dispatch({ type: 'LIST_ERROR', errorMessage: error })
     }
 }

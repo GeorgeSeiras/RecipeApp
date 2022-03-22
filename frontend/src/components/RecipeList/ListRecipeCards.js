@@ -9,20 +9,18 @@ import IMAGE_NOT_FOUND from "../../static/image_not_found.svg";
 
 import RecipeCard from '../Home/RecipeCard';
 import { UserContext } from '../Context/authContext';
-import { deleteRecipeFromList } from './actions';
-import { DeleteRecipeFromListReducer } from './reducer';
+import { deleteRecipeFromList } from '../../actions/ListActions';
 
 export default function ListRecipeCards(props) {
     const [thumbnails, setThumbnails] = useState([])
     const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
-    const [state, dispatch] = useReducer(DeleteRecipeFromListReducer);
     const { listId } = useParams();
     const userData = useContext(UserContext);
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         setThumbnails([])
-        props?.response?.results.forEach((recipe, key) => {
+        props?.state?.recipes.forEach((recipe, key) => {
             const img = recipe.images.find((image) => {
                 return image.type === "THUMBNAIL"
             })?.image
@@ -32,15 +30,15 @@ export default function ListRecipeCards(props) {
                 setThumbnails(thumbnails => [...thumbnails, IMAGE_NOT_FOUND]);
             }
         })
-    }, [props?.response?.results, MEDIA_URL])
+    }, [props?.state?.recipes, MEDIA_URL])
 
     const onClickHandler = async (e) => {
-        const recipe = props.response.results[e.target.parentNode.id];
+        const recipe = props.state.recipes[e.target.parentNode.id];
         removeFromList(recipe);
     }
 
     const removeFromList = async (recipe) => {
-        const response = await deleteRecipeFromList(dispatch, listId, recipe.id, userData.user.token.key);
+        const response = await deleteRecipeFromList(props.dispatch, listId, recipe.id, userData.user.token.key);
         if (response?.result === 'ok') {
             props.setRerender(!props.rerender)
 
@@ -50,30 +48,30 @@ export default function ListRecipeCards(props) {
     return (
 
         <Container>
-            {props?.response?.results &&
+            {props?.state?.recipes &&
                 <Row xs={2} md={3} lg={5} className='g-4' >
-                    {props.response.results.map((recipe, index) => {
+                    {props.state.recipes.map((recipe, index) => {
                         return (
                             <Col key={index} id={index} style={{
                                 position: 'relative',
                             }}>
                                 <RecipeCard recipe={recipe} index={index} thumbnails={thumbnails} />
                                 {userData?.user?.isAuth && userData?.user?.user?.username === props?.user.username &&
-                                <Button
-                                    variant="danger"
-                                    style={{
-                                        width: '1.5em',
-                                        height: '1.5em',
-                                        position: "absolute",
-                                        top: "0",
-                                        left: "200.5px",
-                                        padding: '0',
-                                        textAlign: 'center',
-                                    }}
-                                    onClick={(e) => onClickHandler(e)}>
-                                    X
-                                </Button>
-                    }
+                                    <Button
+                                        variant="danger"
+                                        style={{
+                                            width: '1.5em',
+                                            height: '1.5em',
+                                            position: "absolute",
+                                            top: "0",
+                                            left: "200.5px",
+                                            padding: '0',
+                                            textAlign: 'center',
+                                        }}
+                                        onClick={(e) => onClickHandler(e)}>
+                                        X
+                                    </Button>
+                                }
                             </Col>
                         )
                     })}
