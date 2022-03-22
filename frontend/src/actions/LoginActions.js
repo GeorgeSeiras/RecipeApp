@@ -11,7 +11,6 @@ export async function userLogin(dispatch, payload, remember) {
     };
 
     try {
-        dispatch({ type: 'REQUEST_LOGIN' });
         const response = await fetch(`${API_URL}/token/`, requestOptions);
         const data = await response.json();
         if (data.access) {
@@ -47,11 +46,10 @@ export async function getMe(dispatch, token) {
         }
     };
     try {
-        dispatch({ type: 'GET_ME_REQUEST' });
         const response = await fetch(`${API_URL}/user/me`, requestOptions);
         const data = await response.json();
         if (data?.user) {
-            dispatch({ type: 'GET_ME_SUCCESS', payload: data.user })
+            dispatch({ type: 'GET_ME', payload: data.user })
             return data
         }
         dispatch({ type: 'GET_ME_ERROR', errorMessage: data })

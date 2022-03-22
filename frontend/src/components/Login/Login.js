@@ -1,7 +1,7 @@
 import React, { useState, useReducer, useRef, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { userLogin, getMe } from './actions';
-import { AuthReducer, GetMeReducer } from './reducer'
+import { userLogin, getMe } from '../../actions/LoginActions';
+import { AuthReducer, GetMeReducer } from '../../reducers/LoginReducer'
 import { UserContext } from '../Context/authContext';
 import "./Login.css";
 

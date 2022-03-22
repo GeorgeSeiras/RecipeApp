@@ -3,8 +3,13 @@ export const initialState = {
     errorMessage: null
 }
 
-export const EditUserReducer = (initialState, action) => {
+export const UserReducer = (initialState, action) => {
     switch (action.type) {
+        case 'GET_USER':
+            return {
+                ...initialState,
+                user: action.payload
+            };
         case 'EDIT_USER':
             return {
                 ...initialState,
@@ -25,11 +30,11 @@ export const EditUserReducer = (initialState, action) => {
                 ...initialState,
                 errorMessage: null
             }
-        case 'EDIT_USER_ERROR':
+        case 'USER_ERROR':
             return {
                 ...initialState,
-                errorMessage: initialState?.errorMessage?
-                    [...initialState.errorMessage,action.errorMessage]:
+                errorMessage: initialState?.errorMessage ?
+                    [...initialState.errorMessage, action.errorMessage] :
                     [action.errorMessage]
             }
         default:

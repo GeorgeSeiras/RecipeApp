@@ -6,8 +6,8 @@ import Alert from 'react-bootstrap/Alert';
 
 import { UserContext } from '../Context/authContext';
 import UploadImageCard from '../CreateRecipe/UploadImageCard';
-import { EditUserReducer } from '../../reducers/EditUserReducer'
-import { changePassword, editUser, changeImage, dissmissError } from '../../actions/EditUserActions';
+import { UserReducer } from '../../reducers/UserReducer'
+import { changePassword, editUser, changeImage, dissmissError } from '../../actions/UserActions';
 
 export default function UserInfo() {
     const [username, setUsername] = useState('')
@@ -23,7 +23,7 @@ export default function UserInfo() {
     const [imageSuccess, setImageSuccess] = useState(null);
     const [show, setShow] = useState(false);
     const userData = useContext(UserContext);
-    const [state, dispatch] = useReducer(EditUserReducer);
+    const [state, dispatch] = useReducer(UserReducer);
 
     function checkPassword() {
         setPasswordError(null)

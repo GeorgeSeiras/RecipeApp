@@ -6,11 +6,6 @@ export const initialStateLogin = {
 
 export const AuthReducer = (initialStateLogin, action) => {
     switch (action.type) {
-        case "REQUEST_LOGIN":
-            return {
-                ...initialStateLogin,
-                loading: true
-            };
         case "LOGIN":
             return {
                 ...initialStateLogin,
@@ -41,12 +36,7 @@ export const initialStateGetMe = {
 
 export const GetMeReducer = (initialStateGetMe, action) => {
     switch (action.type) {
-        case 'GET_ME_REQUEST':
-            return {
-                ...initialStateGetMe,
-                loading: true
-            };
-        case 'GET_ME_SUCCESS':
+        case 'GET_ME':
             return {
                 ...initialStateGetMe,
                 user: action.payload.user

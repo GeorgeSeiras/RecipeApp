@@ -13,13 +13,13 @@ import Pagination from '../Home/Pagination';
 import SearchBar from '../Home/SearchBar';
 import RecipeLists from '../RecipeList/RecipeLists'
 import { UserContext } from '../Context/authContext';
-import { GetUserReducer } from './reducer';
-import { getUser } from './actions';
+import { UserReducer } from '../../reducers/UserReducer'
+import { getUser } from '../../actions/UserActions';
 import { useError } from '../ErrorHandler/ErrorHandler';
 
 export default function User() {
     const [recipesState, recipesDispatch] = useReducer(RecipesReducer);
-    const [userState, userDispatch] = useReducer(GetUserReducer);
+    const [userState, userDispatch] = useReducer(UserReducer);
     const { username } = useParams();
     const [active, setActive] = useState(1);
     const [pageClicked, setPageClicked] = useState();
