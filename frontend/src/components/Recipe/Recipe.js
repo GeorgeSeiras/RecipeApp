@@ -81,7 +81,7 @@ export default function Recipe() {
                         </Row>
                     }
                 </Col>
-                <Col className='ms-auto' style={{ display: 'flex', justifyContent: 'right' }}>
+                <Col className='ms-auto' style={{ display: 'flex', justifyContent: 'center' }}>
                     <AddToList recipe={state?.recipe} />
                 </Col>
             </Row>

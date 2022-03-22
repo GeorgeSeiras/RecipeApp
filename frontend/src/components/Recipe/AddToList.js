@@ -79,12 +79,7 @@ export default function AddToList(props) {
 
     return (
         <Row xs='auto'>
-            <Col>
-                <Alert show={show} variant="success" dismissible onClick={() => setShow(false)}>
-                    <Alert.Heading>Recipe successfuly added to list!</Alert.Heading>
-
-                </Alert>
-            </Col>
+            
             <Col>
                 <DropdownButton
                     variant={'success'}
@@ -113,6 +108,12 @@ export default function AddToList(props) {
                     }
                 </DropdownButton>
             </Col>
+            <Row>
+                <Alert show={show} variant="success" dismissible onClick={() => setShow(false)}>
+                    <Alert.Heading>Recipe successfuly added to list!</Alert.Heading>
+
+                </Alert>
+            </Row>
         </Row>
     )
 }
