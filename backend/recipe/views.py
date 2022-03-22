@@ -256,7 +256,7 @@ class createCommentView(APIView):
             except User.DoesNotExist:
                 raise NotFound({'message': 'User not found'})
             serializer = CreateCommentSerializer(
-                    data={**request.data, 'recipe': recipe_id})
+                data={**request.data, 'recipe': recipe_id})
             not serializer.is_valid(raise_exception=True)
             comment = Comment.objects.create(
                 user=user, **serializer.validated_data)

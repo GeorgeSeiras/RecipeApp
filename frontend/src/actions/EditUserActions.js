@@ -8,18 +8,17 @@ export async function editUser(dispatch, payload, token) {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer '.concat(token)
         },
-        body:JSON.stringify(payload)
+        body: JSON.stringify(payload)
     };
 
     try {
-        dispatch({ type: 'EDIT_USER_REQUEST' });
         let response = await fetch(`${API_URL}/user`, requestOptions);
         let data = await response.json();
         if (data?.result) {
-            dispatch({ type: 'EDIT_USER_SUCCESS', payload: data.result })
+            dispatch({ type: 'EDIT_USER', payload: data.result })
             return data
         }
-        dispatch({ type: 'EDIT_USER_ERROR', errorMessage: data })
+        dispatch({ type: 'EDIT_USER_ERROR', errorMessage: data?.message })
     } catch (error) {
         dispatch({ type: 'EDIT_USER_ERROR', errorMessage: error })
     }
@@ -33,20 +32,19 @@ export async function changePassword(dispatch, payload, token) {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer '.concat(token)
         },
-        body:JSON.stringify(payload)
+        body: JSON.stringify(payload)
     };
 
     try {
-        dispatch({ type: 'CHANGE_PASSWORD_REQUEST' });
         let response = await fetch(`${API_URL}/user/password`, requestOptions);
         let data = await response.json();
         if (data?.result) {
-            dispatch({ type: 'CHANGE_PASSWORD_SUCCESS', payload: data.result })
+            dispatch({ type: 'CHANGE_PASSWORD', payload: data.result })
             return data
         }
-        dispatch({ type: 'CHANGE_PASSWORD_ERROR', errorMessage: data })
+        dispatch({ type: 'EDIT_USER_ERROR', errorMessage: data })
     } catch (error) {
-        dispatch({ type: 'CHANGE_PASSWORD_ERROR', errorMessage: error })
+        dispatch({ type: 'EDIT_USER_ERROR', errorMessage: error })
     }
 }
 
@@ -57,19 +55,21 @@ export async function changeImage(dispatch, payload, token) {
         headers: {
             'Authorization': 'Bearer '.concat(token)
         },
-        body:payload
+        body: payload
     };
-
     try {
-        dispatch({ type: 'CHANGE_IMAGE_REQUEST' });
         let response = await fetch(`${API_URL}/image/user`, requestOptions);
         let data = await response.json();
         if (data?.result) {
-            dispatch({ type: 'CHANGE_IMAGE_SUCCESS', payload: data.result })
+            dispatch({ type: 'CHANGE_IMAGE', payload: data.result })
             return data
         }
-        dispatch({ type: 'CHANGE_IMAGE_ERROR', errorMessage: data })
+        dispatch({ type: 'EDIT_USER_ERROR', errorMessage: data.image[0] })
     } catch (error) {
-        dispatch({ type: 'CHANGE_IMAGE_ERROR', errorMessage: error })
+        dispatch({ type: 'EDIT_USER_ERROR', errorMessage: error })
     }
+}
+
+export function dissmissError(dispatch) {
+    dispatch({ type: 'DISSMISS_ERROR' })
 }

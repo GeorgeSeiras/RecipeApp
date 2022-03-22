@@ -2,10 +2,12 @@ import React, { useState, useContext, useReducer } from 'react';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
+
 import { UserContext } from '../Context/authContext';
 import UploadImageCard from '../CreateRecipe/UploadImageCard';
-import { ChangePasswordReducer, EditUserReducer, ChangeImageReducer } from './reducer'
-import { changePassword, editUser, changeImage } from './actions';
+import { EditUserReducer } from '../../reducers/EditUserReducer'
+import { changePassword, editUser, changeImage, dissmissError } from '../../actions/EditUserActions';
 
 export default function UserInfo() {
     const [username, setUsername] = useState('')
@@ -19,11 +21,9 @@ export default function UserInfo() {
     const [emailSuccess, setEmailSuccess] = useState(null);
     const [usernameSuccess, setUsernameSuccess] = useState(null);
     const [imageSuccess, setImageSuccess] = useState(null);
-
+    const [show, setShow] = useState(false);
     const userData = useContext(UserContext);
-    const [passwordState, passwordDispatch] = useReducer(ChangePasswordReducer);
-    const [editUserState, editUserDispatch] = useReducer(EditUserReducer);
-    const [imageState, editImageDispatch] = useReducer(ChangeImageReducer);
+    const [state, dispatch] = useReducer(EditUserReducer);
 
     function checkPassword() {
         setPasswordError(null)
@@ -40,32 +40,36 @@ export default function UserInfo() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        dissmissError(dispatch)
         setUsernameSuccess(null);
         setEmailSuccess(null);
         setImageSuccess(null);
         if (image != null) {
             const formData = new FormData()
             formData.append('image', image);
-            const response = await changeImage(editImageDispatch, formData, userData.user.token.key);
+            const response = await changeImage(dispatch, formData, userData.user.token.key);
             if (response?.result) {
                 setImageSuccess('Profile picture successfuly changed')
+                setImage(undefined)
             }
         }
         if (email !== '' || username !== '') {
             const payload = new Map()
             if (email !== '') {
-                payload.set('email', email );
+                payload.set('email', email);
             }
             if (username !== '') {
-                payload.set( 'username', username )
+                payload.set('username', username)
             }
-            const response = await editUser(editUserDispatch, Object.fromEntries(payload), userData.user.token.key);
+            const response = await editUser(dispatch, Object.fromEntries(payload), userData.user.token.key);
             if (response?.result) {
                 if (username !== '') {
                     setUsernameSuccess('Username successfuly changed');
+                    setUsername('')
                 }
                 if (email !== '') {
                     setEmailSuccess('Email successfuly changed');
+                    setEmail('')
                 }
             }
         }
@@ -75,6 +79,7 @@ export default function UserInfo() {
 
     const handlePasswordSubmit = async (e) => {
         e.preventDefault();
+        dissmissError(dispatch)
         setPasswordSuccess(null)
         if (checkPassword()) {
             const payload = {
@@ -82,9 +87,12 @@ export default function UserInfo() {
                 'newPassword1': password,
                 'newPassword2': password2
             }
-            const passwordResponse = await changePassword(passwordDispatch, payload, userData.user.token.key);
+            const passwordResponse = await changePassword(dispatch, payload, userData.user.token.key);
             if (passwordResponse?.result) {
-                setPasswordSuccess('Password successfuly changed')
+                setPasswordSuccess('Password successfuly changed');
+                setPassword('');
+                setPassword2('');
+                setCurPassword('');
             }
         }
 
@@ -106,6 +114,11 @@ export default function UserInfo() {
 
     return (
         <Container>
+            {state?.errorMessage &&
+                <Alert variant={'danger'} onClose={() => { dissmissError(dispatch) }} dismissible>
+                    {state.errorMessage.map((error,index)=>{return <p key={index}>{error}</p>})}
+                </Alert>
+            }
             <Form onSubmit={(e) => handleSubmit(e)} style={{ paddingTop: '1em' }}>
                 <UploadImageCard images={image} setImages={setImage} type={'single'} />
                 {imageSuccess && <h4 className="text-success">{imageSuccess}</h4>}

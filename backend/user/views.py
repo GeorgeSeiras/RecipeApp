@@ -1,6 +1,7 @@
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
+from django.db.models import Q
 from django.http.response import JsonResponse
 from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
@@ -35,6 +36,17 @@ class UserList(APIView, LimitOffsetPagination):
                 user = User.objects.get(username=request.user)
                 serializer = UserPatchSerializer(data=request.data)
                 serializer.is_valid(raise_exception=True)
+                username = serializer.validated_data.get('username', None)
+                email = serializer.validated_data.get('email', None)
+                query = Q()
+                if username != None:
+                    query |= Q(username__icontains=username)
+                if email != None:
+                    query |= Q(email__icontains=email)
+                user_found = User.objects.filter(query)
+                if len(user_found) > 0:
+                    raise CustomException(
+                        'User with this username and/or email already exists', status.HTTP_400_BAD_REQUEST)
                 for key, value in serializer.validated_data.items():
                     setattr(user, key, value)
                 user.save()
