@@ -4,8 +4,8 @@ import Button from 'react-bootstrap/Button';
 
 import { useNavigate } from 'react-router-dom';
 
-import { CreateRecipeReducer, UploadImageReducer, DeleteRecipeReducer } from './reducer';
-import { createRecipe, uploadRecipeImages, deleteRecipe } from './actions';
+import { CreateRecipeReducer } from '../../reducers/RecipeReducer';
+import { createRecipe, uploadRecipeImages, deleteRecipe } from '../../actions/RecipeActions';
 import { UserContext } from '../Context/authContext';
 import EditableRecipeBody from '../Recipe/EditableRecipeBody';
 
@@ -25,8 +25,6 @@ export default function CreateRecipe() {
     const [cuisine, setCuisine] = useState(['']);
 
     const [state, dispatch] = useReducer(CreateRecipeReducer);
-    const [stateImages, dispatchImages] = useReducer(UploadImageReducer);
-    const [stateDelete, dispatchDelete] = useReducer(DeleteRecipeReducer);
 
     const userData = useContext(UserContext);
 
@@ -118,11 +116,11 @@ export default function CreateRecipe() {
         
         const recipeResponse = await createRecipe(dispatch, payload, userData.user.token.key);
         if (recipeResponse?.result) {
-            const imageResponse = await uploadRecipeImages(dispatchImages, form, userData.user.token.key, recipeResponse.result.recipe.id);
+            const imageResponse = await uploadRecipeImages(dispatch, form, userData.user.token.key, recipeResponse.result.recipe.id);
             if (imageResponse?.result) {
                 navigate(`/recipe/${recipeResponse.result.recipe.id}`)
             } else {
-                const deleteResponse = await deleteRecipe(dispatchDelete, recipeResponse.result.recipe.id, userData.user.token.key)
+                const deleteResponse = await deleteRecipe(dispatch, recipeResponse.result.recipe.id, userData.user.token.key)
                 if (deleteResponse?.status === 'ok') {
                     //show error message about problem with the images
                     console.log('Recipe deleted')

@@ -12,16 +12,15 @@ export async function createRecipe(dispatch, payload, token) {
     };
 
     try {
-        dispatch({ type: 'CREATE_RECIPE_REQUEST' });
         const response = await fetch(`${API_URL}/recipe`, requestOptions);
         const data = await response.json();
         if (data?.result) {
-            dispatch({ type: 'CREATE_RECIPE_SUCCESS', payload: data.result })
+            dispatch({ type: 'CREATE_RECIPE', payload: data.result })
             return data
         }
-        dispatch({ type: 'CREATE_RECIPE_ERROR', errorMessage: data })
+        dispatch({ type: 'RECIPE_ERROR', errorMessage: data })
     } catch (error) {
-        dispatch({ type: 'CREATE_RECIPE_ERROR', errorMessage: error })
+        dispatch({ type: 'RECIPE_ERROR', errorMessage: error })
     }
 }
 
@@ -38,12 +37,12 @@ export async function uploadRecipeImages(dispatch, payload, token, recipeId) {
         const response = await fetch(`${API_URL}/recipe/${recipeId}/image`, requestOptions);
         const data = await response.json();
         if (data?.result) {
-            dispatch({ type: 'UPLOAD_RECIPE_IMAGE_SUCCESS', payload: data.result })
+            dispatch({ type: 'UPLOAD_RECIPE_IMAGE', payload: data.result })
             return data
         }
-        dispatch({ type: 'UPLOAD_RECIPE_IMAGE_ERROR', errorMessage: data })
+        dispatch({ type: 'RECIPE_ERROR', errorMessage: data })
     } catch (error) {
-        dispatch({ type: 'UPLOAD_RECIPE_IMAGE_ERROR', errorMessage: error })
+        dispatch({ type: 'RECIPE_ERROR', errorMessage: error })
     }
 }
 
@@ -57,15 +56,14 @@ export async function deleteRecipe(dispatch, recipeId, token) {
     };
 
     try {
-        dispatch({ type: 'DELETE_RECIPE_REQUEST' });
         const response = await fetch(`${API_URL}/recipe/${recipeId}`, requestOptions);
         const data = await response.json();
         if (data) {
-            dispatch({ type: 'DELETE_RECIPE_SUCCESS', payload: data })
+            dispatch({ type: 'DELETE_RECIPE', payload: data })
             return data
         }
-        dispatch({ type: 'DELETE_RECIPE_ERROR', errorMessage: data })
+        dispatch({ type: 'RECIPE_ERROR', errorMessage: data })
     } catch (error) {
-        dispatch({ type: 'DELETE_RECIPE_ERROR', errorMessage: error })
+        dispatch({ type: 'RECIPE_ERROR', errorMessage: error })
     }
 }
