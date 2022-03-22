@@ -2,9 +2,8 @@ import React, { useState, useReducer, useEffect, useRef } from "react";
 import { Navigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { register } from './actions';
-import { SignupReducer } from './reducer';
-import './Signup.css';
+import { register } from '../../actions/RegisterActions';
+import { SignupReducer } from '../../reducers/RegisterReducer';
 
 
 export default function Signup() {
@@ -76,8 +75,8 @@ export default function Signup() {
     }
 
     return (
-        <div className="Signup">
-            <Form onSubmit={handleSumbit}>
+        <div className="Signup" style={{ padding: '60px 0' }}>
+            <Form onSubmit={handleSumbit} style={{ margin: '0 auto', maxWidth: '320px' }}>
                 <Form.Group size="lg" controlId="email">
                     <Form.Label>Email</Form.Label>
                     <Form.Control
@@ -86,7 +85,7 @@ export default function Signup() {
                         placeholder="Enter Email"
                         onChange={(e) => setEmail(e.target.value)}
                     />
-                    {emailError && <h4 className="Error">{emailError}</h4>}
+                    {emailError && <h4 style={{ color: 'red' }}>{emailError}</h4>}
                 </Form.Group>
                 <Form.Group size="lg" controlId="username">
                     <Form.Label>Username</Form.Label>
@@ -96,7 +95,7 @@ export default function Signup() {
                         placeholder="Enter Username"
                         onChange={(e) => setUsername(e.target.value)}
                     />
-                    {usernameError && <h4 className="Error">{usernameError}</h4>}
+                    {usernameError && <h4 style={{ color: 'red' }}>{usernameError}</h4>}
                 </Form.Group>
                 <Form.Group size="lg" controlId="password">
                     <Form.Label>Password</Form.Label>
@@ -106,9 +105,9 @@ export default function Signup() {
                         placeholder="Enter password"
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    {passwordError && <h4 className="Error">{passwordError}</h4>}
+                    {passwordError && <h4 style={{ color: 'red' }}>{passwordError}</h4>}
                 </Form.Group>
-                <Form.Group size="lg" controlId="password2">
+                <Form.Group size="lg" controlId="password2" style={{ paddingBottom: '0.5em' }}>
                     <Form.Label>Password</Form.Label>
                     <Form.Control
                         type="password"
@@ -121,7 +120,7 @@ export default function Signup() {
                     Register
                 </Button>
                 {genericError &&
-                    <h4 className="Error">{genericError}</h4>}
+                    <h4 style={{ color: 'red' }}>{genericError}</h4>}
             </Form>
             {success &&
                 <Navigate to='../login' />}

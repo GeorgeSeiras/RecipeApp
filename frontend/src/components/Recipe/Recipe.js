@@ -90,7 +90,7 @@ export default function Recipe() {
             </Col>
 
             <Col style={{ paddingTop: '0' }}>
-                {state?.recipe &&
+                {state?.recipe && userData?.user?.isAuth &&
                     <RateableStars rating={state?.recipe?.rating_avg} votes={state?.recipe?.votes} dispatch={dispatch} />
                 }
             </Col>

@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { userLogin, getMe } from '../../actions/LoginActions';
 import { AuthReducer, GetMeReducer } from '../../reducers/LoginReducer'
 import { UserContext } from '../Context/authContext';
-import "./Login.css";
-
 
 function Login(props) {
     const [username, setUsername] = useState("");
@@ -51,7 +49,11 @@ function Login(props) {
     }
 
     return (
-        <form className="Login" onSubmit={handleSumbit}>
+        <form className="Login" onSubmit={handleSumbit} style={{
+            padding: '60px 0',
+            margin: '0 auto',
+            maxWidth: '320px'
+        }}>
             <div className="mb-3">
                 <label htmlFor="username" className="form-label">Username</label>
                 <input
@@ -74,7 +76,7 @@ function Login(props) {
                     placeholder="Enter Password"
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <div className="form-check">
+                <div className="form-check" style={{paddingTop:'0.3em'}}>
                     <input className="form-check-input"
                         id="rememberMe"
                         type="checkbox"
@@ -89,7 +91,7 @@ function Login(props) {
                 Login
             </button>
             {errorMessage &&
-                <h4 className="Error">{errorMessage}</h4>}
+                <h4 className="Error" style={{color:'red'}}>{errorMessage}</h4>}
         </form>
     );
 
