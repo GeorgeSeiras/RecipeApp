@@ -15,7 +15,7 @@ export const RecipeCommentsReducer = (initialState, action) => {
         case 'COMMENTS_SUCCESS':
             return {
                 ...initialState,
-                result: action.payload
+                comments: action.payload
             };
         case 'COMMENTS_ERROR':
             return {

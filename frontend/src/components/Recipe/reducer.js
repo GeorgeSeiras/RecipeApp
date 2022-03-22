@@ -5,22 +5,27 @@ export const initialState = {
 }
 
 export const RecipeReducer = (initialState, action) => {
-    
+
     switch (action.type) {
         case 'RECIPE_REQUEST':
             return {
-                ...initialStateRating,
+                ...initialState,
                 loading: true
             };
         case 'RECIPE_SUCCESS':
             return {
-                ...initialStateRating,
-                recipe: action.payload.recipe
+                ...initialState,
+                recipe: action.payload
             };
         case 'RECIPE_ERROR':
             return {
-                ...initialStateRating,
+                ...initialState,
                 errorMessage: action.errorMessage
+            }
+        case 'UPDATE_RECIPE_STATE':
+            return {
+                ...initialState,
+                recipe: action.payload
             }
         default:
             throw new Error(`Unhandled action type: ${action.type}`);
@@ -34,7 +39,6 @@ export const initialStateRating = {
 }
 
 export const RateRecipeReducer = (initialStateRating, action) => {
-    
     switch (action.type) {
         case 'RATE_RECIPE_REQUEST':
             return {
@@ -57,7 +61,7 @@ export const RateRecipeReducer = (initialStateRating, action) => {
 }
 
 export const UserRecipeRatingReducer = (initialStateRating, action) => {
-    
+
     switch (action.type) {
         case 'GET_USER_RECIPE_RATING_REQUEST':
             return {
@@ -67,7 +71,7 @@ export const UserRecipeRatingReducer = (initialStateRating, action) => {
         case 'GET_USER_RECIPE_RATING_SUCCESS':
             return {
                 ...initialStateRating,
-                recipe: action.payload.recipe
+                rating: action.payload
             };
         case 'GET_USER_RECIPE_RATING_ERROR':
             return {
@@ -86,7 +90,7 @@ export const initialStateLists = {
 }
 
 export const ListsWithRecipeReducer = (initialStateLists, action) => {
-    
+
     switch (action.type) {
         case 'GET_LISTS_WITH_RECIPE_REQUEST':
             return {
@@ -115,7 +119,7 @@ export const initialStateAddRecipeToList = {
 }
 
 export const addRecipeToListReducer = (initialStateAddRecipeToList, action) => {
-    
+
     switch (action.type) {
         case 'ADD_RECIPE_TO_LIST_REQUEST':
             return {

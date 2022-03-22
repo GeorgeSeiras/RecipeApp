@@ -14,7 +14,7 @@ export const GetUserReducer = (initialState, action) => {
         case 'GET_USER_SUCCESS':
             return {
                 ...initialState,
-                lists: action.payload?.lists
+                user: action.payload
             };
         case 'GET_USER_ERROR':
             return {

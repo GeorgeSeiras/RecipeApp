@@ -21,8 +21,6 @@ import { useError } from '../ErrorHandler/ErrorHandler';
 
 export default function Recipe() {
     const [state, dispatch] = useReducer(RecipeReducer);
-    const [recipe, setRecipe] = useState(null);
-    const [user, setUser] = useState();
     const userData = useContext(UserContext);
     const { id } = useParams();
     const [gallery, setGallery] = useState([]);
@@ -36,8 +34,6 @@ export default function Recipe() {
             const payload = { 'recipe': id }
             const response = await getRecipe(dispatch, payload)
             if (response?.result) {
-                setRecipe(response.result)
-                setUser(response.result.user)
             }
         })()
     }, [id, MEDIA_URL])
@@ -49,18 +45,18 @@ export default function Recipe() {
     },[state])
 
     useEffect(() => {
-        if (user?.image) {
-            setAvatar(MEDIA_URL + user?.image?.image)
+        if (state?.recipe?.user?.image) {
+            setAvatar(MEDIA_URL + state?.recipe?.user?.image?.image)
         } else {
             setAvatar(NO_AVATAR)
         }
 
-    }, [user, MEDIA_URL])
+    }, [state?.recipe?.user, MEDIA_URL])
 
     useEffect(() => {
         setGallery([]);
-        recipe?.images?.length > 0 &&
-            recipe.images.forEach((image) => {
+        state?.recipe?.images?.length > 0 &&
+            state?.recipe.images.forEach((image) => {
                 if (image.type === 'THUMBNAIL') {
                     setThumbnail(image.image);
                 } else if (image.type === 'GALLERY') {
@@ -68,34 +64,34 @@ export default function Recipe() {
                 }
             })
 
-    }, [recipe])
+    }, [state?.recipe])
 
     return (
         <Container style={{ margin: 'auto' }}>
             <Row className='container-fluid ml-auto' style={{ paddingTop: '0.5em' }}>
                 <Col >
-                    {userData?.user?.isAuth && userData?.user?.user?.id === recipe?.user?.id &&
+                    {userData?.user?.isAuth && userData?.user?.user?.id === state?.recipe?.user?.id &&
                         <Row className='container-fluid ml-auto'>
                             <Col style={{ display: 'flex', justifyContent: 'left' }}>
-                                <EditRecipe recipe={recipe} setRecipe={setRecipe} />
+                                <EditRecipe recipe={state?.recipe} dispatch={dispatch} />
                             </Col>
                             <Col style={{ display: 'flex', justifyContent: 'left' }}>
-                                <DeleteRecipe recipe={recipe} userData={userData} />
+                                <DeleteRecipe recipe={state?.recipe} userData={userData} />
                             </Col>
                         </Row>
                     }
                 </Col>
                 <Col className='ms-auto' style={{ display: 'flex', justifyContent: 'right' }}>
-                    <AddToList recipe={recipe} />
+                    <AddToList recipe={state?.recipe} />
                 </Col>
             </Row>
             <Col>
-                <RecipeInfo recipe={recipe} avatar={avatar} userData={user} />
+                <RecipeInfo recipe={state?.recipe} avatar={avatar} userData={state?.recipe?.user} />
             </Col>
 
             <Col style={{ paddingTop: '0' }}>
-                {recipe?.rating_avg &&
-                    <RateableStars rating={recipe?.rating_avg} votes={recipe?.votes} setRecipe={setRecipe} />
+                {state?.recipe &&
+                    <RateableStars rating={state?.recipe?.rating_avg} votes={state?.recipe?.votes} dispatch={dispatch} />
                 }
             </Col>
             {thumbnail &&
@@ -109,7 +105,7 @@ export default function Recipe() {
                 </Col>
             }
             <Col >
-                <ActualRecipe recipe={recipe} />
+                <ActualRecipe recipe={state?.recipe} />
             </Col>
             <Comments />
         </Container >

@@ -10,7 +10,7 @@ export async function getRecipeComments(dispatch, id) {
         let response = await fetch(`${API_URL}/recipe/${id}/comments`, requestOptions);
         let data = await response.json();
         if (data) {
-            dispatch({ type: 'COMMENTS_SUCCESS', payload: data.result })
+            dispatch({ type: 'COMMENTS_SUCCESS', payload: data })
             return data
         }
         dispatch({ type: 'COMMENTS_ERROR', errorMessage: data })
@@ -29,7 +29,7 @@ export async function loadMoreComments(dispatch, next) {
         let response = await fetch(`${next}`, requestOptions);
         let data = await response.json();
         if (data) {
-            dispatch({ type: 'COMMENTS_SUCCESS', payload: data.result })
+            dispatch({ type: 'COMMENTS_SUCCESS', payload: data })
             return data
         }
         dispatch({ type: 'COMMENTS_ERROR', errorMessage: data })
@@ -52,7 +52,7 @@ export async function postComment(dispatch, payload, token, recipeId) {
         dispatch({ type: 'CREATE_COMMENT_REQUEST' });
         let response = await fetch(`${API_URL}/recipe/${recipeId}/comment`, requestOptions);
         let data = await response.json();
-        if (data) {
+        if (data?.result) {
             dispatch({ type: 'CREATE_COMMENT_SUCCESS', payload: data.result })
             return data
         }

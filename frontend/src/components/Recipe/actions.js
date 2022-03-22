@@ -137,6 +137,10 @@ export async function updateRecipe(dispatch, payload, token,recipeId) {
     }
 }
 
+export function updateRecipeState(dispatch,recipe){
+        dispatch({type:'UPDATE_RECIPE_STATE',payload:recipe})
+}
+
 export async function deleteRecipeImages(dispatch, payload, token, recipeId) {
     const requestOptions = {
         method: 'DELETE',
