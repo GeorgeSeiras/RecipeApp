@@ -8,10 +8,8 @@ import { UserContext } from '../Context/authContext';
 
 export default function DeleteComment(props) {
     const userData = useContext(UserContext);
-    const [StaticRange, dispatch] = useReducer(DeleteCommentReducer);
-
     const deleteCommentHandler = async () => {
-        const response = await deleteComment(dispatch, userData.user.token.key, props.commentId)
+        const response = await deleteComment(props.dispatch, userData.user.token.key, props.commentId)
         if (response?.result) {
             props.setCommentDeleted(true)
         }

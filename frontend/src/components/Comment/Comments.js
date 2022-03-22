@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useEffect,useContext } from 'react';
+import React, { useState, useReducer, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
@@ -16,7 +16,7 @@ export default function Comments() {
     const [newComment, setNewComment] = useState('')
     const [page, setPage] = useState(1)
     const { id } = useParams();
-    const [stateComments, dispatchComments] = useReducer(RecipeCommentsReducer);
+    const [state, dispatch] = useReducer(RecipeCommentsReducer);
     const [comments, setComments] = useState(null);
     const [hiddenInputs, setHiddenInputs] = useState([]);
     const [parentIds, setParentIds] = useState([]);
@@ -29,7 +29,7 @@ export default function Comments() {
             if (createdComment) {
                 setSuccessAlert(true)
             }
-            const responseComments = await getRecipeComments(dispatchComments, id);
+            const responseComments = await getRecipeComments(dispatch, id);
             if (responseComments) {
                 setComments(responseComments)
             }
@@ -42,7 +42,7 @@ export default function Comments() {
     }
 
     const loadMore = async (next) => {
-        const response = await loadMoreComments(dispatchComments, next)
+        const response = await loadMoreComments(dispatch, next)
         if (response) {
             var copy = Object.assign({}, comments)
             copy.results.push(...response.results);
@@ -60,7 +60,7 @@ export default function Comments() {
                     if (depth <= 8) {
                         return (
                             <Comment comment={comment} depth={depth} renderNestedComments={renderNestedComments}
-                                key={comment.id} setCreatedComment={setCreatedComment} createdComment={createdComment} />
+                                key={comment.id} setCreatedComment={setCreatedComment} createdComment={createdComment} dispatch={dispatch} />
                         )
                     } else if (depth === 9) {
                         return (
@@ -95,7 +95,8 @@ export default function Comments() {
                     Comment Successfuly Created!
                 </Alert>}
             {userData?.user?.isAuth &&
-                <CreateComment setCreatedComment={setCreatedComment} createdComment={createdComment} />
+                <CreateComment setCreatedComment={setCreatedComment}
+                    createdComment={createdComment} dispatch={dispatch} />
             }
             {comments &&
                 renderNestedComments(comments?.results, 0)
