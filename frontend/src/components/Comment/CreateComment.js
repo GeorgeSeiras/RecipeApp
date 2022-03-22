@@ -5,7 +5,7 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button';
 
-import { postComment } from './actions';
+import { postComment } from '../../actions/CommentActions';
 import { UserContext } from '../Context/authContext';
 
 export default function Comments(props) {

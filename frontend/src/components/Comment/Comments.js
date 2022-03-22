@@ -6,8 +6,8 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Alert from 'react-bootstrap/Alert';
 
-import { loadMoreComments, getRecipeComments } from './actions';
-import { RecipeCommentsReducer } from './reducer';
+import { loadMoreComments, getRecipeComments } from '../../actions/CommentActions';
+import { RecipeCommentsReducer } from '../../reducers/CommentReducer';
 import CreateComment from './CreateComment';
 import Comment from './Comment';
 import { UserContext } from '../Context/authContext';

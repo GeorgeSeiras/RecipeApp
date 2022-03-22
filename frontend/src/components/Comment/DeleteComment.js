@@ -2,8 +2,7 @@ import React, { useReducer, useContext } from 'react';
 import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container';
 
-import { deleteComment } from './actions';
-import { DeleteCommentReducer } from './reducer';
+import { deleteComment } from '../../actions/CommentActions';
 import { UserContext } from '../Context/authContext';
 
 export default function DeleteComment(props) {
