@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import { useParams } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
@@ -12,7 +12,6 @@ export default function Comments(props) {
     const [newComment, setNewComment] = useState('');
     const { id } = useParams();
     const userData = useContext(UserContext);
-    // console.log(props)
     const handleSubmit = async (e) => {
         e.preventDefault()
         const payload = {
@@ -21,7 +20,9 @@ export default function Comments(props) {
         }
         const response = await postComment(props.dispatch, payload, userData.user.token.key, id)
         if (response?.result) {
-            props.setCreatedComment(true)
+            props.setSuccessAlert(true);
+            setNewComment('')
+
         }
 
     }

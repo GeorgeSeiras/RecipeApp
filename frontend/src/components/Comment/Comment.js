@@ -14,11 +14,11 @@ export default function Comment(props) {
     const userData = useContext(UserContext);
 
     useEffect(() => {
-        if (props.createdComment) {
+        if (props.setSuccessAlert) {
             ref.current.style.display = 'none';
 
         }
-    }, [props.createdComment])
+    }, [props.setSuccessAlert])
 
     const toggleNewComment = (e) => {
 
@@ -56,7 +56,7 @@ export default function Comment(props) {
                         }
                     </Row>
                     <Row style={{ display: 'none', paddingTop: '0.5em' }} ref={ref}>
-                        <CreateComment setCreatedComment={props.setCreatedComment} parentId={props.comment.id} dispatch={props.dispatch}/>
+                        <CreateComment setSuccessAlert={props.setSuccessAlert} parentId={props.comment.id} dispatch={props.dispatch}/>
                     </Row>
                 </Card.Body>
                 {props.comment.children.length > 0 &&

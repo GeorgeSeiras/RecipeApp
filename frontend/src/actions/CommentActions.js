@@ -9,7 +9,7 @@ export async function getRecipeComments(dispatch, id) {
         let response = await fetch(`${API_URL}/recipe/${id}/comments`, requestOptions);
         let data = await response.json();
         if (data) {
-            dispatch({ type: 'GET_COMMENTS_SUCCESS', payload: data })
+            dispatch({ type: 'GET_COMMENTS', payload: data })
             return data
         }
         dispatch({ type: 'COMMENT_ERROR', errorMessage: data })
@@ -27,7 +27,7 @@ export async function loadMoreComments(dispatch, next) {
         let response = await fetch(`${next}`, requestOptions);
         let data = await response.json();
         if (data) {
-            dispatch({ type: 'GET_COMMENTS_SUCCESS', payload: data })
+            dispatch({ type: 'LOAD_COMMENTS', payload: data })
             return data
         }
         dispatch({ type: 'COMMENT_ERROR', errorMessage: data })
@@ -50,7 +50,7 @@ export async function postComment(dispatch, payload, token, recipeId) {
         let response = await fetch(`${API_URL}/recipe/${recipeId}/comment`, requestOptions);
         let data = await response.json();
         if (data?.result) {
-            dispatch({ type: 'CREATE_COMMENT_SUCCESS', payload: data.result })
+            dispatch({ type: 'CREATE_COMMENT', payload: data.result })
             return data
         }
         dispatch({ type: 'COMMENT_ERROR', errorMessage: data })
@@ -71,7 +71,7 @@ export async function deleteComment(dispatch, token, commentId) {
         let response = await fetch(`${API_URL}/comment/${commentId}`, requestOptions);
         let data = await response.json();
         if (data) {
-            dispatch({ type: 'DELETE_COMMENT_SUCCESS', payload: data.result })
+            dispatch({ type: 'DELETE_COMMENT', payload: data.result })
             return data
         }
         dispatch({ type: 'COMMENT_ERROR', errorMessage: data })

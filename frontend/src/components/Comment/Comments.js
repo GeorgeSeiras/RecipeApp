@@ -17,25 +17,24 @@ export default function Comments() {
     const [page, setPage] = useState(1)
     const { id } = useParams();
     const [state, dispatch] = useReducer(RecipeCommentsReducer);
-    const [comments, setComments] = useState(null);
     const [hiddenInputs, setHiddenInputs] = useState([]);
     const [parentIds, setParentIds] = useState([]);
-    const [createdComment, setCreatedComment] = useState(false)
     const [successAlert, setSuccessAlert] = useState(null);
     const userData = useContext(UserContext);
 
     useEffect(() => {
         (async () => {
-            if (createdComment) {
-                setSuccessAlert(true)
+            await getRecipeComments(dispatch, id);
+        })();
+    }, [])
+
+    useEffect(() => {
+        (async () => {
+            if (state?.created) {
+                await getRecipeComments(dispatch, id);
             }
-            const responseComments = await getRecipeComments(dispatch, id);
-            if (responseComments) {
-                setComments(responseComments)
-            }
-            setCreatedComment(false);
         })()
-    }, [createdComment])
+    }, [state?.created])
 
     const validateForm = () => {
         return newComment !== '' ? true : false;
@@ -43,24 +42,16 @@ export default function Comments() {
 
     const loadMore = async (next) => {
         const response = await loadMoreComments(dispatch, next)
-        if (response) {
-            var copy = Object.assign({}, comments)
-            copy.results.push(...response.results);
-            copy.links = response.links;
-            copy.page = response.page;
-            copy.total_pages = response.total_pages;
-            setComments(copy)
-        }
     }
 
     const renderNestedComments = (commentsToRender, depth) => {
         return (
             commentsToRender?.map((comment, index) => {
-                if (index < comments.results.length - 1 || (index === 0 && comments.results.length === 1)) {
+                if (index < state.comments.results.length - 1 || (index === 0 && state.comments.results.length === 1)) {
                     if (depth <= 8) {
                         return (
                             <Comment comment={comment} depth={depth} renderNestedComments={renderNestedComments}
-                                key={comment.id} setCreatedComment={setCreatedComment} createdComment={createdComment} dispatch={dispatch} />
+                                key={comment.id} setSuccessAlert={setSuccessAlert} dispatch={dispatch} />
                         )
                     } else if (depth === 9) {
                         return (
@@ -74,10 +65,10 @@ export default function Comments() {
                         )
                     }
                 }
-                else if (comments?.links?.next !== null && index === comments.results.length - 1) {
+                else if (state.comments?.links?.next !== null && index === state.comments.results.length - 1) {
                     return (
                         <Row key={comment.id} style={{ paddingBottom: '0.5em', marginLeft: `0.5em`, marginRight: '-0.81em' }}>
-                            <Button onClick={() => loadMore(comments.links.next)}>
+                            <Button onClick={() => loadMore(state.comments.links.next)}>
                                 Load More Comments
                             </Button>
                         </Row>
@@ -95,11 +86,10 @@ export default function Comments() {
                     Comment Successfuly Created!
                 </Alert>}
             {userData?.user?.isAuth &&
-                <CreateComment setCreatedComment={setCreatedComment}
-                    createdComment={createdComment} dispatch={dispatch} />
+                <CreateComment setSuccessAlert={setSuccessAlert} dispatch={dispatch} />
             }
-            {comments &&
-                renderNestedComments(comments?.results, 0)
+            {state?.comments &&
+                renderNestedComments(state.comments?.results, 0)
             }
         </Container>
     )

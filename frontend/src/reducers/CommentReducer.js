@@ -1,24 +1,35 @@
 export const initialState = {
-    comments:null,
-    results: null,
-    loading: false,
+    comments: null,
+    created:null,
     errorMessage: null
 }
 
 export const RecipeCommentsReducer = (initialState, action) => {
 
     switch (action.type) {
-        case 'GET_COMMENTS_SUCCESS':
+        case 'GET_COMMENTS':
             return {
                 ...initialState,
-                comments: action.payload
+                comments: action.payload,
+                created:false
             };
-        case 'CREATE_COMMENT_SUCCESS':
+        case 'LOAD_COMMENTS':
+            var copy = Object.assign({}, initialState.comments)
+            copy.results.push(...action.payload.results);
+            copy.links = action.payload.links;
+            copy.page = action.payload.page;
+            copy.total_pages = action.payload.total_pages;
             return {
                 ...initialState,
-                result: action.payload
+                comments: copy,
+                created:false
             }
-        case 'DELETE_COMMENT_SUCCESS':
+        case 'CREATE_COMMENT':
+            return {
+                ...initialState,
+                created: true
+            }
+        case 'DELETE_COMMENT':
             return {
                 ...initialState,
                 result: action.payload
