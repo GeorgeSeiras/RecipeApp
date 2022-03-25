@@ -148,7 +148,6 @@ export default function EditRecipe(props) {
         }
         if (recipeResponse?.result) {
             setShow(false)
-            updateRecipeState(props.dispatch, recipeResponse.result)
         }
     }
 

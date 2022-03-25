@@ -36,7 +36,7 @@ export const RecipeReducer = (initialState, action) => {
         case 'UPDATE_RECIPE':
             return {
                 ...initialState,
-                recipe: action.payload.recipe
+                recipe: action.payload
             };
         case 'UPDATE_RATING_AVG_AND_VOTES':
 
