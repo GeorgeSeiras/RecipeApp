@@ -15,7 +15,7 @@ export const GetUserListsReducer = (initialStateUserLists, action) => {
         case 'GET_USER_LISTS':
             return {
                 ...initialStateUserLists,
-                lists: action.payload?.lists
+                lists: action.payload
             };
         case 'GET_LISTS_WITH_RECIPE':
             return {

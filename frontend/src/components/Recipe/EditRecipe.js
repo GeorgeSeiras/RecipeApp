@@ -27,7 +27,6 @@ export default function EditRecipe(props) {
     const [cuisine, setCuisine] = useState(props?.recipe?.cuisine || ['']);
     const [show, setShow] = useState(false);
 
-    const [state, dispatch] = useReducer(RecipeReducer);
     const userData = useContext(UserContext);
 
     function secondsToHM(time) {
@@ -137,13 +136,13 @@ export default function EditRecipe(props) {
             toDelete.push(image.id)
         })
         if (toDelete.length > 0) {
-            const deleteImagesResponse = await deleteRecipeImages(dispatch, { 'images': toDelete }, userData.user.token.key, props.recipe.id);
+            const deleteImagesResponse = await deleteRecipeImages(props.dispatch, { 'images': toDelete }, userData.user.token.key, props.recipe.id);
             if (!deleteImagesResponse?.result) {
                 console.log('Error while modifying images')
             }
         }
-        const imageResponse = await uploadRecipeImages(dispatch, form, userData.user.token.key, props.recipe.id);
-        const recipeResponse = await updateRecipe(dispatch, payload, userData.user.token.key, props.recipe.id);
+        const imageResponse = await uploadRecipeImages(props.dispatch, form, userData.user.token.key, props.recipe.id);
+        const recipeResponse = await updateRecipe(props.dispatch, payload, userData.user.token.key, props.recipe.id);
         if (!imageResponse?.result) {
             console.log('Error while modifying images')
         }

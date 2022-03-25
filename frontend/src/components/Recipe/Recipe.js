@@ -32,9 +32,7 @@ export default function Recipe() {
     useEffect(() => {
         (async () => {
             const payload = { 'recipe': id }
-            const response = await getRecipe(dispatch, payload)
-            if (response?.result) {
-            }
+            await getRecipe(dispatch, payload)
         })()
     }, [id, MEDIA_URL])
 
@@ -42,7 +40,7 @@ export default function Recipe() {
         if (state?.errorMessage) {
             setError(state.errorMessage)
         }
-    },[state])
+    }, [state])
 
     useEffect(() => {
         if (state?.recipe?.user?.image) {

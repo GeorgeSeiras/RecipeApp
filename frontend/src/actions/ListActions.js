@@ -9,8 +9,8 @@ export async function getUserLists(dispatch, userId) {
     try {
         let response = await fetch(`${API_URL}/user/${userId}/list`, requestOptions);
         let data = await response.json();
-        if (data?.results) {
-            dispatch({ type: 'GET_USER_LISTS', payload: data.result })
+        if (data) {
+            dispatch({ type: 'GET_USER_LISTS', payload: data })
             return data
         }
         dispatch({ type: 'USER_LISTS_ERROR', errorMessage: data })

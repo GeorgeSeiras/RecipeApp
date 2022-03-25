@@ -13,9 +13,6 @@ import ListPagination from '../RecipeList/ListPagination';
 import { UserContext } from '../Context/authContext';
 
 export default function AddToList(props) {
-    const [lists, setLists] = useState();
-    const [listsWithRecipe, setListsWithRecipe] = useState();
-    const [response, setResponse] = useState();
     const [show, setShow] = useState(false);
     const [state, dispatch] = useReducer(GetUserListsReducer);
     const [clicked, setClicked] = useState();
@@ -24,19 +21,11 @@ export default function AddToList(props) {
     useEffect(() => {
         async function getLists() {
             if (userData?.user?.user?.id && !clicked) {
-                const response = await getUserLists(dispatch, userData.user.user.id)
-                if (response?.results) {
-                    setLists(response?.results);
-                    setResponse(response)
-                }
+                await getUserLists(dispatch, userData.user.user.id)
+
             } else if (clicked !== 0) {
                 if (clicked) {
-                    const response = await fetch(clicked);
-                    let data = await response.json();
-                    if (data?.results) {
-                        setLists(data?.results);
-                        setResponse(data);
-                    }
+                    await fetch(clicked);
                 }
             }
         }
@@ -46,30 +35,24 @@ export default function AddToList(props) {
     useEffect(() => {
         (async () => {
             if (userData?.user?.token && props?.recipe) {
-                const response = await getListsWithRecipe(dispatch, userData.user.token.key, props.recipe.id);
-                if (response?.result) {
-                    setListsWithRecipe(response.result);
-                }
+                await getListsWithRecipe(dispatch, userData.user.token.key, props.recipe.id);
             }
         })()
     }, [userData?.user?.token?.key, props?.recipe])
 
     const disabledCheck = (listId) => {
-        if (!listsWithRecipe) {
+        if (!state?.listsWithRecipe) {
             return true
         } else {
-            return !listsWithRecipe.includes(listId)
+            return !state?.listsWithRecipe.includes(listId)
         }
     }
 
     const handleClick = (e) => {
         (async () => {
-            const response = await addRecipeToList(
-                dispatch, userData.user.token.key, lists[e.target.parentNode.id].id, props.recipe.id);
-            if (response?.result) {
-                setListsWithRecipe(listsWithRecipe => [...listsWithRecipe, lists[e.target.parentNode.id].id])
-                setShow(true);
-            }
+            await addRecipeToList(
+                dispatch, userData.user.token.key, state?.lists?.results[e.target.parentNode.id].id, props.recipe.id);
+            setShow(true);
         })()
     }
 
@@ -83,8 +66,8 @@ export default function AddToList(props) {
                     size='sm'
                     style={{ alignText: 'center' }}
                 >
-                    {lists && userData?.user?.user &&
-                        lists.map((list, index) => {
+                    {state?.lists?.results && userData?.user?.user &&
+                        state?.lists?.results.map((list, index) => {
                             return (
                                 <Dropdown.Item key={index} id={index} style={{
                                     marginTop: '-0.8em',
@@ -99,8 +82,8 @@ export default function AddToList(props) {
                             )
                         })
                     }
-                    {response &&
-                        <ListPagination setClicked={setClicked} next={response?.next} previous={response?.previous} />
+                    {state?.lists &&
+                        <ListPagination setClicked={setClicked} next={state?.lists?.next} previous={state?.lists?.previous} />
                     }
                 </DropdownButton>
             </Col>
