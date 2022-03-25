@@ -4,14 +4,12 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
-import { createList } from './actions';
-import { CreateListReducer } from './reducer';
+import { createList } from '../../actions/ListActions';
 
 export default function CreateList(props) {
 
     const [title, setTitle] = useState('');
     const [desc, setDesc] = useState('');
-    const [state, dispatch] = useReducer(CreateListReducer);
 
     const disabled = () => {
         if (title === '') {
@@ -30,7 +28,7 @@ export default function CreateList(props) {
         if (desc !== '') {
             payload['desc'] = desc;
         }
-        const response = await createList(dispatch, props.userData.user.token.key, payload);
+        const response = await createList(props.dispatch, props.userData.user.token.key, payload);
         if (response?.result) {
             const copy = props.lists.slice();
             copy.pop();

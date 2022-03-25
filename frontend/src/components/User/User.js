@@ -5,21 +5,21 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import { RecipesReducer } from '../Home/reducer';
-import { getRecipes } from '../Home/actions';
+import { RecipesReducer } from '../../reducers/RecipeReducer';
+import { getRecipes } from '../../actions/RecipeActions';
 import UserInfo from './UserInfo';
 import RecipeCards from '../Home/RecipeCards';
 import Pagination from '../Home/Pagination';
 import SearchBar from '../Home/SearchBar';
 import RecipeLists from '../RecipeList/RecipeLists'
 import { UserContext } from '../Context/authContext';
-import { GetUserReducer } from './reducer';
-import { getUser } from './actions';
+import { UserReducer } from '../../reducers/UserReducer'
+import { getUser } from '../../actions/UserActions';
 import { useError } from '../ErrorHandler/ErrorHandler';
 
 export default function User() {
     const [recipesState, recipesDispatch] = useReducer(RecipesReducer);
-    const [userState, userDispatch] = useReducer(GetUserReducer);
+    const [userState, userDispatch] = useReducer(UserReducer);
     const { username } = useParams();
     const [active, setActive] = useState(1);
     const [pageClicked, setPageClicked] = useState();

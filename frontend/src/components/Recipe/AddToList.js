@@ -6,10 +6,8 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Alert from 'react-bootstrap/Alert';
 
-import { getUserLists } from '../RecipeList/actions';
-import { getListsWithRecipe, addRecipeToList } from './actions';
-import { GetUserListsReducer } from '../RecipeList/reducer';
-import { ListsWithRecipeReducer, addRecipeToListReducer } from './reducer';
+import { getUserLists, getListsWithRecipe, addRecipeToList } from '../../actions/ListActions';
+import { GetUserListsReducer } from '../../reducers/ListReducer';
 import ListPagination from '../RecipeList/ListPagination';
 
 import { UserContext } from '../Context/authContext';
@@ -20,8 +18,6 @@ export default function AddToList(props) {
     const [response, setResponse] = useState();
     const [show, setShow] = useState(false);
     const [state, dispatch] = useReducer(GetUserListsReducer);
-    const [stateListsWithRecipe, dispatchListsWithRecipe] = useReducer(ListsWithRecipeReducer);
-    const [stateAddRecipeToList, dispatchAddRecipeToList] = useReducer(addRecipeToListReducer);
     const [clicked, setClicked] = useState();
     const userData = useContext(UserContext);
 
@@ -50,7 +46,7 @@ export default function AddToList(props) {
     useEffect(() => {
         (async () => {
             if (userData?.user?.token && props?.recipe) {
-                const response = await getListsWithRecipe(dispatchListsWithRecipe, userData.user.token.key, props.recipe.id);
+                const response = await getListsWithRecipe(dispatch, userData.user.token.key, props.recipe.id);
                 if (response?.result) {
                     setListsWithRecipe(response.result);
                 }
@@ -69,7 +65,7 @@ export default function AddToList(props) {
     const handleClick = (e) => {
         (async () => {
             const response = await addRecipeToList(
-                dispatchAddRecipeToList, userData.user.token.key, lists[e.target.parentNode.id].id, props.recipe.id);
+                dispatch, userData.user.token.key, lists[e.target.parentNode.id].id, props.recipe.id);
             if (response?.result) {
                 setListsWithRecipe(listsWithRecipe => [...listsWithRecipe, lists[e.target.parentNode.id].id])
                 setShow(true);
@@ -79,12 +75,7 @@ export default function AddToList(props) {
 
     return (
         <Row xs='auto'>
-            <Col>
-                <Alert show={show} variant="success" dismissible onClick={() => setShow(false)}>
-                    <Alert.Heading>Recipe successfuly added to list!</Alert.Heading>
 
-                </Alert>
-            </Col>
             <Col>
                 <DropdownButton
                     variant={'success'}
@@ -113,6 +104,12 @@ export default function AddToList(props) {
                     }
                 </DropdownButton>
             </Col>
+            <Row>
+                <Alert show={show} variant="success" dismissible onClick={() => setShow(false)}>
+                    <Alert.Heading>Recipe successfuly added to list!</Alert.Heading>
+
+                </Alert>
+            </Row>
         </Row>
     )
 }

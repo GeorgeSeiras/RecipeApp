@@ -51,12 +51,12 @@ export default function Comment(props) {
                         {props.comment.user === userData?.user?.user?.id &&
                             !props.comment.deleted && !commentDeleted &&
                             <Col>
-                                <DeleteComment commentId={props.comment.id} setCommentDeleted={setCommentDeleted} />
+                                <DeleteComment commentId={props.comment.id} setCommentDeleted={setCommentDeleted} dispatch={props.dispatch} />
                             </Col>
                         }
                     </Row>
                     <Row style={{ display: 'none', paddingTop: '0.5em' }} ref={ref}>
-                        <CreateComment setCreatedComment={props.setCreatedComment} parentId={props.comment.id} />
+                        <CreateComment setCreatedComment={props.setCreatedComment} parentId={props.comment.id} dispatch={props.dispatch}/>
                     </Row>
                 </Card.Body>
                 {props.comment.children.length > 0 &&

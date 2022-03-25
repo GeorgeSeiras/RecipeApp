@@ -1,22 +1,26 @@
+
 export const initialState = {
-    user: null,
+    rating: null,
+    userRating: null,
+    hasRated:false,
     loading: false,
     errorMessage: null
 }
 
-export const GetUserReducer = (initialState, action) => {
+export const RatingReducer = (initialState, action) => {
     switch (action.type) {
-        case 'GET_USER_REQUEST':
+        case 'RATE_RECIPE':
             return {
                 ...initialState,
-                loading: true
+                userRating: action.payload
             };
-        case 'GET_USER_SUCCESS':
+        case 'GET_USER_RECIPE_RATING':
             return {
                 ...initialState,
-                user: action.payload
+                userRating: action.payload,
+                hasRated:true
             };
-        case 'GET_USER_ERROR':
+        case 'RATING_ERROR':
             return {
                 ...initialState,
                 errorMessage: action.errorMessage

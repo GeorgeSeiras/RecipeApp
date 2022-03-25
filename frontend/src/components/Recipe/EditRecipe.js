@@ -5,10 +5,9 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 
 import EditableRecipeBody from './EditableRecipeBody';
-import { UpdateRecipeReducer, DeleteRecipeImagesReducer } from './reducer';
-import { updateRecipe, deleteRecipeImages, updateRecipeState } from './actions';
-import { UploadImageReducer } from '../CreateRecipe/reducer';
-import { uploadRecipeImages } from '../CreateRecipe/actions';
+import { updateRecipe, deleteRecipeImages, updateRecipeState } from '../../actions/RecipeActions';
+import { RecipeReducer } from '../../reducers/RecipeReducer';
+import { uploadRecipeImages } from '../../actions/RecipeActions';
 import { UserContext } from '../Context/authContext';
 
 export default function EditRecipe(props) {
@@ -28,9 +27,7 @@ export default function EditRecipe(props) {
     const [cuisine, setCuisine] = useState(props?.recipe?.cuisine || ['']);
     const [show, setShow] = useState(false);
 
-    const [state, dispatch] = useReducer(UpdateRecipeReducer);
-    const [stateImages, dispatchImages] = useReducer(UploadImageReducer);
-    const [stateDeleteImages, dispatchDeleteImages] = useReducer(DeleteRecipeImagesReducer);
+    const [state, dispatch] = useReducer(RecipeReducer);
     const userData = useContext(UserContext);
 
     function secondsToHM(time) {
@@ -140,19 +137,19 @@ export default function EditRecipe(props) {
             toDelete.push(image.id)
         })
         if (toDelete.length > 0) {
-            const deleteImagesResponse = await deleteRecipeImages(dispatchDeleteImages, { 'images': toDelete }, userData.user.token.key, props.recipe.id);
-            if (deleteImagesResponse?.result) {
+            const deleteImagesResponse = await deleteRecipeImages(dispatch, { 'images': toDelete }, userData.user.token.key, props.recipe.id);
+            if (!deleteImagesResponse?.result) {
                 console.log('Error while modifying images')
             }
         }
-        const imageResponse = await uploadRecipeImages(dispatchImages, form, userData.user.token.key, props.recipe.id);
+        const imageResponse = await uploadRecipeImages(dispatch, form, userData.user.token.key, props.recipe.id);
         const recipeResponse = await updateRecipe(dispatch, payload, userData.user.token.key, props.recipe.id);
         if (!imageResponse?.result) {
             console.log('Error while modifying images')
         }
         if (recipeResponse?.result) {
             setShow(false)
-            updateRecipeState(props.dispatch,recipeResponse.result)
+            updateRecipeState(props.dispatch, recipeResponse.result)
         }
     }
 

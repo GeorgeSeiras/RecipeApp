@@ -4,9 +4,9 @@ import Container from 'react-bootstrap/Container'
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import { getRecipe } from './actions';
+import { getRecipe } from '../../actions/RecipeActions';
 import RecipeCarousel from "./Carousel";
-import { RecipeReducer } from './reducer';
+import { RecipeReducer } from '../../reducers/RecipeReducer';
 import Thumbnail from "./Thumbnail";
 import RecipeInfo from "./RecipeInfo";
 import ActualRecipe from "./ActualRecipe";
@@ -81,7 +81,7 @@ export default function Recipe() {
                         </Row>
                     }
                 </Col>
-                <Col className='ms-auto' style={{ display: 'flex', justifyContent: 'right' }}>
+                <Col className='ms-auto' style={{ display: 'flex', justifyContent: 'center' }}>
                     <AddToList recipe={state?.recipe} />
                 </Col>
             </Row>
@@ -90,7 +90,7 @@ export default function Recipe() {
             </Col>
 
             <Col style={{ paddingTop: '0' }}>
-                {state?.recipe &&
+                {state?.recipe && userData?.user?.isAuth &&
                     <RateableStars rating={state?.recipe?.rating_avg} votes={state?.recipe?.votes} dispatch={dispatch} />
                 }
             </Col>

@@ -7,8 +7,10 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
-import { getListRecipes, getList, deleteList } from './actions';
-import { GetListRecipesReducer, GetListReducer, DeleteListReducer } from './reducer';
+import { getList, deleteList } from '../../actions/ListActions';
+import { getListRecipes } from '../../actions/RecipesInListActions';
+import { ListReducer } from '../../reducers/ListReducer';
+import { RecipesInListReducer } from '../../reducers/RecipesInListReducer';
 import { UserContext } from '../Context/authContext';
 import ListRecipeCards from './ListRecipeCards';
 import PaginationBar from '../Home/Pagination';
@@ -17,9 +19,8 @@ import { useError } from '../ErrorHandler/ErrorHandler';
 
 export default function List() {
     const userData = useContext(UserContext);
-    const [state, dispatch] = useReducer(GetListRecipesReducer);
-    const [stateList, dispatchList] = useReducer(GetListReducer);
-    const [stateDelete, dispatchDelete] = useReducer(DeleteListReducer);
+    const [stateList, dispatchList] = useReducer(ListReducer);
+    const [stateRecipesList, dispatchRecipesList] = useReducer(RecipesInListReducer);
     const [recipesResponse, setRecipesResponse] = useState();
     const [list, setList] = useState();
     const { listId } = useParams();
@@ -46,7 +47,7 @@ export default function List() {
     useEffect(() => {
         (async () => {
             if (list && !recipesResponse) {
-                const res = await getListRecipes(dispatch, listId, queryParams, pageClicked);
+                const res = await getListRecipes(dispatchRecipesList, listId, queryParams, pageClicked);
                 if (res) {
                     const recipes = [];
                     res.results.forEach(item => {
@@ -67,7 +68,7 @@ export default function List() {
 
     const handleDeleteList = () => {
         (async () => {
-            const response = await deleteList(dispatchDelete, listId, userData.user.token.key);
+            const response = await deleteList(dispatchList, listId, userData.user.token.key);
             if (response?.result === 'ok') {
                 navigate(`/user/${userData.user.user.username}`);
             }
@@ -103,7 +104,8 @@ export default function List() {
                 paddingLeft: '2%',
                 paddingRight: '2%'
             }}>
-                <ListRecipeCards response={recipesResponse} setRecipesResponse={setRecipesResponse} setRerender={setRerender} rerender={rerender} user={list?.user} />
+                <ListRecipeCards state={stateRecipesList} setRecipesResponse={setRecipesResponse}
+                    setRerender={setRerender} rerender={rerender} user={list?.user} dispatch={dispatchRecipesList} />
             </Row>
             <PaginationBar response={recipesResponse} active={active} setPageClicked={setPageClicked} />
 

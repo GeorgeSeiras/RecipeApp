@@ -10,28 +10,31 @@ import STAR_FIRST_HALF_FULL from '../../static/STAR_FIRST_HALF_FULL.jpg';
 import STAR_SECOND_HALF_FULL from '../../static/STAR_SECOND_HALF_FULL.jpg';
 
 import { UserContext } from '../Context/authContext';
-import { rateRecipe, getUserRecipeRating,updateRecipeState } from './actions';
-import { RateRecipeReducer, UserRecipeRatingReducer } from './reducer';
+import { rateRecipe, getUserRecipeRating } from '../../actions/RatingActions';
+import { updateRatingAndVotes } from '../../actions/RatingActions'
+import { RatingReducer } from '../../reducers/RatingReducer';
 
 export default function RateableStars(props) {
     const [ratingToRender, setRatingToRender] = useState(0)
     const userData = useContext(UserContext);
-    const [state, dispatch] = useReducer(RateRecipeReducer);
-    const [stateUserRating, dispatchUserRating] = useReducer(UserRecipeRatingReducer);
+    const [state, dispatch] = useReducer(RatingReducer);
+    const [initRating, setInitRating] = useState(null)
     const { id } = useParams();
     const [alert, setAlert] = useState(null);
 
     useEffect(() => {
-        async function getUserRating() {
-            const response = await getUserRecipeRating(dispatchUserRating, userData.user.token.key, id);
+        (async function getUserRating() {
+            const response = await getUserRecipeRating(dispatch, userData.user.token.key, id);
             if (response?.result) {
-                setRatingToRender(response.result.rating)
-            } else {
-                setRatingToRender(props?.rating)
+                setInitRating(response.result.rating)
             }
-        }
-        getUserRating();
+
+        })()
     }, [props?.rating, id, userData?.user?.token.key])
+
+    useEffect(() => {
+        setRatingToRender(state?.userRating?.rating ? state?.userRating.rating : props?.rating);
+    }, [state])
 
     function getStar(star, key) {
         return (
@@ -55,7 +58,7 @@ export default function RateableStars(props) {
     }
 
     const onMouseOut = (e) => {
-        setRatingToRender(stateUserRating.rating || props?.rating)
+        setRatingToRender(state?.userRating?.rating || props?.rating)
     }
 
     const handleClick = async (e) => {
@@ -63,10 +66,10 @@ export default function RateableStars(props) {
         const payload = { 'rating': e.target.id }
         const response = await rateRecipe(dispatch, payload, userData.user.token.key, id);
         if (response?.result) {
-            updateRecipeState(props.dispatch,response.result.recipe)
-            setRatingToRender(response.results.rating)
+            updateRatingAndVotes(props.dispatch, { newRating: e.target.id, initRating: initRating, hasRated: state.hasRated })
             setAlert(true)
         }
+
     }
 
     const renderStars = (rating) => {
