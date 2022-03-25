@@ -50,3 +50,7 @@ export async function deleteRecipeFromList(dispatch, listId, recipeId, token) {
         dispatch({ type: 'RECIPES_LIST_ERROR', errorMessage: error })
     }
 }
+
+export function updateRecipesInList(dispatch, payload) {
+    dispatch({ type: 'UPDATE_LIST_RECIPES', payload: payload });
+}

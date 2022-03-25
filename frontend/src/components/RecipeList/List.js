@@ -8,7 +8,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
 import { getList, deleteList } from '../../actions/ListActions';
-import { getListRecipes } from '../../actions/RecipesInListActions';
+import { getListRecipes, updateRecipesInList } from '../../actions/RecipesInListActions';
 import { ListReducer } from '../../reducers/ListReducer';
 import { RecipesInListReducer } from '../../reducers/RecipesInListReducer';
 import { UserContext } from '../Context/authContext';
@@ -21,8 +21,6 @@ export default function List() {
     const userData = useContext(UserContext);
     const [stateList, dispatchList] = useReducer(ListReducer);
     const [stateRecipesList, dispatchRecipesList] = useReducer(RecipesInListReducer);
-    const [recipesResponse, setRecipesResponse] = useState();
-    const [list, setList] = useState();
     const { listId } = useParams();
     const [queryParams, setQueryParams] = useState('');
     const [active, setActive] = useState(1);
@@ -35,30 +33,28 @@ export default function List() {
 
     useEffect(() => {
         (async () => {
-            if (listId && !list) {
-                const response = await getList(dispatchList, listId);
-                if (response?.result) {
-                    setList(response.result);
-                }
+            if (listId && !stateList?.list) {
+                await getList(dispatchList, listId);
             }
         })()
     }, [listId]);
 
     useEffect(() => {
         (async () => {
-            if (list && !recipesResponse) {
+            console.log(stateList?.list && !stateRecipesList?.recipes)
+            if (stateList?.list && !stateRecipesList?.recipes) {
                 const res = await getListRecipes(dispatchRecipesList, listId, queryParams, pageClicked);
                 if (res) {
                     const recipes = [];
                     res.results.forEach(item => {
                         recipes.push(item.recipe);
                     })
-                    setRecipesResponse({ ...res, results: recipes });
+                    // updateRecipesInList(dispatchRecipesList,{ ...res, results: recipes });
                     setActive(pageClicked);
                 }
             }
         })()
-    }, [queryParams, pageClicked, rerender, list]);
+    }, [queryParams, pageClicked, rerender, stateList?.list]);
 
     useEffect(() => {
         if (stateList?.errorMessage) {
@@ -77,7 +73,7 @@ export default function List() {
 
     return (
         <Container>
-            {userData?.user?.isAuth && list?.user?.username === userData?.user?.user?.username &&
+            {userData?.user?.isAuth && stateList?.list?.user?.username === userData?.user?.user?.username &&
                 <DropdownButton
                     variant={'danger'}
                     title={String.fromCharCode('8942')}
@@ -90,11 +86,11 @@ export default function List() {
 
             }
             {
-                list?.desc &&
+                stateList?.list?.desc &&
                 <Row style={{
                     margin: "auto",
                 }}>
-                    <h2 >{list.desc}</h2>
+                    <h2 >{stateList?.list.desc}</h2>
                 </Row>
             }
             <Row>
@@ -104,10 +100,10 @@ export default function List() {
                 paddingLeft: '2%',
                 paddingRight: '2%'
             }}>
-                <ListRecipeCards state={stateRecipesList} setRecipesResponse={setRecipesResponse}
-                    setRerender={setRerender} rerender={rerender} user={list?.user} dispatch={dispatchRecipesList} />
+                <ListRecipeCards state={stateRecipesList}
+                    setRerender={setRerender} rerender={rerender} user={stateList?.list?.user} dispatch={dispatchRecipesList} />
             </Row>
-            <PaginationBar response={recipesResponse} active={active} setPageClicked={setPageClicked} />
+            <PaginationBar response={stateRecipesList?.recipes} active={active} setPageClicked={setPageClicked} />
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>

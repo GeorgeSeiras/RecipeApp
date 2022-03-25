@@ -19,6 +19,13 @@ export const RecipesInListReducer = (initialState, action) => {
                     return item.recipe
                 })
             };
+        case 'UPDATE_LIST_RECIPES':
+            return{
+                ...initialState,
+                recipes: action.payload.map(item=>{
+                    return item.recipe
+                })
+            }
         case 'RECIPES_LIST_ERROR':
             return {
                 ...initialState,

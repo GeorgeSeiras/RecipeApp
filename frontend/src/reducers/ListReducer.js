@@ -48,7 +48,7 @@ export const ListReducer = (initialStateList, action) => {
         case 'GET_LIST':
             return {
                 ...initialStateList,
-                list: action.payload?.result
+                list: action.payload
             };
         case 'DELETE_LIST':
             return {
