@@ -1,5 +1,6 @@
 export const initialStateUserLists = {
     lists: null,
+    listsWithRecipe: null,
     loading: false,
     errorMessage: null
 }
@@ -15,6 +16,16 @@ export const GetUserListsReducer = (initialStateUserLists, action) => {
             return {
                 ...initialStateUserLists,
                 lists: action.payload?.lists
+            };
+        case 'GET_LISTS_WITH_RECIPE':
+            return {
+                ...initialStateUserLists,
+                listsWithRecipe: action.payload
+            };
+        case 'ADD_RECIPE_TO_LIST':
+            return {
+                ...initialStateUserLists,
+                listsWithRecipe: [...initialStateUserLists.listsWithRecipe, action.payload.list.id]
             };
         case 'USER_LISTS_ERROR':
             return {
@@ -43,22 +54,6 @@ export const ListReducer = (initialStateList, action) => {
             return {
                 ...initialStateList,
                 result: action.payload?.result
-            };
-        case 'DELETE_RECIPE_FROM_LIST':
-            return {
-                ...initialStateList,
-                recipes: initialStateList?.recipes.filter(recipe => {
-                    if (recipe.id !== action.payload) {
-                        return recipe
-                    }
-                })
-            };
-        case 'GET_LIST_RECIPES_SUCCESS':
-            return {
-                ...initialStateList,
-                recipes: action.payload.map(item => {
-                    return item.recipe
-                })
             };
         case 'LIST_ERROR':
             return {

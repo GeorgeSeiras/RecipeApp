@@ -19,35 +19,6 @@ export async function getUserLists(dispatch, userId) {
     }
 }
 
-export async function getListRecipes(dispatch, id, queryParams, pageClicked) {
-
-    const requestOptions = {
-        method: 'GET',
-    };
-
-    try {
-        var response = null;
-        if (pageClicked) {
-            if (queryParams === '') {
-                queryParams = `?page=${pageClicked}`;
-            } else {
-                queryParams.concat(`&page=${pageClicked}`);
-            }
-            response = await fetch(`${API_URL}/list/${id}/recipes${queryParams}`, requestOptions);
-        } else {
-            response = await fetch(`${API_URL}/list/${id}/recipes${queryParams}`, requestOptions);
-        }
-        let data = await response.json();
-        if (data?.results) {
-            dispatch({ type: 'GET_LIST_RECIPES_SUCCESS', payload: data.results })
-            return data
-        }
-        dispatch({ type: 'GET_LIST_RECIPES_ERROR', errorMessage: data })
-    } catch (error) {
-        dispatch({ type: 'GET_LIST_RECIPES_ERROR', errorMessage: error })
-    }
-}
-
 export async function createList(dispatch, token, payload) {
 
     const requestOptions = {
@@ -113,24 +84,44 @@ export async function deleteList(dispatch, listId, token) {
     }
 }
 
-export async function deleteRecipeFromList(dispatch, listId, recipeId,token) {
-
+export async function getListsWithRecipe(dispatch, token, recipeId) {
     const requestOptions = {
-        method: 'DELETE',
+        method: 'GET',
         headers: {
             'Authorization': 'Bearer '.concat(token),
+        },
+    };
+
+    try {
+        const response = await fetch(`${API_URL}/lists/recipe/${recipeId}`, requestOptions);
+        const data = await response.json();
+        if (data?.result) {
+            dispatch({ type: 'GET_LISTS_WITH_RECIPE', payload: data.result })
+            return data
         }
+        dispatch({ type: 'USER_LISTS_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'USER_LISTS_ERROR', errorMessage: error })
+    }
+}
+
+export async function addRecipeToList(dispatch, token, listId, recipeId) {
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer '.concat(token),
+        },
     };
 
     try {
         const response = await fetch(`${API_URL}/list/${listId}/recipe/${recipeId}`, requestOptions);
         const data = await response.json();
         if (data?.result) {
-            dispatch({ type: 'DELETE_RECIPE_FROM_LIST', payload: recipeId })
+            dispatch({ type: 'ADD_RECIPE_TO_LIST', payload: data.result })
             return data
         }
-        dispatch({ type: 'LIST_ERROR', errorMessage: data })
+        dispatch({ type: 'USER_LISTS_ERROR', errorMessage: data })
     } catch (error) {
-        dispatch({ type: 'LIST_ERROR', errorMessage: error })
+        dispatch({ type: 'USER_LISTS_ERROR', errorMessage: error })
     }
 }

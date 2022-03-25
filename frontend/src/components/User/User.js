@@ -5,8 +5,8 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import { RecipesReducer } from '../Home/reducer';
-import { getRecipes } from '../Home/actions';
+import { RecipesReducer } from '../../reducers/RecipeReducer';
+import { getRecipes } from '../../actions/RecipeActions';
 import UserInfo from './UserInfo';
 import RecipeCards from '../Home/RecipeCards';
 import Pagination from '../Home/Pagination';

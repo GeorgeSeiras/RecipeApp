@@ -4,9 +4,9 @@ import Container from 'react-bootstrap/Container'
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import { getRecipe } from './actions';
+import { getRecipe } from '../../actions/RecipeActions';
 import RecipeCarousel from "./Carousel";
-import { RecipeReducer } from './reducer';
+import { RecipeReducer } from '../../reducers/RecipeReducer';
 import Thumbnail from "./Thumbnail";
 import RecipeInfo from "./RecipeInfo";
 import ActualRecipe from "./ActualRecipe";

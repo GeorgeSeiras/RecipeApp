@@ -1,5 +1,35 @@
 const API_URL = process.env.REACT_APP_API_URL;
 
+export async function getRecipes(dispatch, queryParams, pageClicked) {
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    };
+
+    try {
+        let response = null
+        if (pageClicked) {
+            if (queryParams === '') {
+                queryParams = `?page=${pageClicked}`;
+            } else {
+                queryParams.concat(`&page=${pageClicked}`);
+            }
+            response = await fetch(`${API_URL}/recipes${queryParams}`, requestOptions);
+        } else {
+            response = await fetch(`${API_URL}/recipes${queryParams}`, requestOptions);
+        }
+
+        let data = await response.json();
+        if (data) {
+            dispatch({ type: 'GET_RECIPES', payload: data })
+            return data
+        }
+        dispatch({ type: 'GET_RECIPES_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'GET_RECIPES_ERROR', errorMessage: error })
+    }
+}
+
 export async function createRecipe(dispatch, payload, token) {
 
     const requestOptions = {
@@ -66,4 +96,75 @@ export async function deleteRecipe(dispatch, recipeId, token) {
     } catch (error) {
         dispatch({ type: 'RECIPE_ERROR', errorMessage: error })
     }
+}
+
+export async function getRecipe(dispatch, payload) {
+
+    const requestOptions = {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    };
+
+    try {
+        let response = await fetch(`${API_URL}/recipe/${payload.recipe}`, requestOptions);
+        let data = await response.json();
+        if (data?.result) {
+            dispatch({ type: 'GET_RECIPE', payload: data.result })
+            return data
+        }
+        dispatch({ type: 'RECIPE_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'RECIPE_ERROR', errorMessage: error })
+    }
+}
+
+export async function updateRecipe(dispatch, payload, token, recipeId) {
+
+    const requestOptions = {
+        method: 'PATCH',
+        body: JSON.stringify(payload),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '.concat(token),
+        },
+    };
+
+    try {
+        const response = await fetch(`${API_URL}/recipe/${recipeId}`, requestOptions);
+        const data = await response.json();
+        if (data?.result) {
+            dispatch({ type: 'UPDATE_RECIPE', payload: data.result })
+            return data
+        }
+        dispatch({ type: 'RECIPE_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'RECIPE_ERROR', errorMessage: error })
+    }
+}
+
+export async function deleteRecipeImages(dispatch, payload, token, recipeId) {
+    const requestOptions = {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '.concat(token),
+        },
+        body: JSON.stringify(payload)
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/recipe/${recipeId}/images`, requestOptions);
+        const data = await response.json();
+        if (data?.result) {
+            dispatch({ type: 'DELETE_RECIPE_IMAGES', payload: data.result })
+            return data
+        }
+        dispatch({ type: 'RECIPE_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'RECIPE_ERROR', errorMessage: error })
+    }
+}
+
+export function updateRecipeState(dispatch, recipe) {
+    dispatch({ type: 'UPDATE_RECIPE_STATE', payload: recipe })
 }

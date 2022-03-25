@@ -1,23 +1,25 @@
 export const initialState = {
     recipes: null,
-    loading: false,
     errorMessage: null
 }
 
-export const RecipesReducer = (initialState, action) => {
-
+export const RecipesInListReducer = (initialState, action) => {
     switch (action.type) {
-        case 'GET_RECIPES_REQUEST':
+        case 'DELETE_RECIPE_FROM_LIST':
             return {
                 ...initialState,
-                loading: true
+                recipes: initialState?.recipes.filter(recipe => {
+                    return recipe.id !== action.payload
+                })
             };
-        case 'GET_RECIPES_SUCCESS':
+        case 'GET_LIST_RECIPES':
             return {
                 ...initialState,
-                recipes: action.payload
+                recipes: action.payload.map(item => {
+                    return item.recipe
+                })
             };
-        case 'GET_RECIPES_ERROR':
+        case 'RECIPES_LIST_ERROR':
             return {
                 ...initialState,
                 errorMessage: action.errorMessage
@@ -26,4 +28,3 @@ export const RecipesReducer = (initialState, action) => {
             throw new Error(`Unhandled action type: ${action.type}`);
     }
 }
-

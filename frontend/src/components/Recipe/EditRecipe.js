@@ -5,9 +5,8 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 
 import EditableRecipeBody from './EditableRecipeBody';
-import { UpdateRecipeReducer } from './reducer';
-import { updateRecipe, deleteRecipeImages, updateRecipeState } from './actions';
-import { CreateRecipeReducer } from '../../reducers/RecipeReducer';
+import { updateRecipe, deleteRecipeImages, updateRecipeState } from '../../actions/RecipeActions';
+import { RecipeReducer } from '../../reducers/RecipeReducer';
 import { uploadRecipeImages } from '../../actions/RecipeActions';
 import { UserContext } from '../Context/authContext';
 
@@ -28,7 +27,7 @@ export default function EditRecipe(props) {
     const [cuisine, setCuisine] = useState(props?.recipe?.cuisine || ['']);
     const [show, setShow] = useState(false);
 
-    const [state, dispatch] = useReducer(UpdateRecipeReducer);
+    const [state, dispatch] = useReducer(RecipeReducer);
     const userData = useContext(UserContext);
 
     function secondsToHM(time) {
@@ -139,7 +138,7 @@ export default function EditRecipe(props) {
         })
         if (toDelete.length > 0) {
             const deleteImagesResponse = await deleteRecipeImages(dispatch, { 'images': toDelete }, userData.user.token.key, props.recipe.id);
-            if (deleteImagesResponse?.result) {
+            if (!deleteImagesResponse?.result) {
                 console.log('Error while modifying images')
             }
         }

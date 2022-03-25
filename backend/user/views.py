@@ -91,10 +91,9 @@ class UserDetail(APIView):
 class UserRegister(APIView):
     def post(self, request, format=None):
         with transaction.atomic():
-            serializer = UserSerializer(data=request.data)
+            password = make_password(request.data['password'])
+            serializer = UserSerializer(data={**request.data,'password':password})
             serializer.is_valid(raise_exception=True)
-            serializer.data['password'] = make_password(
-                serializer.validated_data['password'])
             serializer.save()
             res = serializer.data
             del res['password']

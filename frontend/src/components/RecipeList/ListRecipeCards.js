@@ -9,7 +9,7 @@ import IMAGE_NOT_FOUND from "../../static/image_not_found.svg";
 
 import RecipeCard from '../Home/RecipeCard';
 import { UserContext } from '../Context/authContext';
-import { deleteRecipeFromList } from '../../actions/ListActions';
+import { deleteRecipeFromList } from '../../actions/RecipesInListActions';
 
 export default function ListRecipeCards(props) {
     const [thumbnails, setThumbnails] = useState([])

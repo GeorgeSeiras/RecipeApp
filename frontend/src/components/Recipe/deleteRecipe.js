@@ -5,11 +5,11 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
 import { deleteRecipe } from '../../actions/RecipeActions';
-import { CreateRecipeReducer } from '../../reducers/RecipeReducer';
+import { RecipeReducer } from '../../reducers/RecipeReducer';
 
 export default function DeleteRecipe(props) {
     const [showModal, setShowModal] = useState(false);
-    const [state, dispatch] = useReducer(CreateRecipeReducer);
+    const [state, dispatch] = useReducer(RecipeReducer);
     const navigate = useNavigate();
 
     const handleDelete = async () => {

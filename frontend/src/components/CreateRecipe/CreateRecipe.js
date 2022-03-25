@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 
 import { useNavigate } from 'react-router-dom';
 
-import { CreateRecipeReducer } from '../../reducers/RecipeReducer';
+import {RecipeReducer } from '../../reducers/RecipeReducer';
 import { createRecipe, uploadRecipeImages, deleteRecipe } from '../../actions/RecipeActions';
 import { UserContext } from '../Context/authContext';
 import EditableRecipeBody from '../Recipe/EditableRecipeBody';
@@ -24,7 +24,7 @@ export default function CreateRecipe() {
     const [course, setCourse] = useState(['']);
     const [cuisine, setCuisine] = useState(['']);
 
-    const [state, dispatch] = useReducer(CreateRecipeReducer);
+    const [state, dispatch] = useReducer(RecipeReducer);
 
     const userData = useContext(UserContext);
 
