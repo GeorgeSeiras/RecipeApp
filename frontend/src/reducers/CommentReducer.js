@@ -1,6 +1,6 @@
 export const initialState = {
     comments: null,
-    created:null,
+    created: null,
     errorMessage: null
 }
 
@@ -11,7 +11,7 @@ export const RecipeCommentsReducer = (initialState, action) => {
             return {
                 ...initialState,
                 comments: action.payload,
-                created:false
+                created: false
             };
         case 'LOAD_COMMENTS':
             var copy = Object.assign({}, initialState.comments)
@@ -22,7 +22,7 @@ export const RecipeCommentsReducer = (initialState, action) => {
             return {
                 ...initialState,
                 comments: copy,
-                created:false
+                created: false
             }
         case 'CREATE_COMMENT':
             return {
@@ -35,6 +35,11 @@ export const RecipeCommentsReducer = (initialState, action) => {
                 result: action.payload
             };
         case 'REPLACE_COMMENTS':
+            return {
+                ...initialState,
+                comments: action.payload
+            }
+        case 'GET_CONTINUE_THREAD_COMMENTS':
             return {
                 ...initialState,
                 comments: action.payload

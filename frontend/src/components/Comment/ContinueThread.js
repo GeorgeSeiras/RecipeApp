@@ -1,30 +1,28 @@
-import React, { useReducer, useEffect, useState, useContext } from 'react';
+import React, { useReducer, useEffect, useContext, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Alert from 'react-bootstrap/Alert';
 import Container from 'react-bootstrap/Container';
-
-import CreateComment from './CreateComment';
-import { getRecipeComments } from '../../actions/CommentActions';
+import Alert from 'react-bootstrap/Alert';
+import { getContinueThreadComments } from '../../actions/CommentActions';
 import { RecipeCommentsReducer } from '../../reducers/CommentReducer';
 import { UserContext } from '../Context/authContext';
 import CommentsBody from './CommentsBody';
 
 export default function Comments() {
-    const { id } = useParams();
+    const { commentId } = useParams();
     const [state, dispatch] = useReducer(RecipeCommentsReducer);
     const userData = useContext(UserContext);
     const [successAlert, setSuccessAlert] = useState(null);
 
     useEffect(() => {
         (async () => {
-            await getRecipeComments(dispatch, id);
+            await getContinueThreadComments(dispatch, commentId);
         })();
     }, [])
 
     useEffect(() => {
         (async () => {
             if (state?.created) {
-                await getRecipeComments(dispatch, id);
+                await getContinueThreadComments(dispatch, commentId);
             }
         })()
     }, [state?.created])
@@ -35,10 +33,8 @@ export default function Comments() {
                 <Alert variant={'success'} onClose={() => { setSuccessAlert(null) }} dismissible>
                     Comment Successfuly Created!
                 </Alert>}
-            {userData?.user?.isAuth &&
-                <CreateComment setSuccessAlert={setSuccessAlert} dispatch={dispatch} recipeId={id}/>
-            }
-            <CommentsBody state={state} dispatch={dispatch} userData={userData} setSuccessAlert={setSuccessAlert} />
+            <CommentsBody state={state} dispatch={dispatch} userData={userData} setSuccessAlert={setSuccessAlert}/>
         </Container>
+
     )
 }

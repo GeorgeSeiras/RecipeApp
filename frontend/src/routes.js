@@ -6,6 +6,7 @@ import User from './components/User/User';
 import CreateRecipe from './components/CreateRecipe/CreateRecipe';
 import EditUser from './components/EditUser/EditUser';
 import List from './components/RecipeList/List';
+import ContinueThread from './components/Comment/ContinueThread';
 
 export const privateRoutes = [
     {
@@ -33,7 +34,11 @@ export const publicRoutes = [
     },
     {
         path: '/user/:userId/list/:listId',
-        element: <List/>
+        element: <List />
+    },
+    {
+        path: 'recipe/:recipeId/comment/:commentId',
+        element: <ContinueThread />
     }
 ]
 export const authRoutes = [
