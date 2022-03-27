@@ -5,10 +5,9 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 
 import EditableRecipeBody from './EditableRecipeBody';
-import { UpdateRecipeReducer, DeleteRecipeImagesReducer } from './reducer';
-import { updateRecipe, deleteRecipeImages } from './actions';
-import { UploadImageReducer } from '../CreateRecipe/reducer';
-import { uploadRecipeImages } from '../CreateRecipe/actions';
+import { updateRecipe, deleteRecipeImages, updateRecipeState } from '../../actions/RecipeActions';
+import { RecipeReducer } from '../../reducers/RecipeReducer';
+import { uploadRecipeImages } from '../../actions/RecipeActions';
 import { UserContext } from '../Context/authContext';
 
 export default function EditRecipe(props) {
@@ -28,9 +27,6 @@ export default function EditRecipe(props) {
     const [cuisine, setCuisine] = useState(props?.recipe?.cuisine || ['']);
     const [show, setShow] = useState(false);
 
-    const [state, dispatch] = useReducer(UpdateRecipeReducer);
-    const [stateImages, dispatchImages] = useReducer(UploadImageReducer);
-    const [stateDeleteImages, dispatchDeleteImages] = useReducer(DeleteRecipeImagesReducer);
     const userData = useContext(UserContext);
 
     function secondsToHM(time) {
@@ -127,7 +123,6 @@ export default function EditRecipe(props) {
             if (value.image instanceof File) {
                 form.append(`images[${i}].image`, value['image']);
                 form.append(`images[${i}].type`, value['type']);
-                console.log('here')
                 i++;
             } else {
                 const found = oldImages.get(value.image)
@@ -140,27 +135,25 @@ export default function EditRecipe(props) {
         oldImages.forEach(image => {
             toDelete.push(image.id)
         })
-        console.log(toDelete)
         if (toDelete.length > 0) {
-            const deleteImagesResponse = await deleteRecipeImages(dispatchDeleteImages, { 'images': toDelete }, userData.user.token.key, props.recipe.id);
-            if (deleteImagesResponse?.result) {
+            const deleteImagesResponse = await deleteRecipeImages(props.dispatch, { 'images': toDelete }, userData.user.token.key, props.recipe.id);
+            if (!deleteImagesResponse?.result) {
                 console.log('Error while modifying images')
             }
         }
-        const imageResponse = await uploadRecipeImages(dispatchImages, form, userData.user.token.key, props.recipe.id);
-        const recipeResponse = await updateRecipe(dispatch, payload, userData.user.token.key, props.recipe.id);
-        if (imageResponse?.result) {
+        const imageResponse = await uploadRecipeImages(props.dispatch, form, userData.user.token.key, props.recipe.id);
+        const recipeResponse = await updateRecipe(props.dispatch, payload, userData.user.token.key, props.recipe.id);
+        if (!imageResponse?.result) {
             console.log('Error while modifying images')
         }
         if (recipeResponse?.result) {
-            props.setRecipe(recipeResponse.result);
             setShow(false)
         }
     }
 
     return (
-        <Container style={{width:'auto',paddingRight:'0',marginRight:'0'}}>
-        
+        <Container style={{ width: 'auto', paddingRight: '0', marginRight: '0' }}>
+
             <Button size='sm' onClick={() => setShow(true)} >
                 EDIT
             </Button>

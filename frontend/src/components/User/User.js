@@ -5,24 +5,22 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import { RecipesReducer } from '../Home/reducer';
-import { getRecipes } from '../Home/actions';
+import { RecipesReducer } from '../../reducers/RecipeReducer';
+import { getRecipes } from '../../actions/RecipeActions';
 import UserInfo from './UserInfo';
 import RecipeCards from '../Home/RecipeCards';
 import Pagination from '../Home/Pagination';
 import SearchBar from '../Home/SearchBar';
 import RecipeLists from '../RecipeList/RecipeLists'
 import { UserContext } from '../Context/authContext';
-import { GetUserReducer } from './reducer';
-import { getUser } from './actions';
+import { UserReducer } from '../../reducers/UserReducer'
+import { getUser } from '../../actions/UserActions';
 import { useError } from '../ErrorHandler/ErrorHandler';
 
 export default function User() {
     const [recipesState, recipesDispatch] = useReducer(RecipesReducer);
-    const [userState, userDispatch] = useReducer(GetUserReducer);
+    const [userState, userDispatch] = useReducer(UserReducer);
     const { username } = useParams();
-    const [user, setUser] = useState();
-    const [recipes, setRecipes] = useState();
     const [active, setActive] = useState(1);
     const [pageClicked, setPageClicked] = useState();
     const [queryParams, setQueryParams] = useState('');
@@ -35,20 +33,17 @@ export default function User() {
         (async () => {
             const userResponse = await getUser(userDispatch, username);
             if (userResponse?.result) {
-                setUser(userResponse.result);
-            }
-            var query = queryParams
-            if (query === '') {
-                query = `?username=${username}`
-            } else {
-                query.concat = `&username=${username}`
-
+                var query = queryParams
+                if (query === '') {
+                    query = `?username=${username}`
+                } else {
+                    query.concat = `&username=${username}`
+                }
                 const recipesResponse = await getRecipes(recipesDispatch, query, pageClicked);
                 if (recipesResponse) {
                     if (pageClicked) {
                         setActive(pageClicked);
                     }
-                    setRecipes(recipesResponse);
                 }
             }
         })();
@@ -62,7 +57,7 @@ export default function User() {
 
     return (
         <div>
-            <UserInfo user={user} />
+            <UserInfo user={userState?.user} />
             {window.location.pathname.split('/').pop() === String(userData?.user?.user?.username) &&
                 <Button variant="success"
                     style={{ display: 'flex', margin: 'auto', width: '350px', justifyContent: 'center' }}
@@ -71,13 +66,13 @@ export default function User() {
                 </Button>}
             <Row xs='auto' style={{ margin: 'auto' }}>
                 <Col style={{ width: '20%', paddingTop: '0.5em' }}>
-                    <RecipeLists user={user} />
+                    <RecipeLists user={userState?.user} />
                 </Col>
                 <Col style={{ width: '80%' }}>
                     <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} username={username} />
-                    <RecipeCards response={recipes} />
-                    {recipes?.length > 0 &&
-                        <Pagination response={recipes} active={active} setPageClicked={setPageClicked} />
+                    <RecipeCards response={recipesState?.recipes} />
+                    {recipesState?.length > 0 &&
+                        <Pagination response={recipesState?.recipes} active={active} setPageClicked={setPageClicked} />
                     }
                 </Col>
             </Row>

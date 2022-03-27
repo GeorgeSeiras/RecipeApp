@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import { RecipesReducer } from './reducer';
-import { getRecipes } from "./actions";
+import { RecipesReducer } from '../../reducers/RecipeReducer';
+import { getRecipes } from "../../actions/RecipeActions";
 import RecipeCards from './RecipeCards';
 import SearchBar from './SearchBar';
 import PaginationBar from './Pagination';

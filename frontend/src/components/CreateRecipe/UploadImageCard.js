@@ -96,10 +96,10 @@ export default function ImageUploadCard(props) {
                     paddingLeft: '0',
                     marginLeft: '0',
                 }}>
-                    <Col id={0} style={{ paddingLeft: '0' }}>
+                    <Col id={0} style={{paddingLeft:'0'}}>
                         <Image
                             style={{
-                                width: '12rem',
+                                width: '12em',
                                 height: 'auto',
                                 maxHeight: '18em',
                                 cursor: 'pointer'
@@ -142,7 +142,8 @@ export default function ImageUploadCard(props) {
                                 paddingRight: '0',
                                 paddingLeft: '0',
                                 paddingTop: '1em',
-                                display: 'block',
+                                display: 'table-cell',
+                                maxWidth:'13em'
                             }}>
                             <Container style={{
                                 position: 'relative',

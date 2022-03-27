@@ -1,29 +1,28 @@
-import React, { useState, useReducer, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import { useParams } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button';
 
-import { postComment } from './actions';
-import { CreateCommentReducer } from './reducer';
+import { postComment } from '../../actions/CommentActions';
 import { UserContext } from '../Context/authContext';
 
 export default function Comments(props) {
     const [newComment, setNewComment] = useState('');
     const { id } = useParams();
-    const [state, dispatch] = useReducer(CreateCommentReducer);
     const userData = useContext(UserContext);
-
     const handleSubmit = async (e) => {
         e.preventDefault()
         const payload = {
             'text': newComment,
             'parent': props?.parentId
         }
-        const response = await postComment(dispatch, payload, userData.user.token.key, id)
+        const response = await postComment(props.dispatch, payload, userData.user.token.key, id)
         if (response?.result) {
-            props.setCreatedComment(true)
+            props.setSuccessAlert(true);
+            setNewComment('')
+
         }
 
     }

@@ -1,23 +1,26 @@
+
 export const initialState = {
-    recipes: null,
+    rating: null,
+    userRating: null,
+    hasRated:false,
     loading: false,
     errorMessage: null
 }
 
-export const RecipesReducer = (initialState, action) => {
-
+export const RatingReducer = (initialState, action) => {
     switch (action.type) {
-        case 'GET_RECIPES_REQUEST':
+        case 'RATE_RECIPE':
             return {
                 ...initialState,
-                loading: true
+                userRating: action.payload
             };
-        case 'GET_RECIPES_SUCCESS':
+        case 'GET_USER_RECIPE_RATING':
             return {
                 ...initialState,
-                recipes: action.payload
+                userRating: action.payload,
+                hasRated:true
             };
-        case 'GET_RECIPES_ERROR':
+        case 'RATING_ERROR':
             return {
                 ...initialState,
                 errorMessage: action.errorMessage
@@ -26,4 +29,3 @@ export const RecipesReducer = (initialState, action) => {
             throw new Error(`Unhandled action type: ${action.type}`);
     }
 }
-

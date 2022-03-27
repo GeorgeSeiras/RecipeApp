@@ -210,7 +210,7 @@ class RecipeCommentsView(APIView, myPagination):
             recipe = Recipe.objects.get(pk=recipe_id)
         except Recipe.DoesNotExist:
             raise NotFound({"message": "Recipe does not exist"})
-        comments = Comment.objects.filter(recipe=recipe)
+        comments = Comment.objects.filter(recipe=recipe).order_by('-id')
         objects = Comment.comments_to_list_sorted(comments)
         page = self.paginate_queryset(objects, request)
         response = self.get_paginated_response(page)
@@ -256,7 +256,7 @@ class createCommentView(APIView):
             except User.DoesNotExist:
                 raise NotFound({'message': 'User not found'})
             serializer = CreateCommentSerializer(
-                    data={**request.data, 'recipe': recipe_id})
+                data={**request.data, 'recipe': recipe_id})
             not serializer.is_valid(raise_exception=True)
             comment = Comment.objects.create(
                 user=user, **serializer.validated_data)
