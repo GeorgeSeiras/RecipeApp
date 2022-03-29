@@ -10,7 +10,6 @@ import { UserContext } from '../Context/authContext';
 
 export default function Comments(props) {
     const [newComment, setNewComment] = useState('');
-    const { id } = useParams();
     const userData = useContext(UserContext);
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -18,42 +17,40 @@ export default function Comments(props) {
             'text': newComment,
             'parent': props?.parentId
         }
-        const response = await postComment(props.dispatch, payload, userData.user.token.key, id)
+        const response = await postComment(props.dispatch, payload, userData.user.token.key, props.recipeId)
         if (response?.result) {
             props.setSuccessAlert(true);
             setNewComment('')
-
         }
 
     }
-
     const validateForm = () => {
         return newComment !== '' ? false : true;
     }
 
     return (
         <Container style={{ paddingBottom: '1em' }}>
-                <Form onSubmit={(e) => handleSubmit(e)}>
-                    <Card>
-                        <Card.Body style={{ paddingBottom: '0.5em' }}>
-                            <Form.Group className='mb-3'>
-                                <Form.Control as="textarea" rows={4} maxLength='250'
-                                    type="text"
-                                    placeholder="New Comment"
-                                    value={newComment}
-                                    onChange={(e) => setNewComment(e.target.value)}
-                                />
-                            </Form.Group>
-                            <Button
-                                type='submit'
-                                variant='success'
-                                disabled={validateForm()}
-                                style={{ paddingTop: '0', paddingBottom: '0' }}>
-                                Create Comment
-                            </Button>
-                        </Card.Body>
-                    </Card>
-                </Form>
+            <Form onSubmit={(e) => handleSubmit(e)}>
+                <Card>
+                    <Card.Body style={{ paddingBottom: '0.5em' }}>
+                        <Form.Group className='mb-3'>
+                            <Form.Control as="textarea" rows={4} maxLength='250'
+                                type="text"
+                                placeholder="New Comment"
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                            />
+                        </Form.Group>
+                        <Button
+                            type='submit'
+                            variant='success'
+                            disabled={validateForm()}
+                            style={{ paddingTop: '0', paddingBottom: '0' }}>
+                            Create Comment
+                        </Button>
+                    </Card.Body>
+                </Card>
+            </Form>
         </Container >
     )
 }

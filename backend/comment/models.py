@@ -39,7 +39,7 @@ class Comment(models.Model):
     def to_dict_no_parent_population(self):
         dict = {}
         dict['id'] = self.id
-        dict['user'] = self.user.id
+        dict['user'] = self.user.to_dict()
         dict['recipe'] = self.recipe.id
         dict['text'] = self.text
         dict['parent'] = self.parent

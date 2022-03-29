@@ -88,3 +88,21 @@ export function replaceComments(dispatch, comments) {
         dispatch({ type: 'COMMENT_ERROR', errorMessage: error })
     }
 }
+
+export async function getContinueThreadComments(dispatch, id) {
+    const requestOptions = {
+        method: 'GET',
+    };
+
+    try {
+        let response = await fetch(`${API_URL}/comments/${id}`, requestOptions);
+        let data = await response.json();
+        if (data) {
+            dispatch({ type: 'GET_CONTINUE_THREAD_COMMENTS', payload: data })
+            return data
+        }
+        dispatch({ type: 'COMMENT_ERROR', errorMessage: data })
+    } catch (error) {
+        dispatch({ type: 'COMMENT_ERROR', errorMessage: error })
+    }
+}
