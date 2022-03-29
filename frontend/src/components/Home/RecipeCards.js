@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 
-import IMAGE_NOT_FOUND from "../../static/image_not_found.svg";
+import IMAGE_NOT_FOUND from "../../static/image_not_found_v2.jpg";
 
 import RecipeCard from './RecipeCard';
 
@@ -27,7 +27,7 @@ export default function RecipeCards(props) {
     return (
         <Container style={{ paddingLeft: '0', paddingRight: '0' }}>
             {props?.response?.results &&
-                <Row xs={1} md={3} lg={5} className='g-4' style={{ paddingLeft: '1em', paddingRight: '1em' }}>
+                <Row xs={'auto'} className='g-4' style={{ paddingLeft: '1em', paddingRight: '1em' }}>
                     {props.response.results.map((recipe, index) => {
                         return (
                             <RecipeCard key={index}recipe={recipe} index={index} thumbnails={thumbnails} />

@@ -23,7 +23,7 @@ export default function RecipeCarousel(props) {
                                 interval={5000}
                                 key={index}>
                                 <Image
-
+                                    style={{ width: '500px', height: '700px', objectFit: 'contain',backgroundColor:'black' }}
                                     className="d-block w-100"
                                     src={`${MEDIA_URL}${image}`}
                                     alt="carousel_item" />

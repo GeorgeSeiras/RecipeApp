@@ -16,18 +16,23 @@ export default function ActualRecipe(props) {
     */
     function secondsToHms(seconds) {
         var result = ""
-        seconds = Number(seconds);
-        var h = Math.floor(seconds / 3600);
-        var m = Math.floor(seconds % 3600 / 60);
+        const secs = Number(seconds);
+        var h = Math.floor(secs / 3600);
+        var m = Math.floor(secs % 3600 / 60);
 
         if (h !== 0) {
-                result = result.concat(h.toString().slice(-2) + " h ")
+            if (h === 1) {
+                result = result.concat(h.toString().slice(-2) + " hour ")
+            } else {
+                result = result.concat(h.toString().slice(-2) + " hours ")
+            }
         }
         if (m !== 0) {
-                result = result.concat(m.toString().slice(-2) + " m ")
-        }
-        if(h === 0 && m === 0 ){
-            result = '1 m'
+            if (m === 1) {
+                result = result.concat(m.toString().slice(-2) + " minute ")
+            } else {
+                result = result.concat(m.toString().slice(-2) + " minutes ")
+            }
         }
         return result
     }
@@ -50,32 +55,20 @@ export default function ActualRecipe(props) {
                     margin: 'auto',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    paddingLeft: '10%',
-                    paddingRight: '10%'
+                    paddingLeft: '5%',
+                    paddingRight: '5%'
                 }}>
                     <Row>
-                        <h3 style={{ paddingTop: '2%' }}>
+                        <h3 style={{ paddingTop: '2%', paddingLeft: '0', paddingRight: '0' }}>
                             {props.recipe.desc}
                         </h3>
                     </Row>
-                    <Row xs="auto" style={{
+                    <Row xs={'auto'} style={{
                         margin: 'auto',
                         alignItems: 'center',
                         justifyContent: 'center',
                         paddingTop: '2%'
                     }}>
-                        <Col>
-                            <h6>Prep:</h6>
-                        </Col>
-                        <Col style={{ paddingLeft: '0' }}>
-                                <h6 style={{ fontStyle: 'italic' }}>{prep}</h6>
-                        </Col>
-                        <Col>
-                            <h6>Cook:</h6>
-                        </Col>
-                        <Col style={{ paddingLeft: '0' }}>
-                            <h6 style={{ fontStyle: 'italic' }}>{cook}</h6>
-                        </Col>
                         <Col>
                             <h6>Total:</h6>
                         </Col>
@@ -87,6 +80,25 @@ export default function ActualRecipe(props) {
                         </Col>
                         <Col style={{ paddingLeft: '0' }}>
                             <h6 style={{ fontStyle: 'italic' }}>{props.recipe.servings} </h6>
+                        </Col>
+                    </Row>
+                    <Row xs={'auto'} style={{
+                        margin: 'auto',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingTop: '2%'
+                    }}>
+                        <Col>
+                            <h6>Prep:</h6>
+                        </Col>
+                        <Col style={{ paddingLeft: '0' }}>
+                            <h6 style={{ fontStyle: 'italic' }}>{prep}</h6>
+                        </Col>
+                        <Col>
+                            <h6>Cook:</h6>
+                        </Col>
+                        <Col style={{ paddingLeft: '0' }}>
+                            <h6 style={{ fontStyle: 'italic' }}>{cook}</h6>
                         </Col>
                     </Row>
                     <Row>
@@ -126,7 +138,7 @@ export default function ActualRecipe(props) {
                                     {props.recipe.steps.map((step, index) => {
                                         return (
                                             <tr key={index}>
-                                                <td>{index}</td>
+                                                <td style={{ width: '50px' }}>{index}</td>
                                                 <td>{step}</td>
                                             </tr>)
                                     })}

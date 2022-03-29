@@ -75,10 +75,11 @@ export default function EditRecipe(props) {
         if (description !== '') {
             payload['desc'] = description;
         }
-        payload['prep_time'] = prepMins !== '' ? parseInt(prepMins) * 60 : 0
-            + prepHours !== '' ? parseInt(prepHours) * 60 * 60 : 0;
-        payload['cook_time'] = cookMins !== '' ? parseInt(cookMins) * 60 : 0
-            + cookHours !== '' ? parseInt(cookHours) * 60 * 60 : 0;
+        payload['prep_time'] = ((prepMins !== '' ? parseInt(prepMins) * 60 : 0)
+            + (prepHours !== '' ? parseInt(prepHours) * 60 * 60 : 0));
+        payload['cook_time'] = ((cookMins !== '' ? parseInt(cookMins) * 60 : 0)
+            + (cookHours !== '' ? parseInt(cookHours) * 60 * 60 : 0));
+
         payload['servings'] = servings;
         payload['steps'] = steps.filter(step => {
             return step !== '';

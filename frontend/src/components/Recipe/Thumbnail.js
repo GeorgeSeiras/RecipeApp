@@ -7,7 +7,7 @@ export default function Thumbnail(props) {
         <div>
             {props?.thumbnail &&
                 <Image
-                    width="500"
+                    style={{width:'500px',height:'700px',objectFit:'contain'}}
                     className="mx-auto d-block"
                     src={`${MEDIA_URL}${props.thumbnail}`}
                     alt="thumbnail" />

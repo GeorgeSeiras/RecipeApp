@@ -42,6 +42,7 @@ export default function EditableRecipeBody(props) {
             <Form.Group className='mb-3' >
                 <Form.Label column>Title</Form.Label>
                 <Form.Control
+                    maxLength='50'
                     type="text"
                     placeholder="Title"
                     value={props.title}
@@ -77,6 +78,7 @@ export default function EditableRecipeBody(props) {
                                 <Row className="mb-3" key={index} id={index}>
                                     <Col>
                                         <Form.Control
+                                            maxLength='30'
                                             type="text"
                                             placeholder="course"
                                             value={element}
@@ -111,6 +113,7 @@ export default function EditableRecipeBody(props) {
                                 <Row className="mb-3" key={index} id={index}>
                                     <Col>
                                         <Form.Control
+                                            maxLength='30'
                                             type="text"
                                             placeholder="cuisine"
                                             value={element}
@@ -204,6 +207,7 @@ export default function EditableRecipeBody(props) {
                                 <tr key={index} id={index}>
                                     <td key={0}>
                                         <Form.Control
+                                            maxLength='15'
                                             type="text"
                                             placeholder="amount"
                                             value={ingredient[0]}
@@ -211,6 +215,7 @@ export default function EditableRecipeBody(props) {
                                     </td>
                                     <td key={1}>
                                         <Form.Control
+                                            maxLength='15'
                                             type="text"
                                             placeholder="unit"
                                             value={ingredient[1]}
@@ -218,6 +223,7 @@ export default function EditableRecipeBody(props) {
                                     </td>
                                     <td key={2}>
                                         <Form.Control
+                                            maxLength='50'
                                             type="text"
                                             placeholder="ingredient"
                                             value={ingredient[2]}
@@ -262,6 +268,7 @@ export default function EditableRecipeBody(props) {
                                     </td>
                                     <td key={1}>
                                         <Form.Control
+                                            maxLength='200'
                                             type="text"
                                             placeholder="step"
                                             value={step}

@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
+import Image from 'react-bootstrap/Image';
 import { DateTime } from 'luxon';
 
 import RatingStars from './RatingStar';
 
-
 export default function RecipeCard(props) {
     const navigate = useNavigate();
+    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
 
     return (
         <div>
@@ -21,16 +22,14 @@ export default function RecipeCard(props) {
                         border="dark"
                         style={{
                             cursor: "pointer",
-                            height: '23em',
-                            width: '13em',
-                            paddingTop: '0.1em',
+                            height: '25.5em',
+                            width: '280px',
                             paddingBottom: '0.1em',
-                            paddingLeft: '0.1em',
-                            paddingRight: '0.1em',
+
                         }}>
 
                         <Card.Img variant="top"
-                            style={{ width: 'auto', height: '10em', paddingBottom: '0' }}
+                            style={{ height: '260px', objectFit: 'cover', paddingBottom: '0' }}
                             src={`${props.thumbnails[props.index]}`}
                             alt='card image' />
                         <Row >
@@ -44,11 +43,18 @@ export default function RecipeCard(props) {
                                         color: 'black',
                                         textDecoration: 'none'
                                     }}>
+                                    <Image
+                                    style={{width:'35px',height:'auto',paddingRight:'10px'}}
+                                        width='30'
+                                        className='img-fluid rounded-circle'
+                                        src={`${MEDIA_URL}${props.recipe.user?.image?.image}`}
+                                        alt='avatar'
+                                    />
                                     {props.recipe.user.username}
                                 </Card.Link>
                             </Card.Subtitle>
                         </Card.Body>
-                        <Card.Footer className="text-muted" style={{ display: 'flex', justifyContent: 'center', height: '4em' }}>
+                        <Card.Footer className="text-muted" style={{ display: 'flex', justifyContent: 'center', height: '3em', fontSize: '13px' }}>
                             {`Last updated ${DateTime.fromSQL(props.recipe.updated_at).toFormat('dd LLL yyyy').toLocaleString()}`}
                         </Card.Footer>
                     </Card>
