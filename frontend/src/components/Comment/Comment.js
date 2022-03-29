@@ -42,7 +42,7 @@ export default function Comment(props) {
                     <Card.Text>{commentDeleted ? '[deleted]' : props.comment.text}</Card.Text>
                 </Card.Body>
                 <Card.Footer style={{ paddingLeft: '0', paddingBottom: '0', paddingTop: '0', paddingRight: '0' }}>
-                    <Row  className='container-fluid me-auto' xs="auto" style={{ alignItems: 'center', paddingLeft: '0', marginLeft: '0', paddingRight: '0' }}>
+                    <Row className='container-fluid me-auto' xs="auto" style={{ alignItems: 'center', paddingLeft: '0', marginLeft: '0', paddingRight: '0' }}>
                         <Col style={{ paddingRight: "0" }}>
                             <Image
                                 width='30'
@@ -62,7 +62,7 @@ export default function Comment(props) {
                                 </Nav.Item>
                             </h6>
                         </Col>
-                        <Row  className='container-fluid ms-auto' style={{ paddingRight: '0' }}>
+                        <Row className='container-fluid ms-auto' style={{ paddingRight: '0' }}>
                             <Col style={{ display: 'block', alignItems: 'center' }}>
                                 {userData?.user?.isAuth &&
                                     <Button
@@ -83,7 +83,8 @@ export default function Comment(props) {
                         </Row>
                     </Row>
                     <Row style={{ display: 'none', paddingTop: '0.5em' }} ref={ref}>
-                        <CreateComment setSuccessAlert={props.setSuccessAlert} parentId={props.comment.id} dispatch={props.dispatch} recipeId={props.comment.recipe}/>
+                        <CreateComment setSuccessAlert={props.setSuccessAlert} parentId={props.comment.id}
+                            dispatch={props.dispatch} recipeId={props.comment.recipe}/>
                     </Row>
                 </Card.Footer>
                 {props.comment.children.length > 0 &&

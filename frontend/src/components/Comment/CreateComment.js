@@ -21,7 +21,6 @@ export default function Comments(props) {
         if (response?.result) {
             props.setSuccessAlert(true);
             setNewComment('')
-
         }
 
     }

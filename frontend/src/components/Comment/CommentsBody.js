@@ -19,17 +19,15 @@ export default function CommentsBody(props) {
     const renderNestedComments = (commentsToRender, depth) => {
         return (
             commentsToRender?.map((comment) => {
-                if (depth < 8) {
+                console.log(depth)
+                if (depth < 9) {
                     return (
                         <Comment comment={comment} depth={depth} renderNestedComments={renderNestedComments}
                             key={comment.id} setSuccessAlert={props.setSuccessAlert} dispatch={props.dispatch} />
                     )
-                } else if (depth === 8) {
+                } else if (depth === 9) {
                     return (
                         <Container key={comment.id}>
-                            <Comment comment={comment} depth={depth} renderNestedComments={renderNestedComments}
-                                setSuccessAlert={props.setSuccessAlert} dispatch={props.dispatch} />
-
                             <Row style={{ paddingBottom: '0.5em' }}>
                                 <Card>
                                     <Card.Body style={{ paddingBottom: '0.5em' }}>
