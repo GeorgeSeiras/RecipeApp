@@ -33,9 +33,7 @@ export const UserReducer = (initialState, action) => {
         case 'USER_ERROR':
             return {
                 ...initialState,
-                errorMessage: initialState?.errorMessage ?
-                    [...initialState.errorMessage, action.errorMessage] :
-                    [action.errorMessage]
+                errorMessage: action.errorMessage
             }
         default:
             throw new Error(`Unhandled action type: ${action.type}`);

@@ -16,7 +16,7 @@ export default function RecipeCard(props) {
         <div>
             {props?.recipe &&
 
-                <Col key={props.index} style={{ paddingLeft: '2%', paddingRight: '2%' }} onClick={(e) => navigate(`/recipe/${props.recipe.id}`)}>
+                <Col key={props.index} onClick={(e) => navigate(`/recipe/${props.recipe.id}`)}>
                     <Card
                         id={props.recipe.id}
                         border="dark"
@@ -44,7 +44,7 @@ export default function RecipeCard(props) {
                                         textDecoration: 'none'
                                     }}>
                                     <Image
-                                    style={{width:'35px',height:'auto',paddingRight:'10px'}}
+                                        style={{ width: '35px', height: 'auto', paddingRight: '10px' }}
                                         width='30'
                                         className='img-fluid rounded-circle'
                                         src={`${MEDIA_URL}${props.recipe.user?.image?.image}`}

@@ -1,8 +1,9 @@
-import React, { useState, useContext, useReducer } from 'react';
+import React, { useState, useContext, useReducer, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
+import useError from '../ErrorHandler/ErrorHandler';
 
 import { UserContext } from '../Context/authContext';
 import UploadImageCard from '../CreateRecipe/UploadImageCard';
@@ -24,6 +25,13 @@ export default function UserInfo() {
     const [show, setShow] = useState(false);
     const userData = useContext(UserContext);
     const [state, dispatch] = useReducer(UserReducer);
+    const { addError } = useError();
+
+    useEffect(() => {
+        if (state?.errorMessage) {
+            addError(state.errorMessage)
+        }
+    }, [state?.errorMessage])
 
     function checkPassword() {
         setPasswordError(null)
@@ -116,7 +124,7 @@ export default function UserInfo() {
         <Container>
             {state?.errorMessage &&
                 <Alert variant={'danger'} onClose={() => { dissmissError(dispatch) }} dismissible>
-                    {state.errorMessage.map((error,index)=>{return <p key={index}>{error}</p>})}
+                    {state.errorMessage.map((error, index) => { return <p key={index}>{error}</p> })}
                 </Alert>
             }
             <Form onSubmit={(e) => handleSubmit(e)} style={{ paddingTop: '1em' }}>

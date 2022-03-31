@@ -5,8 +5,10 @@ import { authRoutes, publicRoutes, privateRoutes, } from './routes';
 import { AuthProvider } from './components/Context/authContext';
 import { PrivateRoute, NoLoggedInRoute, NormalRoute } from './components/CustomRoutes'
 import Navigation from './components/NavBar/NavBar';
-import {ErrorHandler} from './components/ErrorHandler/ErrorHandler';
+import { ErrorHandler } from './components/ErrorHandler/ErrorHandler';
 import Page_404 from './components/404';
+import ErrorComp from './components/ErrorHandler/ErrorComp';
+import Footer from './components/Footer';
 
 function App() {
 
@@ -15,6 +17,7 @@ function App() {
       <BrowserRouter>
         <ErrorHandler>
           <Navigation />
+          <ErrorComp />
           <Routes>
             {privateRoutes.map((route) => (
               <Route
@@ -37,8 +40,9 @@ function App() {
                 element={<NoLoggedInRoute>{route.element}</NoLoggedInRoute>}
               />
             ))}
-            <Route key="*" path="*" element={<Page_404/>}/>
+            <Route key="*" path="*" element={<Page_404 />} />
           </Routes>
+          <Footer />
         </ErrorHandler>
       </BrowserRouter>
     </AuthProvider>

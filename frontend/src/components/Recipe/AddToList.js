@@ -11,13 +11,21 @@ import { GetUserListsReducer } from '../../reducers/ListReducer';
 import ListPagination from '../RecipeList/ListPagination';
 
 import { UserContext } from '../Context/authContext';
+import useError from '../ErrorHandler/ErrorHandler';
 
 export default function AddToList(props) {
     const [show, setShow] = useState(false);
     const [state, dispatch] = useReducer(GetUserListsReducer);
     const [clicked, setClicked] = useState();
     const userData = useContext(UserContext);
+    const {addError} = useError();
 
+    useEffect(() => {
+        if (state?.errorMessage) {
+            addError(state.errorMessage)
+        }
+    }, [state?.errorMessage])
+    
     useEffect(() => {
         async function getLists() {
             if (userData?.user?.user?.id && !clicked) {

@@ -15,7 +15,7 @@ import { UserContext } from '../Context/authContext';
 import ListRecipeCards from './ListRecipeCards';
 import PaginationBar from '../Home/Pagination';
 import SearchBar from '../Home/SearchBar';
-import { useError } from '../ErrorHandler/ErrorHandler';
+import useError from '../ErrorHandler/ErrorHandler';
 
 export default function List() {
     const userData = useContext(UserContext);
@@ -27,7 +27,7 @@ export default function List() {
     const [pageClicked, setPageClicked] = useState(1);
     const [showModal, setShowModal] = useState(false);
     const [rerender, setRerender] = useState(false);
-    const { setError } = useError();
+    const { addError } = useError();
 
     const navigate = useNavigate();
 
@@ -49,7 +49,6 @@ export default function List() {
                     res.results.forEach(item => {
                         recipes.push(item.recipe);
                     })
-                    // updateRecipesInList(dispatchRecipesList,{ ...res, results: recipes });
                     setActive(pageClicked);
                 }
             }
@@ -58,9 +57,9 @@ export default function List() {
 
     useEffect(() => {
         if (stateList?.errorMessage) {
-            setError(stateList.errorMessage)
+            addError(stateList.errorMessage)
         }
-    }, [stateList])
+    }, [stateList?.errorMessage])
 
     const handleDeleteList = () => {
         (async () => {
@@ -72,7 +71,7 @@ export default function List() {
     }
 
     return (
-        <Container>
+        <Container style={{paddingBottom:'3em'}}>
             {userData?.user?.isAuth && stateList?.list?.user?.username === userData?.user?.user?.username &&
                 <DropdownButton
                     variant={'danger'}
@@ -98,7 +97,8 @@ export default function List() {
             </Row>
             <Row style={{
                 paddingLeft: '2%',
-                paddingRight: '2%'
+                paddingRight: '2%',
+                paddingBottom:'1em'
             }}>
                 <ListRecipeCards state={stateRecipesList}
                     setRerender={setRerender} rerender={rerender} user={stateList?.list?.user} dispatch={dispatchRecipesList} />

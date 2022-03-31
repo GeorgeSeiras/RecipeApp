@@ -7,7 +7,7 @@ import PaginationBar from './Pagination';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
+import useError from '../ErrorHandler/ErrorHandler';
 
 export default function Home(props) {
 
@@ -15,7 +15,13 @@ export default function Home(props) {
     const [queryParams, setQueryParams] = useState('');
     const [active, setActive] = useState(1);
     const [pageClicked, setPageClicked] = useState(1);
+    const {addError} = useError();
 
+    useEffect(() => {
+        if (state?.errorMessage) {
+            addError(state.errorMessage)
+        }
+    }, [state?.errorMessage])
 
     useEffect(() => {
         (async () => {
@@ -32,7 +38,7 @@ export default function Home(props) {
                 <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} />
             </Row>
             {state?.recipes &&
-                <Row style={{ paddingBottom: '0.5em' }}>
+                <Row style={{ paddingBottom: '1em' }}>
                     <Col>
                         <RecipeCards response={state?.recipes} />
                     </Col>

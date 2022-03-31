@@ -11,6 +11,7 @@ import { UserContext } from '../Context/authContext';
 export default function Comments(props) {
     const [newComment, setNewComment] = useState('');
     const userData = useContext(UserContext);
+    
     const handleSubmit = async (e) => {
         e.preventDefault()
         const payload = {

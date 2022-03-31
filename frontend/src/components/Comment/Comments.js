@@ -8,13 +8,15 @@ import { getRecipeComments } from '../../actions/CommentActions';
 import { RecipeCommentsReducer } from '../../reducers/CommentReducer';
 import { UserContext } from '../Context/authContext';
 import CommentsBody from './CommentsBody';
+import useError from '../ErrorHandler/ErrorHandler';
 
 export default function Comments() {
     const { id } = useParams();
     const [state, dispatch] = useReducer(RecipeCommentsReducer);
     const userData = useContext(UserContext);
     const [successAlert, setSuccessAlert] = useState(null);
-
+    const {addError} = useError();
+    
     useEffect(() => {
         (async () => {
             await getRecipeComments(dispatch, id);
@@ -28,6 +30,12 @@ export default function Comments() {
             }
         })()
     }, [state?.created])
+
+    useEffect(() => {
+        if (state?.errorMessage) {
+            addError(state.errorMessage)
+        }
+    }, [state?.errorMessage])
 
     return (
         <Container>

@@ -49,11 +49,11 @@ export default function ListRecipeCards(props) {
 
         <Container>
             {props?.state?.recipes &&
-                <Row xs={2} md={3} lg={5} className='g-4' >
-                    {props.state.recipes.map((recipe, index) => {
+                <Row xs={'auto'} className='g-4' style={{ paddingLeft: '1em', paddingRight: '1em' }}>
+                {props.state.recipes.map((recipe, index) => {
                         return (
                             <Col key={index} id={index} style={{
-                                position: 'relative',
+                                position: 'relative'
                             }}>
                                 <RecipeCard recipe={recipe} index={index} thumbnails={thumbnails} />
                                 {userData?.user?.isAuth && userData?.user?.user?.username === props?.user.username &&
@@ -64,7 +64,7 @@ export default function ListRecipeCards(props) {
                                             height: '1.5em',
                                             position: "absolute",
                                             top: "0",
-                                            left: "200.5px",
+                                            right: '12px',
                                             padding: '0',
                                             textAlign: 'center',
                                         }}

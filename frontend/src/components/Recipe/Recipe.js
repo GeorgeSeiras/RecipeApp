@@ -17,7 +17,7 @@ import EditRecipe from "./EditRecipe";
 import AddToList from './AddToList.js';
 import { UserContext } from '../Context/authContext';
 import DeleteRecipe from "./deleteRecipe";
-import { useError } from '../ErrorHandler/ErrorHandler';
+import useError from '../ErrorHandler/ErrorHandler';
 
 export default function Recipe() {
     const [state, dispatch] = useReducer(RecipeReducer);
@@ -27,7 +27,7 @@ export default function Recipe() {
     const [thumbnail, setThumbnail] = useState();
     const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
     const [avatar, setAvatar] = useState(null);
-    const { setError } = useError();
+    const { addError } = useError();
 
     useEffect(() => {
         (async () => {
@@ -38,9 +38,9 @@ export default function Recipe() {
 
     useEffect(() => {
         if (state?.errorMessage) {
-            setError(state.errorMessage)
+            addError(state.errorMessage)
         }
-    }, [state])
+    }, [state?.errorMessage])
 
     useEffect(() => {
         if (state?.recipe?.user?.image) {
@@ -64,48 +64,56 @@ export default function Recipe() {
 
     }, [state?.recipe])
 
-    return (
-        <Container style={{ margin: 'auto' }}>
-            <Row className='container-fluid ml-auto' style={{ paddingTop: '0.5em' }}>
-                <Col >
-                    {userData?.user?.isAuth && userData?.user?.user?.id === state?.recipe?.user?.id &&
-                        <Row className='container-fluid ml-auto'>
-                            <Col style={{ display: 'flex', justifyContent: 'left' }}>
-                                <EditRecipe recipe={state?.recipe} dispatch={dispatch} />
-                            </Col>
-                            <Col style={{ display: 'flex', justifyContent: 'left' }}>
-                                <DeleteRecipe recipe={state?.recipe} userData={userData} />
-                            </Col>
-                        </Row>
-                    }
-                </Col>
-                <Col className='ms-auto' style={{ display: 'flex', justifyContent: 'center' }}>
-                    <AddToList recipe={state?.recipe} />
-                </Col>
-            </Row>
-            <Col>
-                <RecipeInfo recipe={state?.recipe} avatar={avatar} userData={state?.recipe?.user} />
-            </Col>
+   
 
-            <Col style={{ paddingTop: '0' }}>
-                {state?.recipe && userData?.user?.isAuth &&
-                    <RateableStars rating={state?.recipe?.rating_avg} votes={state?.recipe?.votes} dispatch={dispatch} />
-                }
-            </Col>
-            {thumbnail &&
-                <Col style={{ paddingTop: '1em', paddingBottom: '0' }}>
-                    <Thumbnail thumbnail={thumbnail} />
-                </Col>
+    return (
+        <div>
+            {state?.recipe &&
+
+                <Container style={{ margin: 'auto' }}>
+                    <Row className='container-fluid ml-auto' style={{ paddingTop: '0.5em' }}>
+                        <Col >
+                            {userData?.user?.isAuth && userData?.user?.user?.id === state?.recipe?.user?.id &&
+                                <Row className='container-fluid ml-auto'>
+                                    <Col style={{ display: 'flex', justifyContent: 'left' }}>
+                                        <EditRecipe recipe={state?.recipe} dispatch={dispatch} />
+                                    </Col>
+                                    <Col style={{ display: 'flex', justifyContent: 'left' }}>
+                                        <DeleteRecipe recipe={state?.recipe} userData={userData} />
+                                    </Col>
+                                </Row>
+                            }
+                        </Col>
+                        <Col className='ms-auto' style={{ display: 'flex', justifyContent: 'center' }}>
+                            <AddToList recipe={state?.recipe} />
+                        </Col>
+                    </Row>
+                    <Col>
+                        <RecipeInfo recipe={state?.recipe} avatar={avatar} userData={state?.recipe?.user} />
+                    </Col>
+
+                    <Col style={{ paddingTop: '0' }}>
+                        {state?.recipe && userData?.user?.isAuth &&
+                            <RateableStars rating={state?.recipe?.rating_avg} votes={state?.recipe?.votes} dispatch={dispatch} />
+                        }
+                    </Col>
+                    {thumbnail &&
+                        <Col style={{ paddingTop: '1em', paddingBottom: '0' }}>
+                            <Thumbnail thumbnail={thumbnail} />
+                        </Col>
+                    }
+
+                    {gallery.length > 0 &&
+                        <Col>
+                            <RecipeCarousel gallery={gallery} />
+                        </Col>
+                    }
+                    <Col >
+                        <ActualRecipe recipe={state?.recipe} />
+                    </Col>
+                    <Comments />
+                </Container >
             }
-            {gallery.length > 0 &&
-                <Col>
-                    <RecipeCarousel gallery={gallery} />
-                </Col>
-            }
-            <Col >
-                <ActualRecipe recipe={state?.recipe} />
-            </Col>
-            <Comments />
-        </Container >
+        </div>
     )
 }

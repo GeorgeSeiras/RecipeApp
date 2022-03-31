@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import Container from 'react-bootstrap/Container';
 
 import { RecipesReducer } from '../../reducers/RecipeReducer';
 import { getRecipes } from '../../actions/RecipeActions';
@@ -15,7 +16,7 @@ import RecipeLists from '../RecipeList/RecipeLists'
 import { UserContext } from '../Context/authContext';
 import { UserReducer } from '../../reducers/UserReducer'
 import { getUser } from '../../actions/UserActions';
-import { useError } from '../ErrorHandler/ErrorHandler';
+import useError from '../ErrorHandler/ErrorHandler';
 
 export default function User() {
     const [recipesState, recipesDispatch] = useReducer(RecipesReducer);
@@ -25,7 +26,7 @@ export default function User() {
     const [pageClicked, setPageClicked] = useState();
     const [queryParams, setQueryParams] = useState('');
     const navigate = useNavigate();
-    const { setError } = useError();
+    const { addError } = useError();
 
     const userData = useContext(UserContext);
 
@@ -51,31 +52,35 @@ export default function User() {
 
     useEffect(() => {
         if (userState?.errorMessage) {
-            setError(userState.errorMessage)
+            addError(userState.errorMessage)
         }
     }, [userState]);
 
     return (
-        <div>
-            <UserInfo user={userState?.user} />
-            {window.location.pathname.split('/').pop() === String(userData?.user?.user?.username) &&
-                <Button variant="success"
-                    style={{ display: 'flex', margin: 'auto', width: '350px', justifyContent: 'center' }}
-                    onClick={(e) => navigate('/recipe/new')}>
-                    Create Recipe
-                </Button>}
-            <Row xs='auto' style={{ margin: 'auto' }}>
-                <Col style={{ width: '20%', paddingTop: '0.5em' }}>
-                    <RecipeLists user={userState?.user} />
-                </Col>
-                <Col style={{ width: '80%' }}>
-                    <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} username={username} />
-                    <RecipeCards response={recipesState?.recipes} />
-                    {recipesState?.length > 0 &&
-                        <Pagination response={recipesState?.recipes} active={active} setPageClicked={setPageClicked} />
-                    }
-                </Col>
-            </Row>
-        </div>
+        <Container>
+            {userState?.user &&
+                <Container>
+                    <UserInfo user={userState?.user} />
+                    {window.location.pathname.split('/').pop() === String(userData?.user?.user?.username) &&
+                        <Button variant="success"
+                            style={{ display: 'flex', margin: 'auto', width: '350px', justifyContent: 'center' }}
+                            onClick={(e) => navigate('/recipe/new')}>
+                            Create Recipe
+                        </Button>}
+                    <Row xs='auto' style={{ margin: 'auto' }}>
+                        <Col style={{ width: '20%', paddingTop: '0.5em' }}>
+                            <RecipeLists user={userState?.user} />
+                        </Col>
+                        <Col style={{ width: '80%' }}>
+                            <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} username={username} />
+                            <RecipeCards response={recipesState?.recipes} />
+                            {recipesState?.length > 0 &&
+                                <Pagination response={recipesState?.recipes} active={active} setPageClicked={setPageClicked} />
+                            }
+                        </Col>
+                    </Row>
+                </Container>
+            }
+        </Container>
     )
 }

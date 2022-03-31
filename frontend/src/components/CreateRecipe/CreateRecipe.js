@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useContext } from 'react';
+import React, { useState, useReducer, useContext,useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
@@ -8,6 +8,7 @@ import {RecipeReducer } from '../../reducers/RecipeReducer';
 import { createRecipe, uploadRecipeImages, deleteRecipe } from '../../actions/RecipeActions';
 import { UserContext } from '../Context/authContext';
 import EditableRecipeBody from '../Recipe/EditableRecipeBody';
+import useError from '../ErrorHandler/ErrorHandler';
 
 export default function CreateRecipe() {
     const [title, setTitle] = useState('');
@@ -23,6 +24,7 @@ export default function CreateRecipe() {
     const [carousel, setCarousel] = useState([null]);
     const [course, setCourse] = useState(['']);
     const [cuisine, setCuisine] = useState(['']);
+    const {addError} = useError();
 
     const [state, dispatch] = useReducer(RecipeReducer);
 
@@ -30,6 +32,12 @@ export default function CreateRecipe() {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (state?.errorMessage) {
+            addError(state.errorMessage)
+        }
+    }, [state?.errorMessage])
+    
     const validateForm = () => {
         if (title === "") {
             return false;
