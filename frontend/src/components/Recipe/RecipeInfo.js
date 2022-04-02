@@ -40,14 +40,14 @@ export default function RecipeInfo(props) {
                     justifyContent: 'center',
                     alignItems: 'center',
                 }}>
-                    <Row style={{width:'90%'}}>
+                    <Row xs={'auto'}>
                         {props.recipe?.course &&
-                            <Col style={{ maxWidth: '15%' }}>
+                            <Col>
                                 <h6>Course: </h6>
                             </Col>
                         }
                         {props.recipe?.course &&
-                            <Col style={{ paddingLeft: "0"}}>
+                            <Col>
                                 <h6>
                                     {props.recipe?.course.map((course, index) => {
                                         if (index !== props.recipe.course.length - 1) {
@@ -60,14 +60,14 @@ export default function RecipeInfo(props) {
                             </Col>
                         }
                     </Row>
-                    <Row style={{width:'90%'}}>
+                    <Row xs={'auto'}>
                         {props.recipe?.cuisine &&
-                            <Col style={{ maxWidth: '15%' }}>
+                            <Col >
                                 <h6>Cuisine: </h6>
                             </Col>
                         }
                         {props.recipe?.cuisine &&
-                            <Col style={{ paddingLeft: "0" }}>
+                            <Col>
                                 <h6>
                                     {props.recipe?.cuisine.map((cuisine, index) => {
                                         if (index !== props.recipe.cuisine.length - 1) {

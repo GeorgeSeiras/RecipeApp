@@ -77,7 +77,7 @@ export default function SearchBar(props) {
     }
 
     return (
-        <div style={{display:'flex',flexDirection:'column'}}>
+        <Container xs={'auto'} style={{display:'flex',flexDirection:'column',paddingLeft:'0'}}>
             <Form className="d-flex"
                 onSubmit={handleSubmit}
                 style={{
@@ -183,6 +183,6 @@ export default function SearchBar(props) {
                     </Accordion.Body>
                 </Accordion.Item>
             </Accordion>
-        </div >
+        </Container >
     )
 }
