@@ -1,6 +1,7 @@
 sort_choices = [
     ('asc','asc'),
-    ('desc','desc')
+    ('desc','desc'),
+    ('popular','popular')
 ]
 
 query_rating_choices = [

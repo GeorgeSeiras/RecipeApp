@@ -5,8 +5,11 @@ from rest_framework import status
 from rest_framework.exceptions import NotFound, PermissionDenied
 from django.db import transaction
 from django.db.models import Q
-from comment.serializers import CreateCommentSerializer
+from django.contrib.contenttypes.models import ContentType
+from hitcount.models import HitCount,Hit
+from ipware import get_client_ip
 
+from comment.serializers import CreateCommentSerializer
 from comment.models import Comment
 from recipe.models import Recipe, Ingredient
 from user.models import User
@@ -39,6 +42,7 @@ class RecipeCreate(APIView):
 
 
 class RecipeDetail(APIView):
+
     def get(self, request, pk):
         try:
             recipe = Recipe.objects.get(pk=pk)
@@ -239,6 +243,8 @@ class RecipesQuery(APIView, myPagination):
                 sort = "created_at"
             elif serializer.validated_data["sort"] == choices["desc"]:
                 sort = "-created_at"
+            elif serializer.validated_data['sort'] == choices['popular']:
+                sort = "-hit_count_generic__hits"
         recipes = Recipe.objects.filter(query).order_by(sort)
         objects = Recipe.recipes_to_list(recipes)
         page = self.paginate_queryset(objects, request)
@@ -261,3 +267,30 @@ class createCommentView(APIView):
             comment = Comment.objects.create(
                 user=user, **serializer.validated_data)
             return JsonResponse({'result': comment.to_dict()})
+
+
+class RecipeHitView(APIView):
+
+    def patch(self, request, recipe_id):
+        try:
+            recipe = Recipe.objects.get(pk=recipe_id)
+            LIMIT_HITS = 1
+            LIMIT_PERIOD = {'weeks': 1}
+            ctype = ContentType.objects.get_for_model(recipe)
+            hitcount, created = HitCount.objects.get_or_create(
+                content_type=ctype, object_pk=recipe.pk)
+            ip = get_client_ip(request)
+            try:
+                hit_found = Hit.objects.get(ip=ip,hitcount=hitcount)
+                return JsonResponse({'result': 'ok'})
+            except Hit.DoesNotExist:
+                hit = Hit(
+                    session="",
+                    hitcount=hitcount,
+                    ip=get_client_ip(request),
+                    user_agent=""
+                )
+                hit.save()
+                return JsonResponse({'result': 'ok'})
+        except Recipe.DoesNotExist:
+            raise NotFound({'message': 'Recipe not found'})

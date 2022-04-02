@@ -6,12 +6,17 @@ export const ErrorHandler = ({ children }) => {
     const [error, setError] = useState([]);
 
     const addError = (message) => {
-        setError(error=>[...error,message])
+        setError(error => [...error, message])
+    }
+
+    const dismissError = () => {
+        setError([])
     }
 
     const contextValue = {
         error,
         addError: useCallback((message) => addError(message), []),
+        dismissError: useCallback(() => dismissError(), [])
     };
 
     return (
@@ -22,6 +27,6 @@ export const ErrorHandler = ({ children }) => {
 }
 
 export default function useError() {
-    const { error, addError } = useContext(ErrorStatusContext);
-    return { error, addError }
+    const { error, dismissError, addError } = useContext(ErrorStatusContext);
+    return { error, dismissError, addError }
 }
