@@ -12,7 +12,7 @@ export default function RecipeCards(props) {
 
     useEffect(() => {
         setThumbnails([])
-        props?.response?.results.forEach((recipe, key) => {
+        props?.response?.results?.forEach((recipe, key) => {
             const img = recipe.images.find((image) => {
                 return image.type === "THUMBNAIL"
             })?.image

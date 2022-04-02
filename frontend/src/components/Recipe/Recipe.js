@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container'
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import { getRecipe } from '../../actions/RecipeActions';
+import { getRecipe,incrementRecipeHits } from '../../actions/RecipeActions';
 import RecipeCarousel from "./Carousel";
 import { RecipeReducer } from '../../reducers/RecipeReducer';
 import Thumbnail from "./Thumbnail";
@@ -33,6 +33,7 @@ export default function Recipe() {
         (async () => {
             const payload = { 'recipe': id }
             await getRecipe(dispatch, payload)
+            await incrementRecipeHits(dispatch,id)
         })()
     }, [id, MEDIA_URL])
 

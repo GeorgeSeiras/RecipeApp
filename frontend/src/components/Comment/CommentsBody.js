@@ -19,7 +19,6 @@ export default function CommentsBody(props) {
     const renderNestedComments = (commentsToRender, depth) => {
         return (
             commentsToRender?.map((comment) => {
-                console.log(depth)
                 if (depth < 9) {
                     return (
                         <Comment comment={comment} depth={depth} renderNestedComments={renderNestedComments}

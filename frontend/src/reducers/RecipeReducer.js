@@ -17,6 +17,10 @@ export const RecipeReducer = (initialState, action) => {
                 ...initialState,
                 recipe: action.payload
             };
+        case 'INCREMENT_RECIPE_HITS':
+            return {
+                ...initialState
+            }
         case 'UPLOAD_RECIPE_IMAGE':
             return {
                 ...initialState,

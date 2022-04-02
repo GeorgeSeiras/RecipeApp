@@ -20,13 +20,33 @@ export async function getRecipes(dispatch, queryParams, pageClicked) {
         }
 
         let data = await response.json();
-        if (data) {
+        if (data?.results) {
             dispatch({ type: 'GET_RECIPES', payload: data })
             return data
         }
         dispatch({ type: 'GET_RECIPES_ERROR', errorMessage: data })
     } catch (error) {
         dispatch({ type: 'GET_RECIPES_ERROR', errorMessage: error })
+    }
+}
+
+export async function incrementRecipeHits(dispatch, recipeId) {
+    const requestOptions = {
+        method: 'PATCH',
+    };
+
+    try {
+        const response = await fetch(`${API_URL}/recipe/${recipeId}/hitcount`, requestOptions);
+        const data = await response.json();
+        if (data?.result) {
+            dispatch({ type: 'INCREMENT_RECIPE_HITS', payload: data.result })
+            return data
+        }
+        if (data?.status_code !== 429) {
+            dispatch({ type: 'RECIPE_ERROR', errorMessage: data })
+        }
+    } catch (error) {
+        dispatch({ type: 'RECIPE_ERROR', errorMessage: error })
     }
 }
 

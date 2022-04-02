@@ -2,10 +2,14 @@ from django.db import models, connection
 from django.contrib.postgres.fields import ArrayField
 from django.db.models.deletion import CASCADE
 from django.db.models import Avg
+from django.contrib.contenttypes.fields import GenericRelation
+from hitcount.models import HitCount
 
 from rating.models import Rating
 from image.models import RecipeImage
 from user.models import User
+
+from django.forms.models import model_to_dict
 
 
 class Ingredient(models.Model):
@@ -65,6 +69,10 @@ class Recipe(models.Model):
         auto_now=True
     )
     steps = ArrayField(models.CharField(max_length=200))
+    hit_count_generic = GenericRelation(
+        HitCount,object_id_field='object_pk',
+        related_query_name='hit_count_generic_relation'
+    )
 
     def to_dict(self):
         dict = {}
