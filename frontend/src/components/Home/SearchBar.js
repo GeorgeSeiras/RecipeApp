@@ -77,7 +77,7 @@ export default function SearchBar(props) {
     }
 
     return (
-        <div>
+        <div style={{display:'flex',flexDirection:'column'}}>
             <Form className="d-flex"
                 onSubmit={handleSubmit}
                 style={{

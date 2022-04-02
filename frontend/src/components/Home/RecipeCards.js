@@ -27,7 +27,7 @@ export default function RecipeCards(props) {
     return (
         <Container style={{ paddingLeft: '0', paddingRight: '0' }}>
             {props?.response?.results &&
-                <Row xs={'auto'} className='g-4' style={{ paddingLeft: '1em', paddingRight: '1em' }}>
+                <Row xs={'auto'} className='g-4'>
                     {props.response.results.map((recipe, index) => {
                         return (
                             <RecipeCard key={index}recipe={recipe} index={index} thumbnails={thumbnails} />

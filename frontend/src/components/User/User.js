@@ -67,16 +67,16 @@ export default function User() {
                             onClick={(e) => navigate('/recipe/new')}>
                             Create Recipe
                         </Button>}
-                    <Row xs='auto' style={{ margin: 'auto' }}>
-                        <Col style={{ width: '20%', paddingTop: '0.5em' }}>
+                    <Row xs={'auto'}>
+                        <Col style={{ width: '15%', paddingLeft: '0', paddingTop: '0.5em' }}>
                             <RecipeLists user={userState?.user} />
                         </Col>
-                        <Col style={{ width: '80%' }}>
-                            <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} username={username} />
-                            <RecipeCards response={recipesState?.recipes} />
-                            {recipesState?.length > 0 &&
-                                <Pagination response={recipesState?.recipes} active={active} setPageClicked={setPageClicked} />
-                            }
+                        <Col style={{ width: '85%', paddingLeft: '0', paddingRight: '0'}}>
+                                <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} username={username} />
+                                <RecipeCards response={recipesState?.recipes} />
+                                {recipesState?.length > 0 &&
+                                    <Pagination response={recipesState?.recipes} active={active} setPageClicked={setPageClicked} />
+                                }
                         </Col>
                     </Row>
                 </Container>

@@ -23,7 +23,7 @@ export default function RecipeInfo(props) {
     return (
         <div>
             <Container >
-                
+
                 <Row xs="auto">
                     <Col style={{
                         margin: "auto",
@@ -40,42 +40,46 @@ export default function RecipeInfo(props) {
                     justifyContent: 'center',
                     alignItems: 'center',
                 }}>
-                    {props.recipe?.course &&
-                        <Col style={{ paddingRight: "1%" }}>
-                            <h6>Course: </h6>
-                        </Col>
-                    }
-                    {props.recipe?.course &&
-                        <Col style={{ paddingLeft: "0" }}>
-                            <h6>
-                                {props.recipe?.course.map((course, index) => {
-                                    if (index !== props.recipe.course.length - 1) {
-                                        return course + ", ";
-                                    } else {
-                                        return course;
-                                    }
-                                })}
-                            </h6>
-                        </Col>
-                    }
-                    {props.recipe?.cuisine &&
-                        <Col style={{ paddingRight: "1%" }}>
-                            <h6>Cuisine: </h6>
-                        </Col>
-                    }
-                    {props.recipe?.cuisine &&
-                        <Col style={{ paddingLeft: "0" }}>
-                            <h6>
-                                {props.recipe?.cuisine.map((cuisine, index) => {
-                                    if (index !== props.recipe.cuisine.length - 1) {
-                                        return cuisine + ", ";
-                                    } else {
-                                        return cuisine;
-                                    }
-                                })}
-                            </h6>
-                        </Col>
-                    }
+                    <Row style={{width:'90%'}}>
+                        {props.recipe?.course &&
+                            <Col style={{ maxWidth: '15%' }}>
+                                <h6>Course: </h6>
+                            </Col>
+                        }
+                        {props.recipe?.course &&
+                            <Col style={{ paddingLeft: "0"}}>
+                                <h6>
+                                    {props.recipe?.course.map((course, index) => {
+                                        if (index !== props.recipe.course.length - 1) {
+                                            return course + ", ";
+                                        } else {
+                                            return course;
+                                        }
+                                    })}
+                                </h6>
+                            </Col>
+                        }
+                    </Row>
+                    <Row style={{width:'90%'}}>
+                        {props.recipe?.cuisine &&
+                            <Col style={{ maxWidth: '15%' }}>
+                                <h6>Cuisine: </h6>
+                            </Col>
+                        }
+                        {props.recipe?.cuisine &&
+                            <Col style={{ paddingLeft: "0" }}>
+                                <h6>
+                                    {props.recipe?.cuisine.map((cuisine, index) => {
+                                        if (index !== props.recipe.cuisine.length - 1) {
+                                            return cuisine + ", ";
+                                        } else {
+                                            return cuisine;
+                                        }
+                                    })}
+                                </h6>
+                            </Col>
+                        }
+                    </Row>
                 </Row>
                 <Row xs="auto" style={{
                     margin: "auto",

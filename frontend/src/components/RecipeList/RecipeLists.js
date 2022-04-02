@@ -38,7 +38,7 @@ export default function RecipeList(props) {
     }, [props?.user, clicked])
 
     return (
-        <Container>
+        <Container style={{paddingLeft:'0',paddingRight:'0'}}>
             <ListGroup>
                 {userData.user?.user?.id === props?.user?.id &&
                     <CreateList lists={lists} setLists={setLists} userData={userData} dispatch={dispatch}/>

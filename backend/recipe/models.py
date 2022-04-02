@@ -46,21 +46,23 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     user = models.ForeignKey('user.user', on_delete=CASCADE)
     title = models.CharField(
-        max_length=100
+        max_length=50
     )
     prep_time = models.IntegerField()
     cook_time = models.IntegerField()
     desc = models.TextField(
-        max_length=500,
+        max_length=1000,
         blank=True,
         null=True
     )
     servings = models.IntegerField()
     cuisine = ArrayField(
-        models.CharField(max_length=30)
+        models.CharField(max_length=30),
+        size=5
     )
     course = ArrayField(
-        models.CharField(max_length=30)
+        models.CharField(max_length=30),
+        size=5
     )
     created_at = models.DateTimeField(
         auto_now_add=True
