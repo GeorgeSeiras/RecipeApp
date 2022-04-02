@@ -4,6 +4,8 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Nav from 'react-bootstrap/Nav';
+import Badge from 'react-bootstrap/Badge';
+
 import { DateTime } from 'luxon';
 
 
@@ -47,17 +49,15 @@ export default function RecipeInfo(props) {
                             </Col>
                         }
                         {props.recipe?.course &&
-                            <Col>
-                                <h6>
-                                    {props.recipe?.course.map((course, index) => {
-                                        if (index !== props.recipe.course.length - 1) {
-                                            return course + ", ";
-                                        } else {
-                                            return course;
-                                        }
-                                    })}
-                                </h6>
-                            </Col>
+                            props.recipe?.course.map((course, index) => {
+                                return (
+                                    <Col >
+                                        <Badge pill bg='primary'>
+                                            {course}
+                                        </Badge>{' '}
+                                    </Col>
+                                )
+                            })
                         }
                     </Row>
                     <Row xs={'auto'}>
@@ -67,17 +67,16 @@ export default function RecipeInfo(props) {
                             </Col>
                         }
                         {props.recipe?.cuisine &&
-                            <Col>
-                                <h6>
-                                    {props.recipe?.cuisine.map((cuisine, index) => {
-                                        if (index !== props.recipe.cuisine.length - 1) {
-                                            return cuisine + ", ";
-                                        } else {
-                                            return cuisine;
-                                        }
-                                    })}
-                                </h6>
-                            </Col>
+
+                            props.recipe?.cuisine.map((cuisine, index) => {
+                                return (
+                                    <Col >
+                                        <Badge pill bg='primary'>
+                                            {cuisine}
+                                        </Badge>{' '}
+                                    </Col>
+                                )
+                            })
                         }
                     </Row>
                 </Row>
