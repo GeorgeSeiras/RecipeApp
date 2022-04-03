@@ -51,10 +51,10 @@ export default function RecipeInfo(props) {
                         {props.recipe?.course &&
                             props.recipe?.course.map((course, index) => {
                                 return (
-                                    <Col >
+                                    <Col style={{paddingLeft:"0"}}>
                                         <Badge pill bg='primary'>
                                             {course}
-                                        </Badge>{' '}
+                                        </Badge>
                                     </Col>
                                 )
                             })
@@ -70,10 +70,10 @@ export default function RecipeInfo(props) {
 
                             props.recipe?.cuisine.map((cuisine, index) => {
                                 return (
-                                    <Col >
+                                    <Col style={{paddingLeft:"0"}}>
                                         <Badge pill bg='primary'>
                                             {cuisine}
-                                        </Badge>{' '}
+                                        </Badge>
                                     </Col>
                                 )
                             })
