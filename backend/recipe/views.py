@@ -79,7 +79,6 @@ class RecipeDetail(APIView):
 
     @user_required
     def delete(self, request, pk):
-        print(pk)
         try:
             recipe = Recipe.objects.get(pk=pk)
         except Recipe.DoesNotExist:

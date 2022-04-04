@@ -85,9 +85,25 @@ class RecipeDetailTest(APITestCase):
         response = self.client.patch(self.recipe_detail_url, json.dumps(
             {'title': 'title'}), content_type='application/json', **{'HTTP_AUTHORIZATION': f'Bearer {self.token2}'})
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(json.loads(response.content)['detail'],"You cannot modify another user's recipe")
+        self.assertEqual(json.loads(response.content)[
+                         'detail'], "You cannot modify another user's recipe")
 
     def test_update_recipe_no_credentials(self):
         response = self.client.patch(self.recipe_detail_url, json.dumps(
             {'title': 'title'}), content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_non_existant_recipe(self):
+        response = self.client.delete(
+            self.recipe_detail_not_exist_url, **{'HTTP_AUTHORIZATION': f'Bearer {self.token2}'})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_delete_recipe_wrong_credentials(self):
+        response = self.client.delete(
+            self.recipe_detail_url, **{'HTTP_AUTHORIZATION': f'Bearer {self.token2}'})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_non_existant_recipe(self):
+        response = self.client.delete(
+            self.recipe_detail_url, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
