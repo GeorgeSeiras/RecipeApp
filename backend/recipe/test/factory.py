@@ -1,8 +1,6 @@
 from random import randrange
 from factory import django, Faker, SubFactory, post_generation
 
-from django.contrib.auth.hashers import make_password
-
 from user.test.factory import UserFactory
 from recipe.models import Ingredient, Recipe
 
