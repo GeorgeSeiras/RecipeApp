@@ -28,7 +28,8 @@ class UserMeTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(json.loads(response.content)[
                          'user']['username'], self.user_object.username)
-
+        self.assertEqual(json.loads(response.content)[
+                         'user']['image']['id'], self.user_object.image.id)
     def test_get_me_no_credentials(self):
         response = self.client.get(self.me_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
