@@ -5,7 +5,6 @@ from django.db.models import Q
 from django.http.response import JsonResponse
 from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.pagination import LimitOffsetPagination
 
@@ -18,10 +17,8 @@ from utils.custom_exceptions import CustomException
 
 
 class UserList(APIView, LimitOffsetPagination):
-    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializerNoPassword
 
-    @admin_required
     def get(self, request, format=None):
         users = User.objects.all()
         paginated_queryset = self.paginate_queryset(users, request)
@@ -58,7 +55,7 @@ class UserDetail(APIView):
                     raise PermissionDenied(
                         {"Cannot delete another user's acount"})
                 user.delete()
-                return JsonResponse(status=status.HTTP_200_OK)
+                return JsonResponse({'result':'ok'},status=status.HTTP_200_OK)
         except User.DoesNotExist:
             raise NotFound({"message": "User not found"})
 
