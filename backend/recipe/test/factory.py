@@ -9,14 +9,13 @@ from recipe.models import Ingredient, Recipe
 class RecipeFactory(django.DjangoModelFactory):
     class Meta:
         model = Recipe
-
-    def create_array(size=5):
-        return []
+        
     user =SubFactory(UserFactory)
     title = Faker('word')
-    prep_time = Faker('number')
-    cook_time = Faker('number')
+    prep_time = Faker('random_int')
+    cook_time = Faker('random_int')
     desc = Faker('text')
+    servings = Faker('random_int')
     cuisine = [Faker('text') for x in range(randrange(5))]
     course = [Faker('text') for x in range(randrange(5))]
     steps = [Faker('lorem') for x in range(randrange(10))]
@@ -27,7 +26,7 @@ class IngredientFactory(django.DjangoModelFactory):
         model = Ingredient
 
     unit = Faker('word')
-    amount = Faker('number')
+    amount = Faker('random_int')
     ingredient = Faker('word')
 
     @post_generation
