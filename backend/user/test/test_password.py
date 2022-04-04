@@ -3,7 +3,6 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
 from factory.fuzzy import FuzzyText
-from factory import Faker
 from .factory import UserFactory
 from rest_framework_simplejwt.tokens import RefreshToken
 

@@ -6,7 +6,7 @@ import json
 from .factory import RecipeFactory, UserFactory
 
 
-class RecipeCreateTest(APITestCase):
+class RecipeQueryTest(APITestCase):
 
     @classmethod
     def setUp(self):

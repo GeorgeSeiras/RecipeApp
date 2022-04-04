@@ -1,5 +1,6 @@
 from random import randrange
 from factory import django, Faker, SubFactory, post_generation
+
 from django.contrib.auth.hashers import make_password
 
 from user.test.factory import UserFactory
@@ -16,9 +17,9 @@ class RecipeFactory(django.DjangoModelFactory):
     cook_time = Faker('random_int')
     desc = Faker('text')
     servings = Faker('random_int')
-    cuisine = [Faker('text') for x in range(randrange(5))]
-    course = [Faker('text') for x in range(randrange(5))]
-    steps = [Faker('lorem') for x in range(randrange(10))]
+    cuisine = Faker('pylist',value_types='str',nb_elements=5)
+    course = Faker('pylist',value_types='str',nb_elements=5)
+    steps = Faker('pylist',value_types='str',nb_elements=10)
 
 class IngredientFactory(django.DjangoModelFactory):
 
