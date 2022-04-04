@@ -59,7 +59,7 @@ class RecipeDetail(APIView):
                 raise NotFound({"message": "Recipe not found"})
             if recipe.user.username != str(request.user):
                 raise PermissionDenied(
-                    {"You cannot modify another user's recipe"})
+                    "You cannot modify another user's recipe")
             serializer = RecipePatchSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             for key, value in serializer.validated_data.items():
