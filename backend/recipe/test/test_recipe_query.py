@@ -3,6 +3,9 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
 
+from recipe.models import Recipe
+from user.models import User
+
 from .factory import RecipeFactory, UserFactory
 
 
@@ -19,6 +22,11 @@ class RecipeQueryTest(APITestCase):
             course=['main', 'appetizer'], cuisine=['chinese', 'korean'])
         self.recipe_3 = RecipeFactory.create()
 
+    @classmethod
+    def tearDown(self):
+        User.objects.all().delete()
+        Recipe.objects.all().delete()
+        
     def test_query(self):
         #no query params
         response = self.client.get(self.recipe_query_url)

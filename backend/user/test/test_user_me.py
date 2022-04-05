@@ -22,6 +22,10 @@ class UserMeTest(APITestCase):
         refresh = RefreshToken.for_user(user)
         self.token = refresh.access_token
 
+    @classmethod
+    def tearDown(self):
+        User.objects.all().delete()
+        
     def test_get_me(self):
         response = self.client.get(
             self.me_url, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})

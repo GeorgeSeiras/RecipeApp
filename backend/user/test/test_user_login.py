@@ -18,6 +18,10 @@ class UserLoginTest(APITestCase):
         self.client = APIClient()
         self.login_url = reverse('token_obtain_pair')
 
+    @classmethod
+    def tearDown(self):
+        User.objects.all().delete()
+        
     def test_login(self):
         data = {
             "username": self.user_object.username,

@@ -1,4 +1,3 @@
-from random import randrange
 from factory import django, Faker, SubFactory, post_generation
 
 from user.test.factory import UserFactory

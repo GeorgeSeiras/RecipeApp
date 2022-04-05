@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase, APIClient
 import json
 from rest_framework_simplejwt.tokens import RefreshToken
 
-
+from recipe.models import Recipe
 from recipe.test.factory import RecipeFactory
 from user.models import User
 from image.models import RecipeImage
@@ -16,9 +16,12 @@ class RecipeImageTest(APITestCase):
     @classmethod
     def setUp(self):
         self.recipe = RecipeFactory.create()
+        self.recipe_2 = RecipeFactory.create()
         self.client = APIClient()
-        self.create_user_image_url = reverse(
+        self.create_recipe_image_url = reverse(
             'image-recipe', kwargs={'recipe_id': self.recipe.id})
+        self.create_recipe_image_url_2 = reverse(
+            'image-recipe', kwargs={'recipe_id': self.recipe_2.id})
         user = User.objects.get(username=self.recipe.user.username)
         refresh = RefreshToken.for_user(user)
         self.token = refresh.access_token
@@ -32,11 +35,17 @@ class RecipeImageTest(APITestCase):
             self.images.append(SimpleUploadedFile(
                 'small.gif', image, content_type='image/gif'))
 
+    @classmethod
+    def tearDown(self):
+        User.objects.all().delete()
+        Recipe.objects.all().delete()
+        RecipeImage.objects.all().delete()
+     
     def test_create_recipe_thumbnail(self):
         payload = {'images[0].image': self.images[0],
                    'images[0].type': 'THUMBNAIL'}
         response = self.client.put(
-            self.create_user_image_url, payload, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
+            self.create_recipe_image_url, payload, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         thumbnail = json.loads(response.content)['result']
         self.assertEqual(len(thumbnail), 1)
@@ -50,7 +59,7 @@ class RecipeImageTest(APITestCase):
                    'images[1].image': self.images[1],
                    'images[1].type': 'GALLERY'}
         response = self.client.put(
-            self.create_user_image_url, payload, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
+            self.create_recipe_image_url, payload, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         gallery = json.loads(response.content)['result']
         self.assertEqual(len(gallery), 2)
@@ -61,7 +70,7 @@ class RecipeImageTest(APITestCase):
         self.assertEqual(gallery[1]['image'], image_created[1].image)
 
     def test_create_recipe_images_no_credentials(self):
-        response = self.client.put(self.create_user_image_url)
+        response = self.client.put(self.create_recipe_image_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_create_recipe_images_wrong_payload(self):
@@ -70,7 +79,7 @@ class RecipeImageTest(APITestCase):
                    'images[1]': self.images[1],
                    'images[1]': 'GALLERY'}
         response = self.client.put(
-            self.create_user_image_url, payload, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
+            self.create_recipe_image_url, payload, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(json.loads(response.content)[
                          'message'], 'Image or type is missing')
@@ -79,7 +88,12 @@ class RecipeImageTest(APITestCase):
         payload = {'images[0].image': self.images[0],
                    'images[0]': 'GALLERY'}
         response = self.client.put(
-            self.create_user_image_url, payload, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
+            self.create_recipe_image_url, payload, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(json.loads(response.content)[
                          'message'], 'Image or type is missing')
+
+    def create_recipe_other_users_recipe(self):
+        response = self.client.put(
+            self.create_recipe_image_url_2, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

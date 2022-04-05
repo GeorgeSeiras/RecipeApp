@@ -2,7 +2,7 @@ from factory import django, Faker, SubFactory, LazyAttribute
 from django.contrib.auth.hashers import make_password
 
 from user.models import User
-from image.test.factory import UserImageFactory
+from image.test.factory_user import UserImageFactory
 
 
 class UserFactory(django.DjangoModelFactory):

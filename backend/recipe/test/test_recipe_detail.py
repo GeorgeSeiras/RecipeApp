@@ -2,9 +2,9 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
-from factory.fuzzy import FuzzyText
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from recipe.models import Recipe
 from user.models import User
 from .factory import UserFactory, RecipeFactory
 
@@ -27,6 +27,11 @@ class RecipeDetailTest(APITestCase):
         self.recipe_detail_not_exist_url = reverse(
             'recipe-detail', kwargs={'pk': self.recipe.id + 14123})
 
+    @classmethod
+    def tearDown(self):
+        User.objects.all().delete()
+        Recipe.objects.all().delete()
+        
     def test_get_recipe(self):
         response = self.client.get(self.recipe_detail_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

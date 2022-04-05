@@ -22,7 +22,11 @@ class RecipeCreateTest(APITestCase):
         user = User.objects.get(username=self.user_object.username)
         refresh = RefreshToken.for_user(user)
         self.token = refresh.access_token
-
+    @classmethod
+    def tearDown(self):
+        User.objects.all().delete()
+        Recipe.objects.all().delete()
+        
     def test_create_recipe(self):
         payload = {
             "title": "testrecipe",

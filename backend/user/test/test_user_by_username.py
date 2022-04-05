@@ -22,6 +22,10 @@ class UserMeTest(APITestCase):
         self.user_by_username_url = reverse('user-by-username', kwargs={'username':self.user_object.username})
         self.user_by_username_not_exists_url = reverse('user-by-username', kwargs={'username':self.user_object.username+'asdasd'})
 
+    @classmethod
+    def tearDown(self):
+        User.objects.all().delete()
+        
     def get_user_by_username(self):
         response = self.client.get(self.user_by_username_url)
         self.assertEqual(response.status_code,status.HTTP_200_OK)

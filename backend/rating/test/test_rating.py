@@ -38,6 +38,12 @@ class RatingTest(APITestCase):
         refresh_2 = RefreshToken.for_user(self.user_2)
         self.token_2 = refresh_2.access_token
 
+    @classmethod
+    def tearDown(self):
+        User.objects.all().delete()
+        Recipe.objects.all().delete()
+        Rating.objects.all().delete()
+     
     def test_get_rating(self):
         response = self.client.get(
             self.rating_url_2, **{'HTTP_AUTHORIZATION': f'Bearer {self.token_2}'})

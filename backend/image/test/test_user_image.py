@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
 from rest_framework_simplejwt.tokens import RefreshToken
+from backend.image.models import UserImage
 
 
 from user.test.factory import UserFactory
@@ -21,6 +22,11 @@ class UserImageTest(APITestCase):
         refresh = RefreshToken.for_user(user)
         self.token = refresh.access_token
 
+    @classmethod
+    def tearDown(self):
+        User.objects.all().delete()
+        UserImage.objects.all().delete()
+     
     def test_create_user_image(self):
         original_image = self.user.image.image
         image = (

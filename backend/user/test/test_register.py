@@ -16,6 +16,10 @@ class UserRegisterTest(APITestCase):
         self.client = APIClient()
         self.signup_url = reverse('user-register')
 
+    @classmethod
+    def tearDown(self):
+        User.objects.all().delete()
+        
     def test_register_user(self):
         data = {
             'username': self.user_object.username,

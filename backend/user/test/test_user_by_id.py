@@ -22,6 +22,10 @@ class UserMeTest(APITestCase):
         self.user_by_id_exists_url = reverse('user-by-id',kwargs={'pk': self.user_object.id})
         self.user_by_id_not_exists_url = reverse('user-by-id',kwargs={'pk': self.user_object.id + 1})
 
+    @classmethod
+    def tearDown(self):
+        User.objects.all().delete()
+        
     def test_get_user_by_id(self):
         response = self.client.get(self.user_by_id_exists_url)
         self.assertEqual(response.status_code,status.HTTP_200_OK)

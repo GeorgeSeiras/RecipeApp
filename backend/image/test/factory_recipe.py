@@ -1,13 +1,14 @@
 from factory import django, LazyAttribute
 from django.core.files.base import ContentFile
+from factory import SubFactory
 
-from image.models import UserImage
+from recipe.test.factory import RecipeFactory
+from image.models import RecipeImage
 
-
-class UserImageFactory(django.DjangoModelFactory):
+class RecipeImageFactory(django.DjangoModelFactory):
     class Meta:
-        model = UserImage
-        
+        model = RecipeImage
+
     image = LazyAttribute(
         lambda _: ContentFile(
             django.ImageField()._make_data(
@@ -15,3 +16,5 @@ class UserImageFactory(django.DjangoModelFactory):
             ), 'example.jpg'
         )
     )
+    type = 'GALLERY'
+    recipe = SubFactory(RecipeFactory)

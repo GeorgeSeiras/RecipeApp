@@ -22,6 +22,10 @@ class UserMeTest(APITestCase):
         refresh = RefreshToken.for_user(user)
         self.token = refresh.access_token
 
+    @classmethod
+    def tearDown(self):
+        User.objects.all().delete()
+        
     def test_change_password(self):
         data = {
             'password': self.password,

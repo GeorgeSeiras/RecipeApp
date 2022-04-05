@@ -31,6 +31,12 @@ class RatingTest(APITestCase):
         self.rating_url_not_exist = reverse(
             'rating-average', kwargs={'recipe_id': self.recipe.id+1231})
 
+    @classmethod
+    def tearDown(self):
+        User.objects.all().delete()
+        Recipe.objects.all().delete()
+        Rating.objects.all().delete()
+        
     def test_get_rating_avg(self):
         response = self.client.get(self.rating_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
