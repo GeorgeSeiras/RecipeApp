@@ -1,4 +1,4 @@
-from factory import django, SubFactory, Faker, LazyAttribute
+from factory import django, SubFactory, Faker, django
 
 from comment.models import  Comment
 from recipe.test.factory import RecipeFactory
