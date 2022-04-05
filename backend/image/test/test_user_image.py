@@ -28,19 +28,32 @@ class RecipeCreateTest(APITestCase):
             b'\x01\x0a\x00\x01\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02'
             b'\x02\x4c\x01\x00\x3b'
         )
-        uploaded = SimpleUploadedFile('small.gif', image, content_type='image/gif')        
+        uploaded = SimpleUploadedFile(
+            'small.gif', image, content_type='image/gif')
         response = self.client.put(
             self.create_user_image_url, {'image': uploaded}, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = json.loads(response.content)['result']
-        self.assertNotEqual(data['image']['image'],original_image)
+        self.assertNotEqual(data['image']['image'], original_image)
 
     def test_create_user_image_no_file(self):
         response = self.client.put(
-            self.create_user_image_url, {'image': 'something'}, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'}) 
-        self.assertEqual(response.status_code,status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(json.loads(response.content)['image'],["The submitted data was not a file. Check the encoding type on the form."])
+            self.create_user_image_url, {'image': 'something'}, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(json.loads(response.content)['image'], [
+                         "The submitted data was not a file. Check the encoding type on the form."])
 
     def test_create_user_image_no_credentials(self):
         response = self.client.put(self.create_user_image_url)
-        self.assertEqual(response.status_code,status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_user_image(self):
+        response = self.client.delete(
+            self.create_user_image_url, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user = User.objects.get(username=self.user.username)
+        self.assertEqual(user.image, None)
+
+    def test_delete_user_image_no_credentials(self):
+        response = self.client.delete(self.create_user_image_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
