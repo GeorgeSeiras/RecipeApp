@@ -5,7 +5,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('list', views.ListCreate.as_view()),
+    path('list', views.ListCreate.as_view(),name='list-create'),
     path('list/<int:list_id>', views.ListDetail.as_view()),
     path('lists/recipe/<int:recipe_id>',views.UserListsWithRecipe.as_view()),
     path('list/<int:list_id>/recipes', views.ListRecipes.as_view()),

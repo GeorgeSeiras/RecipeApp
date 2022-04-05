@@ -2,15 +2,12 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
-from factory.fuzzy import FuzzyText
-from factory import Faker
 
 from .factory import UserFactory
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.models import User
 from recipe.models import Recipe
-
 
 class RecipeCreateTest(APITestCase):
 
@@ -22,6 +19,7 @@ class RecipeCreateTest(APITestCase):
         user = User.objects.get(username=self.user_object.username)
         refresh = RefreshToken.for_user(user)
         self.token = refresh.access_token
+        
     @classmethod
     def tearDown(self):
         User.objects.all().delete()

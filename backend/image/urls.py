@@ -6,8 +6,10 @@ from . import views
 urlpatterns = [
     path("image/user", views.UserImageView.as_view(), name='image-user'),
     path("recipe/image/<int:image_id>", views.RecipeImageDetail.as_view()),
-    path("recipe/<int:recipe_id>/image", views.RecipeImageView.as_view(),name='image-recipe'),
-    path("recipe/<int:recipe_id>/images", views.RecipeImagesView.as_view(), name='images-recipe'),
+    path("recipe/<int:recipe_id>/image",
+         views.RecipeImageView.as_view(), name='image-recipe'),
+    path("recipe/<int:recipe_id>/images",
+         views.RecipeImagesView.as_view(), name='images-recipe'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
