@@ -28,6 +28,7 @@ class RecipeImageTest(APITestCase):
     @classmethod
     def teadDown(self):
         Recipe.objects.all().delete()
+        User.objects.all().delete()
 
     def test_create_comment(self):
         payload = {

@@ -10,6 +10,5 @@ class CommentFactory(django.DjangoModelFactory):
 
     user = SubFactory(UserFactory)
     recipe = SubFactory(RecipeFactory)
-    text = Faker('lorem')
-    parent = SubFactory('comment.test.factory.CommentFactory')
+    text = Faker('paragraph')
     deleted = False
