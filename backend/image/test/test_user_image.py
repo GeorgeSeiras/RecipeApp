@@ -10,7 +10,7 @@ from user.test.factory import UserFactory
 from user.models import User
 
 
-class RecipeCreateTest(APITestCase):
+class UserImageTest(APITestCase):
 
     @classmethod
     def setUp(self):
