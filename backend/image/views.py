@@ -40,7 +40,7 @@ class RecipeImageView(APIView):
             images_list = []
             for i in range(0, len(request.data)//2):
                 if not ('images['+str(i)+'].image' in request.data
-                        or 'images['+str(i)+'].type' in request.data):
+                        and 'images['+str(i)+'].type' in request.data):
                     raise CustomException(
                         'Image or type is missing', status.HTTP_400_BAD_REQUEST
                     )
