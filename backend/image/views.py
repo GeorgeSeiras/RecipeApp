@@ -123,6 +123,5 @@ class RecipeImagesView(APIView):
                     {"message':'Cannot edit another user's recipe"})
             serializer = DeleteRecipeImagesSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            print(serializer.validated_data['images'])
             RecipeImage.objects.filter(id__in=serializer.validated_data['images']).delete()
             return JsonResponse({"result": 'ok'})
