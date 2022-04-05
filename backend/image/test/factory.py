@@ -7,6 +7,7 @@ from image.models import UserImage
 class UserImageFactory(django.DjangoModelFactory):
     class Meta:
         model = UserImage
+        
     image = LazyAttribute(
         lambda _: ContentFile(
             django.ImageField()._make_data(
