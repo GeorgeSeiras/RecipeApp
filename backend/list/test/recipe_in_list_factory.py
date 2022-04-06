@@ -1,4 +1,6 @@
 from factory import django, Faker, SubFactory
+from list.test.list_factory import ListFactory
+from recipe.test.factory import RecipeFactory
 
 from list.models import RecipesInList
 from user.test.factory import UserFactory
@@ -7,7 +9,6 @@ from user.test.factory import UserFactory
 class RecipeInListFactory(django.DjangoModelFactory):
     class Meta:
         model = RecipesInList
-        django_get_or_create = ('user', 'list')
 
-    user = 'user'
-    list = 'list'
+    recipe = SubFactory(RecipeFactory)
+    list = SubFactory(ListFactory)

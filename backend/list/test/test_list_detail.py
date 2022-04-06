@@ -11,7 +11,7 @@ from user.models import User
 from list.models import List
 
 
-class RecipeCreateTest(APITestCase):
+class ListDetailTest(APITestCase):
 
     @classmethod
     def setUp(self):

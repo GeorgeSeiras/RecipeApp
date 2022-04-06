@@ -8,7 +8,6 @@ fake=FakerClass()
 class ListFactory(django.DjangoModelFactory):
     class Meta:
         model = List
-        django_get_or_create = ('user',)
 
     user = SubFactory(UserFactory)
     name= LazyAttribute(lambda n: fake.word()[:10])

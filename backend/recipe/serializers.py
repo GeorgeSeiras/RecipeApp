@@ -94,5 +94,4 @@ class RecipesQuerySerializer(serializers.Serializer):
     title = serializers.CharField(required=False)
     cuisine = serializers.CharField(required=False)
     course = serializers.CharField(required=False)
-    rating = serializers.ChoiceField(choices=query_rating_choices, required=False)
     sort = serializers.ChoiceField(choices=sort_choices, required=False)

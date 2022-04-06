@@ -7,8 +7,8 @@ from . import views
 urlpatterns = [
     path('list', views.ListCreate.as_view(),name='list-create'),
     path('list/<int:list_id>', views.ListDetail.as_view(),name='list-detail'),
-    path('lists/recipe/<int:recipe_id>',views.UserListsWithRecipe.as_view()),
-    path('list/<int:list_id>/recipes', views.ListRecipes.as_view()),
+    path('lists/recipe/<int:recipe_id>',views.UserListsWithRecipe.as_view(),name='lists-with-recipe'),
+    path('list/<int:list_id>/recipes', views.ListRecipes.as_view(),name='list-get-recipes'),
     path('list/<int:list_id>/recipe/<int:recipe_id>', views.ListRecipe.as_view())
 
 ]

@@ -139,6 +139,10 @@ class ListRecipe(APIView):
 class ListRecipes(APIView, myPagination):
 
     def get(self, request, list_id):
+        try:
+            List.objects.get(id=list_id)
+        except List.DoesNotExist:
+            raise NotFound('List not found')
         serializer = RecipesQuerySerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         choices = {value: key for key, value in sort_choices}
