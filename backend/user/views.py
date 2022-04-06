@@ -15,18 +15,6 @@ from .serializers import UserSerializer, UserSerializerNoPassword, UserPatchSeri
 from backend.decorators import user_required, admin_required
 from utils.custom_exceptions import CustomException
 
-
-class UserList(APIView, LimitOffsetPagination):
-    serializer_class = UserSerializerNoPassword
-
-    def get(self, request, format=None):
-        users = User.objects.all()
-        paginated_queryset = self.paginate_queryset(users, request)
-        users_list = User.users_to_list(paginated_queryset)
-        paginated_result = self.get_paginated_response(users_list)
-        return paginated_result
-
-
 class UserByUsername(APIView):
 
     def get(self, request, username):

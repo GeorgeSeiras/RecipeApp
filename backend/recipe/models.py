@@ -70,7 +70,7 @@ class Recipe(models.Model):
     updated_at = models.DateTimeField(
         auto_now=True
     )
-    steps = ArrayField(models.CharField(max_length=200))
+    steps = ArrayField(models.CharField(max_length=400))
     hit_count_generic = GenericRelation(
         HitCount,object_id_field='object_pk',
         related_query_name='hit_count_generic_relation'
