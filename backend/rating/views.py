@@ -84,8 +84,8 @@ class RecipeRatingAverage(APIView):
         with transaction.atomic():
             try:
                 recipe = Recipe.objects.get(pk=recipe_id)
-            except Recipe.DoesNotExist():
-                raise NotFound({'message': 'Recipe does not exist'})
+            except Recipe.DoesNotExist:
+                raise NotFound({'message': 'Recipe not found'})
             rating_avg = Rating.objects.filter(
                 recipe=recipe_id).aggregate(Avg('rating'))
             return JsonResponse({'result':  rating_avg})

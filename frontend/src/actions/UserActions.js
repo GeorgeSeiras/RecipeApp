@@ -31,7 +31,7 @@ export async function editUser(dispatch, payload, token) {
     };
 
     try {
-        let response = await fetch(`${API_URL}/user`, requestOptions);
+        let response = await fetch(`${API_URL}/user/me`, requestOptions);
         let data = await response.json();
         if (data?.result) {
             dispatch({ type: 'EDIT_USER', payload: data.result })

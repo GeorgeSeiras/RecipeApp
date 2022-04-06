@@ -5,7 +5,6 @@ from django.db.models import Q
 from django.http.response import JsonResponse
 from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework.pagination import LimitOffsetPagination
 
@@ -18,41 +17,14 @@ from utils.custom_exceptions import CustomException
 
 
 class UserList(APIView, LimitOffsetPagination):
-    permission_classes = [IsAuthenticated]
     serializer_class = UserSerializerNoPassword
 
-    @admin_required
     def get(self, request, format=None):
         users = User.objects.all()
         paginated_queryset = self.paginate_queryset(users, request)
         users_list = User.users_to_list(paginated_queryset)
         paginated_result = self.get_paginated_response(users_list)
         return paginated_result
-
-    @user_required
-    def patch(self, request):
-        try:
-            with transaction.atomic():
-                user = User.objects.get(username=request.user)
-                serializer = UserPatchSerializer(data=request.data)
-                serializer.is_valid(raise_exception=True)
-                username = serializer.validated_data.get('username', None)
-                email = serializer.validated_data.get('email', None)
-                query = Q()
-                if username != None:
-                    query |= Q(username__icontains=username)
-                if email != None:
-                    query |= Q(email__icontains=email)
-                user_found = User.objects.filter(query)
-                if len(user_found) > 0:
-                    raise CustomException(
-                        'User with this username and/or email already exists', status.HTTP_400_BAD_REQUEST)
-                for key, value in serializer.validated_data.items():
-                    setattr(user, key, value)
-                user.save()
-                return JsonResponse({'result': user.to_dict()})
-        except User.DoesNotExist:
-            raise NotFound({'message': 'User not found'})
 
 
 class UserByUsername(APIView):
@@ -83,7 +55,7 @@ class UserDetail(APIView):
                     raise PermissionDenied(
                         {"Cannot delete another user's acount"})
                 user.delete()
-                return JsonResponse(status=status.HTTP_200_OK)
+                return JsonResponse({'result':'ok'},status=status.HTTP_200_OK)
         except User.DoesNotExist:
             raise NotFound({"message": "User not found"})
 
@@ -91,8 +63,15 @@ class UserDetail(APIView):
 class UserRegister(APIView):
     def post(self, request, format=None):
         with transaction.atomic():
+            if not 'password' in request.data.keys():
+                raise CustomException(
+                    'Password required', 400)
+            if len(request.data['password']) < 8:
+                raise CustomException(
+                    'Password must be atleast 8 characters long', 400)
             password = make_password(request.data['password'])
-            serializer = UserSerializer(data={**request.data,'password':password})
+            serializer = UserSerializer(
+                data={**request.data, 'password': password})
             serializer.is_valid(raise_exception=True)
             serializer.save()
             res = serializer.data
@@ -138,6 +117,31 @@ class UserMe(APIView):
         except User.DoesNotExist:
             raise NotFound({"message": "User not found"})
         return JsonResponse({'user': user.to_dict()})
+
+    @user_required
+    def patch(self, request):
+        try:
+            with transaction.atomic():
+                user = User.objects.get(username=request.user)
+                serializer = UserPatchSerializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
+                username = serializer.validated_data.get('username', None)
+                email = serializer.validated_data.get('email', None)
+                query = Q()
+                if username != None:
+                    query |= Q(username__icontains=username)
+                if email != None:
+                    query |= Q(email__icontains=email)
+                user_found = User.objects.filter(query)
+                if len(user_found) > 0:
+                    raise CustomException(
+                        'User with this username and/or email already exists', status.HTTP_400_BAD_REQUEST)
+                for key, value in serializer.validated_data.items():
+                    setattr(user, key, value)
+                user.save()
+                return JsonResponse({'result': user.to_dict()})
+        except User.DoesNotExist:
+            raise NotFound({'message': 'User not found'})
 
 
 class ChangePassword(APIView):

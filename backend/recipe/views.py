@@ -59,7 +59,7 @@ class RecipeDetail(APIView):
                 raise NotFound({"message": "Recipe not found"})
             if recipe.user.username != str(request.user):
                 raise PermissionDenied(
-                    {"You cannot modify another user's recipe"})
+                    "You cannot modify another user's recipe")
             serializer = RecipePatchSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             for key, value in serializer.validated_data.items():
@@ -79,7 +79,6 @@ class RecipeDetail(APIView):
 
     @user_required
     def delete(self, request, pk):
-        print(pk)
         try:
             recipe = Recipe.objects.get(pk=pk)
         except Recipe.DoesNotExist:
@@ -213,7 +212,7 @@ class RecipeCommentsView(APIView, myPagination):
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
         except Recipe.DoesNotExist:
-            raise NotFound({"message": "Recipe does not exist"})
+            raise NotFound({"message": "Recipe not found"})
         comments = Comment.objects.filter(recipe=recipe).order_by('-id')
         objects = Comment.comments_to_list_sorted(comments)
         page = self.paginate_queryset(objects, request)
