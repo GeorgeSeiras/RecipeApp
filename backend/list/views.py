@@ -86,18 +86,18 @@ class ListRecipe(APIView):
             try:
                 user = User.objects.get(username=request.user)
             except User.DoesNotExist:
-                raise NotFound({'message': 'User does not exist'})
+                raise NotFound({'message': 'User not found'})
             try:
                 list = List.objects.get(pk=list_id)
             except List.DoesNotExist:
-                raise NotFound({'message': 'List does not exist'})
+                raise NotFound({'message': 'List not found'})
             if(user != list.user):
                 raise PermissionDenied(
-                    {"message':'You cannot edit another user's lists"})
+                    {"message":"You cannot edit another user's lists"})
             try:
                 recipe = Recipe.objects.get(pk=recipe_id)
             except Recipe.DoesNotExist:
-                raise NotFound({'message': 'Recipe does not exist'})
+                raise NotFound({'message': 'Recipe not found'})
             try:
                 list_exists = RecipesInList.objects.get(
                     list=list, recipe=recipe)
@@ -123,7 +123,7 @@ class ListRecipe(APIView):
                 raise NotFound({'message': 'List not found'})
             if(user != list.user):
                 raise PermissionDenied(
-                    {"message':'You cannot edit another user's lists"})
+                    {"message":"You cannot edit another user's lists"})
             try:
                 recipe = Recipe.objects.get(pk=recipe_id)
             except Recipe.DoesNotExist:
