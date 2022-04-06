@@ -15,7 +15,7 @@ urlpatterns = [
          views.IngredientCreate.as_view()),
     path('recipe/<int:recipe_id>/step', views.StepCreateView.as_view()),
     path('recipe/<int:recipe_id>/comments',
-         views.RecipeCommentsView.as_view()),
+         views.RecipeCommentsView.as_view(), name='recipe-comments'),
     path('recipe/<int:recipe_id>/ingredient/<int:ingr_id>',
          views.IngredientDetail.as_view())
 ]
