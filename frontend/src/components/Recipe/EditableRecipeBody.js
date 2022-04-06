@@ -85,7 +85,7 @@ export default function EditableRecipeBody(props) {
                                             onChange={(e) => updateArray(e.target.parentNode.parentNode.id, e.target.value, props.course, props.setCourse)} />
                                     </Col>
                                     <Col>
-                                        <Button onClick={((e) => { removeRowFromArray(e.target.parentNode.id, props.course, props.setCourse) })}
+                                        <Button onClick={((e) => { removeRowFromArray(e.target.parentNode.parentNode.id, props.course, props.setCourse) })}
                                             variant="outline-danger">
                                             x
                                         </Button>
@@ -120,7 +120,7 @@ export default function EditableRecipeBody(props) {
                                             onChange={(e) => updateArray(e.target.parentNode.parentNode.id, e.target.value, props.cuisine, props.setCuisine)} />
                                     </Col>
                                     <Col>
-                                        <Button onClick={((e) => { removeRowFromArray(e.target.parentNode.id, props.cuisine, props.setCuisine) })}
+                                        <Button onClick={((e) => { removeRowFromArray(e.target.parentNode.parentNode.id, props.cuisine, props.setCuisine) })}
                                             variant="outline-danger">
                                             x
                                         </Button>
