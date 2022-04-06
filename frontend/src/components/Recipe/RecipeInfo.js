@@ -25,7 +25,6 @@ export default function RecipeInfo(props) {
     return (
         <div>
             <Container >
-
                 <Row xs="auto">
                     <Col style={{
                         margin: "auto",
@@ -51,7 +50,7 @@ export default function RecipeInfo(props) {
                         {props.recipe?.course &&
                             props.recipe?.course.map((course, index) => {
                                 return (
-                                    <Col style={{paddingLeft:"0"}}>
+                                    <Col key={index} style={{paddingLeft:"0"}}>
                                         <Badge pill bg='primary'>
                                             {course}
                                         </Badge>
@@ -70,7 +69,7 @@ export default function RecipeInfo(props) {
 
                             props.recipe?.cuisine.map((cuisine, index) => {
                                 return (
-                                    <Col style={{paddingLeft:"0"}}>
+                                    <Col key={index} style={{paddingLeft:"0"}}>
                                         <Badge pill bg='primary'>
                                             {cuisine}
                                         </Badge>

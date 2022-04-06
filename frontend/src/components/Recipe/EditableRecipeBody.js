@@ -61,7 +61,7 @@ export default function EditableRecipeBody(props) {
 
             <Form.Group className='mb-3'>
                 <Form.Label>Description</Form.Label>
-                <Form.Control as="textarea" rows={9} maxLength='500'
+                <Form.Control as="textarea" rows={9} maxLength='1000'
                     type="text"
                     placeholder="Description"
                     value={props.description}
@@ -268,7 +268,9 @@ export default function EditableRecipeBody(props) {
                                     </td>
                                     <td key={1}>
                                         <Form.Control
-                                            maxLength='200'
+                                            as='textarea'
+                                            rows={3}
+                                            maxLength='400'
                                             type="text"
                                             placeholder="step"
                                             value={step}

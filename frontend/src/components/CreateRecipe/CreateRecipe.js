@@ -117,10 +117,6 @@ export default function CreateRecipe() {
             form.append(`images[${index}].type`, value['type'])
 
         })
-        for (var pair of form.entries()) {
-            console.log(pair[0] + ', ' + pair[1])
-        }
-       
         
         const recipeResponse = await createRecipe(dispatch, payload, userData.user.token.key);
         if (recipeResponse?.result) {
