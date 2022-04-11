@@ -258,10 +258,12 @@ export default function EditableRecipeBody(props) {
                     </thead>
                     <tbody>
                         {props.steps?.map((step, index) => {
+                            console.log(index)
                             return (
                                 <tr key={index} id={index} >
-                                    <td key={0} style={{ width: '1em' }}>
+                                    <td key={0} style={{ width: '60px' }}>
                                         <Form.Control
+                                            style={{ textAlign: 'center' }}
                                             readOnly='readonly'
                                             type="text"
                                             value={index} />

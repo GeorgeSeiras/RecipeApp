@@ -11,16 +11,16 @@ export default function UserInfo(props) {
     const [avatar, setAvatar] = useState();
     const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
     useEffect(() => {
-        if (props.user?.image) {
+        if (props?.user?.image) {
             setAvatar(MEDIA_URL + props.user.image.image);
         } else {
             setAvatar(NO_AVATAR);
         }
-    }, [props.user,MEDIA_URL])
+    }, [props?.user,MEDIA_URL])
 
     return (
         <div>
-            {props.user &&
+            {props?.user &&
                 <Container style={{paddingTop:'1em'}}>
                     <Row>
                         <Col style={{
