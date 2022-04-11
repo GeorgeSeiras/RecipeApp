@@ -188,3 +188,7 @@ export async function deleteRecipeImages(dispatch, payload, token, recipeId) {
 export function updateRecipeState(dispatch, recipe) {
     dispatch({ type: 'UPDATE_RECIPE_STATE', payload: recipe })
 }
+
+export function updateErrorMessage(dispatch,payload){
+    dispatch({type:'UPDATE_ERROR_MESSAGE',payload})
+}

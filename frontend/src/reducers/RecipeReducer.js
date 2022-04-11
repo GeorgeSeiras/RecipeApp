@@ -70,6 +70,11 @@ export const RecipeReducer = (initialState, action) => {
                 ...initialState,
                 images: action.payload.images
             };
+        case 'UPDATE_ERROR_MESSAGE':
+            return{
+                ...initialState,
+                errorMessage:action.payload
+            }
         case 'RECIPE_ERROR':
             return {
                 ...initialState,

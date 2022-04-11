@@ -25,7 +25,7 @@ export default function CreateRecipe() {
     const [course, setCourse] = useState(['']);
     const [cuisine, setCuisine] = useState(['']);
     const {addError} = useError();
-
+    
     const [state, dispatch] = useReducer(RecipeReducer);
 
     const userData = useContext(UserContext);
@@ -125,9 +125,9 @@ export default function CreateRecipe() {
                 navigate(`/recipe/${recipeResponse.result.recipe.id}`)
             } else {
                 const deleteResponse = await deleteRecipe(dispatch, recipeResponse.result.recipe.id, userData.user.token.key)
-                if (deleteResponse?.status === 'ok') {
-                    //show error message about problem with the images
-                    console.log('Recipe deleted')
+                if (deleteResponse?.result) {
+                    addError({'message':'Something went wrong while uploading your images. Check your images file extension'})
+                    window.scrollTo(0,0)
                 }
             }
         }

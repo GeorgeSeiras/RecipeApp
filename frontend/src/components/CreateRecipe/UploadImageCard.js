@@ -71,14 +71,14 @@ export default function ImageUploadCard(props) {
                     }
                 }
             } else if (props.type === 'many') {
-                props?.images.forEach((image)=>{
+                props?.images.forEach((image) => {
                     if (!image) {
-                        setImages(images=>[...images,plus_sign]);
+                        setImages(images => [...images, plus_sign]);
                     } else {
-                        if ( image instanceof File) {
-                            setImages(images=>[...images,URL.createObjectURL(image)]);
+                        if (image instanceof File) {
+                            setImages(images => [...images, URL.createObjectURL(image)]);
                         } else {
-                            setImages(images=>[...images,`${MEDIA_URL}${image}`])
+                            setImages(images => [...images, `${MEDIA_URL}${image}`])
                         }
                     }
                 })
@@ -96,7 +96,7 @@ export default function ImageUploadCard(props) {
                     paddingLeft: '0',
                     marginLeft: '0',
                 }}>
-                    <Col id={0} style={{paddingLeft:'0'}}>
+                    <Col id={0} style={{ paddingLeft: '0' }}>
                         <Image
                             style={{
                                 width: '12em',
@@ -126,11 +126,13 @@ export default function ImageUploadCard(props) {
                                     }}>X</Button>
                             </Container>
                         }
-                        <Form.Control
-                            type="file"
-                            ref={hiddenInputs[0]}
-                            onChange={(e) => uploadImage(e)}
-                            style={{ display: 'none' }} />
+                        <Form.Group>
+                            <Form.Control
+                                type="file"
+                                accept=".png,.jpg,.jpeg,.webp" ref={hiddenInputs[0]}
+                                onChange={(e) => uploadImage(e)}
+                                style={{ display: 'none' }} />
+                        </Form.Group>
                     </Col>
 
                 </Container>}
@@ -143,7 +145,7 @@ export default function ImageUploadCard(props) {
                                 paddingLeft: '0',
                                 paddingTop: '1em',
                                 display: 'table-cell',
-                                maxWidth:'13em'
+                                maxWidth: '13em'
                             }}>
                             <Container style={{
                                 position: 'relative',
