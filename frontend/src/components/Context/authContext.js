@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         (async () => {
-            if (user.token) {
+            if (user?.token) {
                 const requestOptions = {
                     method: 'GET',
                     headers: {
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = (data) => {
         setUser((user) => ({
-            token: data.token,
+            token: cookies.get('token'),
             user: data.user,
             isAuth: true
         }));

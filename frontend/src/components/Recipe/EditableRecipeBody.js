@@ -258,7 +258,6 @@ export default function EditableRecipeBody(props) {
                     </thead>
                     <tbody>
                         {props.steps?.map((step, index) => {
-                            console.log(index)
                             return (
                                 <tr key={index} id={index} >
                                     <td key={0} style={{ width: '60px' }}>

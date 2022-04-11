@@ -6,9 +6,9 @@ import Form from 'react-bootstrap/Form';
 
 import EditableRecipeBody from './EditableRecipeBody';
 import { updateRecipe, deleteRecipeImages, updateRecipeState } from '../../actions/RecipeActions';
-import { RecipeReducer } from '../../reducers/RecipeReducer';
 import { uploadRecipeImages } from '../../actions/RecipeActions';
 import { UserContext } from '../Context/authContext';
+import useError from '../ErrorHandler/ErrorHandler';
 
 export default function EditRecipe(props) {
 
@@ -26,6 +26,7 @@ export default function EditRecipe(props) {
     const [course, setCourse] = useState(props?.recipe?.course || ['']);
     const [cuisine, setCuisine] = useState(props?.recipe?.cuisine || ['']);
     const [show, setShow] = useState(false);
+    const {addError} = useError();
 
     const userData = useContext(UserContext);
 
@@ -139,13 +140,13 @@ export default function EditRecipe(props) {
         if (toDelete.length > 0) {
             const deleteImagesResponse = await deleteRecipeImages(props.dispatch, { 'images': toDelete }, userData.user.token.key, props.recipe.id);
             if (!deleteImagesResponse?.result) {
-                console.log('Error while modifying images')
+                addError('Error while modifying images')
             }
         }
         const imageResponse = await uploadRecipeImages(props.dispatch, form, userData.user.token.key, props.recipe.id);
         const recipeResponse = await updateRecipe(props.dispatch, payload, userData.user.token.key, props.recipe.id);
         if (!imageResponse?.result) {
-            console.log('Error while modifying images')
+           addError('Error while modifying images')
         }
         if (recipeResponse?.result) {
             setShow(false)

@@ -13,7 +13,7 @@ export async function userLogin(dispatch, payload, remember) {
     try {
         const response = await fetch(`${API_URL}/token/`, requestOptions);
         const data = await response.json();
-        if (data.access) {
+        if (data?.access) {
             dispatch({ type: 'LOGIN', payload: data.access })
             var expires = null;
             if (remember) {
@@ -26,7 +26,7 @@ export async function userLogin(dispatch, payload, remember) {
                 {
                     path: '/',
                     httpOnly: false,
-                    sameSite: 'lax',
+                    sameSite: 'strict',
                     expires: expires
                 });
             return data
