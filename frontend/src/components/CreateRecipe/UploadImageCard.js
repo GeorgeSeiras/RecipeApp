@@ -39,7 +39,9 @@ export default function ImageUploadCard(props) {
             case 'many':
                 var copy = [...props.images];
                 copy[e.target.parentNode.id] = fileUploaded;
-                copy.push(null);
+                if (copy.indexOf(null) === -1) {
+                    copy.push(null);
+                }
                 props.setImages(copy);
                 return;
             default:
