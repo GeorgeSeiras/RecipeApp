@@ -59,9 +59,9 @@ export default function ActualRecipe(props) {
                     paddingRight: '5%'
                 }}>
                     <Row>
-                        <h3 style={{ paddingTop: '2%', paddingLeft: '0', paddingRight: '0' }}>
+                        <h4 style={{ paddingTop: '2%', paddingLeft: '0', paddingRight: '0' }}>
                             {props.recipe.desc}
-                        </h3>
+                        </h4>
                     </Row>
                     <Row xs={'auto'} style={{
                         margin: 'auto',
