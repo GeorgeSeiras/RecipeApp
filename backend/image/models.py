@@ -48,26 +48,3 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
     if instance.image:
         if os.path.isfile(instance.image.path):
             os.remove(instance.image.path)
-
-
-class UserImage(models.Model):
-    image = models.ImageField(
-        upload_to=get_file_path
-    )
-
-    def to_dict(self):
-        dict = {}
-        dict['id'] = self.id
-        dict['user'] = self.user.id
-        dict['image'] = str(self.image)
-        return dict
-
-@receiver(models.signals.post_delete, sender=UserImage)
-def auto_delete_file_on_delete(sender, instance, **kwargs):
-    """
-    Deletes file from filesystem
-    when corresponding `Recipe` object is deleted.
-    """
-    if instance.image:
-        if os.path.isfile(instance.image.path):
-            os.remove(instance.image.path)

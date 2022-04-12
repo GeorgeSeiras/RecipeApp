@@ -1,11 +1,15 @@
 import os
+import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.deletion import CASCADE
 from django.dispatch.dispatcher import receiver
 from django.utils.translation import ugettext_lazy as _
 
-from image.models import UserImage
+def get_file_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return filename    
 
 
 class User(AbstractUser):
@@ -14,7 +18,10 @@ class User(AbstractUser):
         unique=True,
     )
     email = models.EmailField(_('email address'), unique=True)
-    image = models.OneToOneField(UserImage, on_delete=CASCADE, null=True)
+    image = models.ImageField(
+        upload_to=get_file_path,
+        null=True
+    )
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
@@ -31,7 +38,7 @@ class User(AbstractUser):
         dict['username'] = self.username
         dict['email'] = self.email
         if(self.image != None):
-            dict['image'] = self.image.to_dict()
+            dict['image'] = str(self.image)
         return dict
 
     def users_to_list(users):
@@ -60,3 +67,13 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
         if( hasattr(old_file,'image')):
             if os.path.isfile(old_file.image.path):
                 os.remove(old_file.image.path)
+
+@receiver(models.signals.post_delete, sender=User)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Deletes file from filesystem
+    when corresponding `Recipe` object is deleted.
+    """
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)

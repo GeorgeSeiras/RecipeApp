@@ -45,7 +45,7 @@ export default function Recipe() {
 
     useEffect(() => {
         if (state?.recipe?.user?.image) {
-            setAvatar(MEDIA_URL + state?.recipe?.user?.image?.image)
+            setAvatar(MEDIA_URL + state?.recipe?.user?.image)
         } else {
             setAvatar(NO_AVATAR)
         }

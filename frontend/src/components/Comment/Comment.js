@@ -5,7 +5,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import Nav from 'react-bootstrap/Nav';
-import Container from 'react-bootstrap/Container';
 
 import { UserContext } from '../Context/authContext';
 import CreateComment from './CreateComment';
@@ -47,7 +46,7 @@ export default function Comment(props) {
                             <Image
                                 width='30'
                                 className='img-fluid rounded-circle'
-                                src={`${MEDIA_URL}${props.comment.user?.image?.image}`}
+                                src={`${MEDIA_URL}${props.comment.user?.image}`}
                                 alt='avatar'
                             />
                         </Col>

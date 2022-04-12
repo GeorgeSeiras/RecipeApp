@@ -13,12 +13,12 @@ const Navigation = () => {
     const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
 
     useEffect(() => {
-        if (userData?.user?.user?.image?.image) {
-            setAvatar(MEDIA_URL + userData.user.user.image.image)
+        if (userData?.user?.user?.image) {
+            setAvatar(MEDIA_URL + userData.user.user.image)
         } else {
             setAvatar(NO_AVATAR)
         }
-    }, [userData?.user?.user?.image?.image, MEDIA_URL])
+    }, [userData?.user?.user?.image])
 
     return (
         <Navbar sticky='top' collapseOnSelect fixed='top' expand='sm' bg='secondary' variant='dark'>

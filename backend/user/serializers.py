@@ -1,8 +1,5 @@
 from rest_framework import serializers
 from user.models import User
-from list.models import List
-from recipe.models import Recipe
-
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,3 +27,6 @@ class ChangePasswordSerializer(serializers.Serializer):
     password = serializers.CharField()
     newPassword1 = serializers.CharField()
     newPassword2 = serializers.CharField()
+
+class UserImageSerializer(serializers.Serializer):
+    image = serializers.ImageField()

@@ -8,8 +8,8 @@ from utils.custom_exceptions import CustomException
 from backend.decorators import user_required
 from user.models import User
 from recipe.models import Recipe
-from .serializers import DeleteRecipeImagesSerializer, RecipeImageSerializer, UserImageSerializer
-from .models import RecipeImage, UserImage
+from .serializers import DeleteRecipeImagesSerializer, RecipeImageSerializer
+from .models import RecipeImage
 
 
 class RecipeImageView(APIView):
@@ -73,37 +73,6 @@ class RecipeImageDetail(APIView):
                     {"You cannot modify another user's recipe"})
             image.delete()
             return JsonResponse({"result": "ok"})
-
-
-class UserImageView(APIView):
-
-    @user_required
-    def put(self, request):
-        with transaction.atomic():
-            try:
-                user = User.objects.get(username=request.user)
-            except User.DoesNotExist:
-                raise NotFound({"message": "User not found"})
-            serializer = UserImageSerializer(
-                data={**request.data.dict(), 'user': user})
-            serializer.is_valid(raise_exception=True)
-            image = serializer.create()
-            setattr(user, 'image', image)
-            user.save()
-            return JsonResponse({"result": user.to_dict()})
-
-    @user_required
-    def delete(self, request):
-        with transaction.atomic():
-            try:
-                user = User.objects.get(username=request.user)
-            except User.DoesNotExist:
-                raise NotFound({"message": "User not found"})
-            user.image.delete()
-            user.image = None
-            user.save()
-            return JsonResponse({"result": user.to_dict()})
-
 
 class RecipeImagesView(APIView):
 

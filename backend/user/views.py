@@ -11,7 +11,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from .models import User
 from recipe.models import Recipe
 from list.models import List
-from .serializers import UserSerializer, UserSerializerNoPassword, UserPatchSerializer, ChangePasswordSerializer
+from .serializers import UserImageSerializer, UserSerializer, UserSerializerNoPassword, UserPatchSerializer, ChangePasswordSerializer
 from backend.decorators import user_required, admin_required
 from utils.custom_exceptions import CustomException
 
@@ -152,3 +152,32 @@ class ChangePassword(APIView):
             return JsonResponse({'result': user.to_dict()})
         except User.DoesNotExist:
             raise NotFound({'message': 'User not found'})
+
+class UserImageView(APIView):
+
+    @user_required
+    def put(self, request):
+        with transaction.atomic():
+            serializer = UserImageSerializer(
+                data={**request.data.dict()})
+            serializer.is_valid(raise_exception=True)
+            try:
+                user = User.objects.get(username=request.user)
+            
+            except User.DoesNotExist:
+                raise NotFound({"message": "User not found"})
+            user.image=serializer.validated_data['image']
+            user.save()
+            return JsonResponse({"result": user.to_dict()})
+
+    @user_required
+    def delete(self, request):
+        with transaction.atomic():
+            try:
+                user = User.objects.get(username=request.user)
+            except User.DoesNotExist:
+                raise NotFound({"message": "User not found"})
+            user.image.delete()
+            user.image = None
+            user.save()
+            return JsonResponse({"result": user.to_dict()})

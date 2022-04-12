@@ -1,11 +1,7 @@
-import json
-from rest_framework import serializers, status
+from rest_framework import serializers
 
-from user.models import User
 from recipe.models import Recipe
-from .models import RecipeImageType, RecipeImage, UserImage
-from utils.custom_exceptions import CustomException
-
+from .models import  RecipeImage
 
 class ImageSerializer(serializers.Serializer):
     image = serializers.ImageField()
@@ -28,17 +24,6 @@ class RecipeImageSerializer(serializers.Serializer):
             }
             created.append(RecipeImage.objects.create(**object))
         return created
-
-
-class UserImageSerializer(serializers.Serializer):
-    image = serializers.ImageField()
-
-    def create(self):
-        object = {
-            "image": self.validated_data.get("image"),
-            "user": self.validated_data.get("user"),
-        }
-        return UserImage.objects.create(**object)
 
 class DeleteRecipeImagesSerializer(serializers.Serializer):
     images = serializers.ListField(child=serializers.IntegerField())

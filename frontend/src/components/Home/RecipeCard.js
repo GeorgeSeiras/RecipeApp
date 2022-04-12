@@ -1,16 +1,27 @@
-import React from 'react';
+import React, {useState,useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Image from 'react-bootstrap/Image';
 import { DateTime } from 'luxon';
+import NO_AVATAR from '../../static/no_avatar.svg';
 
 import RatingStars from './RatingStar';
 
 export default function RecipeCard(props) {
     const navigate = useNavigate();
     const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
+    const [avatar,setAvatar] = useState(null)
+
+    useEffect(() => {
+        if (props.recipe.user?.image) {
+            setAvatar(MEDIA_URL + props.recipe.user?.image)
+        } else {
+            setAvatar(NO_AVATAR)
+        }
+
+    }, [props.recipe.user?.image, MEDIA_URL])
 
     return (
         <Col>
@@ -43,13 +54,13 @@ export default function RecipeCard(props) {
                                     color: 'black',
                                     textDecoration: 'none'
                                 }}>
-                                <Image
-                                    style={{ width: '35px', height: 'auto', paddingRight: '10px' }}
-                                    width='30'
-                                    className='img-fluid rounded-circle'
-                                    src={`${MEDIA_URL}${props.recipe.user?.image?.image}`}
-                                    alt='avatar'
-                                />
+                                    <Image
+                                        style={{ width: '35px', height: 'auto', paddingRight: '10px' }}
+                                        width='30'
+                                        className='img-fluid rounded-circle'
+                                        src={avatar}
+                                        alt='avatar'
+                                    />
                                 {props.recipe.user.username}
                             </Card.Link>
                         </Card.Subtitle>
