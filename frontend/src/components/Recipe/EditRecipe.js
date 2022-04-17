@@ -10,6 +10,7 @@ import { uploadRecipeImages } from '../../actions/RecipeActions';
 import { UserContext } from '../Context/authContext';
 import useError from '../ErrorHandler/ErrorHandler';
 
+import './editRecipe.css'
 export default function EditRecipe(props) {
 
     const [title, setTitle] = useState(props?.recipe?.title || '');
@@ -161,8 +162,8 @@ export default function EditRecipe(props) {
             </Button>
             <Modal show={show} onHide={() => setShow(false)} >
                 <Modal.Header closeButton />
-                <Modal.Title>Edit Recipe</Modal.Title>
-                <Modal.Body>
+                <Modal.Title style={{textAlign:'center'}}>Edit Recipe</Modal.Title>
+                <Modal.Body >
                     <Form onSubmit={(e) => handleSubmit(e)}>
                         <EditableRecipeBody title={title} setTitle={setTitle} description={description} setDescription={setDescription} prepHours={prepHours} setPrepHours={setPrepHours}
                             prepMins={prepMins} setPrepMins={setPrepMins} cookHours={cookHours} setCookHours={setCookHours} cookMins={cookMins} setCookMins={setCookMins} servings={servings} setServings={setServings} ingredients={ingredients}

@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useContext } from 'react';
+import React from 'react';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -7,6 +7,7 @@ import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
 import UploadImageCard from '../CreateRecipe/UploadImageCard';
 
+import CustomEditor from '../RichTextEditor/Editor'
 import './CreateRecipe.css';
 
 export default function EditableRecipeBody(props) {
@@ -37,6 +38,7 @@ export default function EditableRecipeBody(props) {
         copy[index] = value;
         setter(copy);
     }
+    
     return (
         <Container>
             <Form.Group className='mb-3' >
@@ -58,17 +60,7 @@ export default function EditableRecipeBody(props) {
                 <Form.Label>Carousel Images</Form.Label>
                 <UploadImageCard images={props.carousel} setImages={props.setCarousel} type={'many'} />
             </Form.Group>
-
-            <Form.Group className='mb-3'>
-                <Form.Label>Description</Form.Label>
-                <Form.Control as="textarea" rows={9} maxLength='1000'
-                    type="text"
-                    placeholder="Description"
-                    value={props.description}
-                    onChange={(e) => props.setDescription(e.target.value)}
-                />
-            </Form.Group>
-
+            <CustomEditor setDescription={props.setDescription} description={props.description} />
             <Row>
                 <Col>
                     <Form.Group>

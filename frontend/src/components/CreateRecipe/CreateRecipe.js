@@ -145,7 +145,7 @@ export default function CreateRecipe() {
             <EditableRecipeBody title={title} setTitle={setTitle} description={description} setDescription={setDescription} prepHours={prepHours} setPrepHours={setPrepHours}
                 prepMins={prepMins} setPrepMins={setPrepMins} cookHours={cookHours} setCookHours={setCookHours} cookMins={cookMins} setCookMins={setCookMins} servings={servings} setServings={setServings} ingredients={ingredients}
                 setIngredients={setIngredients} steps={steps} setSteps={setSteps} thumbnail={thumbnail} setThumbnail={setThumbnail} carousel={carousel} setCarousel={setCarousel}
-                course={course} setCourse={setCourse} cuisine={cuisine} setCuisine={setCuisine} />
+                course={course} setCourse={setCourse} cuisine={cuisine} setCuisine={setCuisine} dispatch={dispatch}/>
 
             <Button variant="success" type="submit" disabled={!validateForm()}>
                 Create Recipe

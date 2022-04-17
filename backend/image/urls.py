@@ -4,6 +4,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('image/upload',views.ImageUpload.as_view()),
     path("recipe/<int:recipe_id>/image", views.RecipeImageView.as_view(), name='image-recipe'),
     path("recipe/<int:recipe_id>/images", views.RecipeImagesView.as_view(), name='images-recipe'),
 ]

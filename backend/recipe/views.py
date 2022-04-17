@@ -6,7 +6,7 @@ from rest_framework.exceptions import NotFound, PermissionDenied
 from django.db import transaction
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
-from hitcount.models import HitCount,Hit
+from hitcount.models import HitCount, Hit
 from ipware import get_client_ip
 
 from comment.serializers import CreateCommentSerializer
@@ -62,6 +62,7 @@ class RecipeDetail(APIView):
                     "You cannot modify another user's recipe")
             serializer = RecipePatchSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
+            print(serializer.validated_data['desc'])
             for key, value in serializer.validated_data.items():
                 # replaces existing ingredients
                 if key == "ingredients":
@@ -93,6 +94,7 @@ class RecipeDetail(APIView):
             )
         recipe.delete()
         return JsonResponse({"result": "ok"})
+
 
 class RecipeCommentsView(APIView, myPagination):
     def get(self, request, recipe_id):
@@ -167,7 +169,7 @@ class RecipeHitView(APIView):
                 content_type=ctype, object_pk=recipe.pk)
             ip = get_client_ip(request)
             try:
-                hit_found = Hit.objects.get(ip=ip,hitcount=hitcount)
+                hit_found = Hit.objects.get(ip=ip, hitcount=hitcount)
                 return JsonResponse({'result': 'ok'})
             except Hit.DoesNotExist:
                 hit = Hit(

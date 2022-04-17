@@ -3,6 +3,7 @@ import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import ReactHtmlParser from 'html-react-parser';
 
 export default function ActualRecipe(props) {
     const [prep, setPrep] = useState();
@@ -49,7 +50,7 @@ export default function ActualRecipe(props) {
 
     return (
         <div>
-            {props.recipe &&
+            {props?.recipe &&
                 <Container style={{
                     paddingTop: '2%',
                     margin: 'auto',
@@ -59,9 +60,10 @@ export default function ActualRecipe(props) {
                     paddingRight: '5%'
                 }}>
                     <Row>
-                        <h4 style={{ paddingTop: '2%', paddingLeft: '0', paddingRight: '0' }}>
-                            {props.recipe.desc}
-                        </h4>
+                        <div>
+                            {ReactHtmlParser(props.recipe.desc)}
+                        </div>
+
                     </Row>
                     <Row xs={'auto'} style={{
                         margin: 'auto',
