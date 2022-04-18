@@ -80,7 +80,6 @@ export async function getMedia(dispatch, folderId, limit, offset, token) {
     };
 
     try {
-        // console.log('offset', offset)
         let query = `?folder=${folderId}&offset=${offset}`
         if (limit !== null) {
             query = query.concat(`&limit=${limit}`)

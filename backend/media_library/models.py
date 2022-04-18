@@ -16,14 +16,14 @@ class Folder(models.Model):
     user = models.ForeignKey('user.user', on_delete=CASCADE)
     parent = models.ForeignKey(
         'self', on_delete=CASCADE, null=True)
-    name = models.TextField(max_length=50)
+    name = models.TextField(max_length=25)
     depth = models.IntegerField()
 
     def to_dict(self):
         dict={}
         dict['id'] = self.id
         if self.parent != None:
-            dict['parent'] = self.parent.id
+            dict['parent'] = self.parent.to_dict()
         else:
             dict['parent'] = None
         dict['user'] = self.user.to_dict()
@@ -57,7 +57,7 @@ class Folder(models.Model):
 class FolderImage(models.Model):
     folder = models.ForeignKey(Folder,on_delete=CASCADE)
     image = models.ImageField(upload_to=get_file_path)
-    name = models.TextField(max_length=50)
+    name = models.TextField(max_length=25)
 
 
     def to_dict(self):

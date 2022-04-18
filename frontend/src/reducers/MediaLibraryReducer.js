@@ -31,9 +31,27 @@ export const MediaLibraryReducer = (initialState, action) => {
                 curFolder: action.payload
             }
         case 'CREATE_FOLDER':
+            const folderCount = initialState?.folders?.count;
+            const mediaCount = initialState?.media?.count;
+            let folders = [action.payload, ...initialState.folders.results]
+            let media = initialState.media
+            if (mediaCount) {
+                if (folderCount + mediaCount === 16) {
+                    media.count -= 1
+                    media.results = [...initialState.media.results.slice(0, mediaCount - 1)]
+                }
+            } else if (folderCount === 16) {
+                folders = [action.payload, ...initialState.folders.results.slice(0, folderCount - 1)]
+            }
+            const folderFinal = JSON.parse(JSON.stringify(initialState.folders))
+            folderFinal.results = folders
+            if (folderFinal.count !== 16) {
+                folderFinal.count += 1
+            }
             return {
                 ...initialState,
-                folders: [action.payload, ...initialState.folders]
+                folders: folderFinal,
+                media: media
             }
         case 'DELETE_FOLDER':
             return {
