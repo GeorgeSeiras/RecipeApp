@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, useReducer } from 'react';
+import React, { useEffect, useContext, useState, useReducer, createRef } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -10,11 +10,12 @@ import OverlayTrigger from 'react-bootstrap/esm/OverlayTrigger';
 
 import { UserContext } from '../Context/authContext';
 import { MediaLibraryReducer } from '../../reducers/MediaLibraryReducer';
-import { getFolders, getMedia, setCurFolder, createFolder } from '../../actions/MediaLibraryActions';
+import { getFolders, getMedia, setCurFolder, createFolder, createMedia } from '../../actions/MediaLibraryActions';
 import add_folder from '../../static/add_folder.webp'
 import image_upload from '../../static/image_upload.webp'
 import folder_img from '../../static/folder_img.svg'
 import previous from '../../static/previous.svg'
+import plus_sign from '../../static/plus_sign.svg'
 
 import './Library.css';
 
@@ -23,17 +24,22 @@ export default function Library() {
     const userData = useContext(UserContext);
     const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
     const [folderName, setFolderName] = useState('');
+    const [mediaName, setMediaName] = useState('');
+    const [hiddenInput, setHiddenInput] = useState(createRef(null));
+    const [image, setImage] = useState(null);
 
-    useEffect(async () => {
-        if (!state?.curFolder) {
-            await getFolders(dispatch, null, userData.user.token.key)
-        } else {
-            const response = await getFolders(dispatch, state?.curFolder?.id, userData.user.token.key)
-            if (response.page_size > response.count) {
-                const limit = 16 - response.count
-                await getMedia(dispatch, state.curFolder.id, limit, state.mediaOffset, userData.user.token.key)
+    useEffect(() => {
+        (async () => {
+            if (!state?.curFolder) {
+                await getFolders(dispatch, null, userData.user.token.key)
+            } else {
+                const response = await getFolders(dispatch, state?.curFolder?.id, userData.user.token.key)
+                if (response.page_size > response.count) {
+                    const limit = 16 - response.count
+                    await getMedia(dispatch, state.curFolder.id, limit, state.mediaOffset, userData.user.token.key)
+                }
             }
-        }
+        })()
     }, [state?.curFolder])
 
     const handleFolderClick = (e) => {
@@ -45,7 +51,16 @@ export default function Library() {
     }
 
     const handleImageClick = (e) => {
-        console.log('image clicked')
+        console.log('click')
+    }
+
+    const handleImageSubmit = async (e) => {
+        e.preventDefault()
+        const formData = new FormData()
+        formData.append('image', image)
+        formData.append('name', mediaName)
+        formData.append('folder', state.curFolder.id)
+        const response = await createMedia(dispatch, formData, userData.user.token.key)
     }
 
     const handleFolderSubmit = async (e) => {
@@ -57,11 +72,12 @@ export default function Library() {
         await createFolder(dispatch, payload, userData.user.token.key)
     }
 
-    const handleBackClick = (e)=>{
-        setCurFolder(dispatch,state.curFolder.parent)
+    const handleBackClick = (e) => {
+        setCurFolder(dispatch, state.curFolder.parent)
     }
 
-    const overlay = (
+
+    const overlayFolder = (
         <Popover>
             <Popover.Body style={{ textAlign: 'center' }}>
                 <Form onSubmit={(e) => handleFolderSubmit(e)}>
@@ -74,7 +90,45 @@ export default function Library() {
                             onChange={(e) => setFolderName(e.target.value)}
                         />
                     </Form.Group>
-                    <Button type='submit' variant="success">
+                    <Button type='submit' variant="success" disabled={folderName === ''}>
+                        Create
+                    </Button>
+                </Form>
+            </Popover.Body>
+        </Popover>)
+
+    const overlayMedia = (
+        <Popover>
+            <Popover.Body style={{ textAlign: 'center' }}>
+                <Form onSubmit={(e) => handleImageSubmit(e)}>
+                    <Form.Group>
+                        <Form.Control
+                            type="file"
+                            accept=".png,.jpg,.jpeg,.webp"
+                            ref={hiddenInput}
+                            onChange={(e) => setImage(e.target.files[0])}
+                            style={{ display: 'none' }} />
+                    </Form.Group>
+                    <Image
+                        style={{
+                            width: '12em',
+                            height: 'auto',
+                            maxHeight: '18em',
+                            cursor: 'pointer'
+                        }}
+                        src={image ? URL.createObjectURL(image) : plus_sign}
+                        alt='thumbnail'
+                        onClick={(e) => { hiddenInput.current.click() }} />
+                    <Form.Group className='mb-2'>
+                        <Form.Label>Image Name</Form.Label>
+                        <Form.Control
+                            maxLength={'25'}
+                            type='text'
+                            value={mediaName}
+                            onChange={(e) => setMediaName(e.target.value)}
+                        />
+                    </Form.Group>
+                    <Button type='submit' variant="success" disabled={(image === null || mediaName === '')}>
                         Create
                     </Button>
                 </Form>
@@ -97,26 +151,28 @@ export default function Library() {
                     }
                 </Col>
                 <Col >
-                    <OverlayTrigger trigger="click" placement={'left'} overlay={overlay}>
-                        <Button variant="success"><Image
-                            src={add_folder}
-                            alt='add_folder'
-                            width='30px'
-                        /></Button>
+                    <OverlayTrigger trigger="click" placement={'left'} overlay={overlayFolder}>
+                        <Button variant="success">
+                            <Image
+                                src={add_folder}
+                                alt='add_folder'
+                                width='30px'
+                            />
+                        </Button>
                     </OverlayTrigger>
                 </Col>
                 <Col >
                     {state?.curFolder &&
-                        <Button variant='success'
-                            onClick={() => { console.log('click') }}
-                        >
-                            <Image
-                                src={image_upload}
-                                alt='upload_image'
-                                width='30px'
-
-                            />
-                        </Button>}
+                        <OverlayTrigger trigger="click" placement={'left'} overlay={overlayMedia}>
+                            <Button variant='success'>
+                                <Image
+                                    src={image_upload}
+                                    alt='image_upload'
+                                    width='30px'
+                                />
+                            </Button>
+                        </OverlayTrigger>
+                    }
                 </Col>
             </Row>
             <Row xs={'auto'}>

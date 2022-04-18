@@ -43,7 +43,7 @@ export const MediaLibraryReducer = (initialState, action) => {
             } else if (folderCount === 16) {
                 folders = [action.payload, ...initialState.folders.results.slice(0, folderCount - 1)]
             }
-            const folderFinal = JSON.parse(JSON.stringify(initialState.folders))
+            var folderFinal = JSON.parse(JSON.stringify(initialState.folders))
             folderFinal.results = folders
             if (folderFinal.count !== 16) {
                 folderFinal.count += 1
@@ -72,9 +72,24 @@ export const MediaLibraryReducer = (initialState, action) => {
                 mediaOffset: Number(initialState.mediaOffset) + Number(action.payload.count)
             }
         case 'CREATE_MEDIA':
+            const folderCountMedia = initialState?.folders?.count;
+            const mediaCountMedia = initialState?.media?.count;
+            console.log(initialState)
+            var foldersMedia = JSON.parse(JSON.stringify(initialState?.folders))
+            var mediaMedia = JSON.parse(JSON.stringify(initialState?.media))
+            if (folderCountMedia && folderCountMedia === 16) {
+                foldersMedia.results.slice(0, 15)
+                mediaMedia.results =[action.payload,...mediaMedia.results]
+            } else if (mediaCountMedia && folderCountMedia + mediaCountMedia === 16) {
+                mediaMedia.results = [action.payload, ...mediaMedia.results.slice(0, mediaCountMedia - 1)]
+            } else {
+                mediaMedia.results =[action.payload,...mediaMedia.results]
+                mediaMedia.count += 1
+            }
             return {
                 ...initialState,
-                media: [action.payload, initialState.media]
+                media: mediaMedia,
+                folder: foldersMedia
             }
         case 'DELETE_MEDIA':
             return {

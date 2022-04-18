@@ -100,9 +100,8 @@ export async function getMedia(dispatch, folderId, limit, offset, token) {
 export async function createMedia(dispatch, payload, token) {
     const requestOptions = {
         method: 'POST',
-        body: JSON.stringify(payload),
+        body: payload,
         headers: {
-            'Content-Type': 'application/json',
             'Authorization': 'Bearer '.concat(token),
         }
     }
