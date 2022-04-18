@@ -53,8 +53,7 @@ Editor.builtinPlugins = [
 	SimpleUploadAdapter,
 	Table,
 	TableToolbar,
-	TextTransformation,
-	ImageRemoveEventCallbackPlugin
+	TextTransformation
 ];
 
 // Editor configuration.

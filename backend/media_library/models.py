@@ -68,6 +68,11 @@ class FolderImage(models.Model):
         dict['image'] = str(self.image)
         return dict
 
+    def to_list(media):
+        list = []
+        for item in media:
+            list.append(item.to_dict())
+        return list
 
 @receiver(models.signals.post_delete, sender=FolderImage)
 def auto_delete_file_on_delete(sender, instance, **kwargs):

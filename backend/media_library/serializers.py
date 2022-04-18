@@ -22,10 +22,13 @@ class FolderUpdateSerializer(serializers.Serializer):
 
 
 class FolderQuerySerializer(serializers.Serializer):
-    parent = serializers.RelatedField(
-        source='media_library.folder', read_only=True)
-    depth = serializers.IntegerField(default=0)
+        parent = serializers.PrimaryKeyRelatedField(many=False, queryset=Folder.objects.all(),required=False)
 
 class ImageCreateSerializer(serializers.Serializer):
     image = serializers.ImageField()
     folder = serializers.PrimaryKeyRelatedField(many=False, queryset=Folder.objects.all())
+
+class FolderMediaSerializer(serializers.Serializer):
+    folder = serializers.PrimaryKeyRelatedField(many=False, queryset=Folder.objects.all())
+    offset = serializers.IntegerField(default=0)
+    limit = serializers.IntegerField(default=16)

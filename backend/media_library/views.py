@@ -9,7 +9,7 @@ from utils.custom_exceptions import CustomException
 from backend.decorators import user_required
 from media_library.models import Folder, FolderImage
 from user.models import User
-from .serializers import FolderCreateSerializer, FolderUpdateSerializer, FolderQuerySerializer, ImageCreateSerializer
+from .serializers import FolderCreateSerializer, FolderMediaSerializer, FolderUpdateSerializer, FolderQuerySerializer, ImageCreateSerializer
 from utils.customPagination import myPagination
 
 
@@ -26,9 +26,10 @@ class FolderView(APIView, myPagination):
                 raise NotFound('User not found')
             query = Q()
             query &= Q(user__username__iexact=user.username)
-            query &= Q(depth=serializer.validated_data['depth'])
             if 'parent' in serializer.validated_data:
-                query &= Q(parent__iexact=serializer.validated_data['parent'])
+                query &= Q(parent=serializer.validated_data['parent'])
+            else:
+                query &= Q(depth=0)
             folders = Folder.objects.filter(query)
             objects = Folder.to_list(folders)
             page = self.paginate_queryset(objects, request)
@@ -86,7 +87,7 @@ class FolderDetail(APIView):
                 raise CustomException(
                     "Cannot modify another user's folder", 400)
             folder.delete()
-            return JsonResponse({'result': 'ok'})
+            return JsonResponse({'result': folder.to_dict()})
 
 
 class MediaCreate(APIView):
@@ -123,25 +124,32 @@ class MediaDetail(APIView):
             raise PermissionDenied(
                 {'message': "Cannot edit another user's images"})
         image.delete()
-        return JsonResponse({'result': 'ok'})
+        return JsonResponse({'result': image.to_dict()})
 
 
-class FolderMedia(APIView,myPagination):
+class FolderMedia(APIView):
 
     @user_required
-    def get(self, request, folder_id):
+    def get(self, request):
         try:
             user = User.objects.get(username=request.user)
         except User.DoesNotExist:
             raise NotFound({"message": "User not found"})
-        try:
-            folder = Folder.objects.get(pk=folder_id)
-        except Folder.DoesNotExist:
-            raise NotFound({'message': 'Folder not found'})
-        if user.id != folder.user.id:
-            raise PermissionDenied({'message':'This belongs to another user'})
-        images = FolderImage.objects.filter(folder=folder)
-        objects = Folder.to_list(images)
-        page = self.paginate_queryset(objects, request)
-        response = self.get_paginated_response(page)
-        return response
+        serializer = FolderMediaSerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+        if user.id != serializer.validated_data['folder'].user.id:
+            raise PermissionDenied({'message': 'This belongs to another user'})
+        # images = FolderImage.objects.filter(folder=serializer.validated_data['folder'])
+        # objects = Folder.to_list(images)
+        # page = self.paginate_queryset(objects, request)
+        # response = self.get_paginated_response(page)
+        # return response
+        limit = serializer.validated_data['limit']
+        offset = serializer.validated_data['offset']
+        images = FolderImage.objects.filter(
+            folder=serializer.validated_data['folder'])[offset:offset+limit]
+        return JsonResponse({
+            'results': FolderImage.to_list(images),
+            'count': len(images)
+
+        })
