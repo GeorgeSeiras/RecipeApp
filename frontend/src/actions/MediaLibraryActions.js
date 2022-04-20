@@ -1,6 +1,6 @@
 const API_URL = process.env.REACT_APP_API_URL
 
-export async function getFolders(dispatch, parent, token) {
+export async function getFoldersAndMedia(dispatch, parent,pageClicked, token) {
     const requestOptions = {
         method: 'GET',
         headers: {
@@ -14,10 +14,13 @@ export async function getFolders(dispatch, parent, token) {
         if (parent !== null && parent !== undefined) {
             query = query.concat(`?parent=${parent}`)
         }
-        const response = await fetch(`${API_URL}/folder${query}`, requestOptions);
+        if(pageClicked){
+            query = query.concat(query !== ``?`&page=${pageClicked}`:`?pageClicked=${pageClicked}`)
+        }
+        const response = await fetch(`${API_URL}/foldermedia${query}`, requestOptions);
         const data = await response.json();
         if (data) {
-            dispatch({ type: 'GET_FOLDERS', payload: data })
+            dispatch({ type: 'GET_FOLDERS_AND_MEDIA', payload: data })
             return data
         }
         dispatch({ type: 'MEDIA_ERROR', errorMessage: data })
@@ -138,6 +141,10 @@ export async function deleteMedia(dispatch, token, mediaId) {
     } catch (error) {
         dispatch({ type: 'MEDIA_ERROR', errorMessage: error })
     }
+}
+
+export async function setPageCount(dispatch, count) {
+    dispatch({ type: 'SET_PAGE_COUNT', payload: count })
 }
 
 export function updateDepth(dispatch, depth) {

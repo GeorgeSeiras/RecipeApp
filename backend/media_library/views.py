@@ -11,9 +11,10 @@ from media_library.models import Folder, FolderImage
 from user.models import User
 from .serializers import FolderCreateSerializer, FolderMediaSerializer, FolderUpdateSerializer, FolderQuerySerializer, ImageCreateSerializer
 from utils.customPagination import myPagination
+from itertools import chain
 
 
-class FolderView(APIView, myPagination):
+class FolderAndMediaView(APIView, myPagination):
 
     @user_required
     def get(self, request):
@@ -28,13 +29,26 @@ class FolderView(APIView, myPagination):
             query &= Q(user__username__iexact=user.username)
             if 'parent' in serializer.validated_data:
                 query &= Q(parent=serializer.validated_data['parent'])
+                media = FolderImage.objects.filter(
+                    folder=serializer.validated_data['parent'])
+                folders = Folder.objects.filter(query)
+
+                objects = list(
+                    chain(Folder.to_list(folders), FolderImage.to_list(media))
+                )
+                page = self.paginate_queryset(objects, request)
+                response = self.get_paginated_response(page)
+                return response
             else:
                 query &= Q(depth=0)
-            folders = Folder.objects.filter(query)
-            objects = Folder.to_list(folders)
-            page = self.paginate_queryset(objects, request)
-            response = self.get_paginated_response(page)
-            return response
+                folders = Folder.objects.filter(query)
+                objects = Folder.to_list(folders)
+                page = self.paginate_queryset(objects, request)
+                response = self.get_paginated_response(page)
+                return response
+
+
+class FolderView(APIView, myPagination):
 
     @user_required
     def post(self, request):

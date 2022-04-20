@@ -1,34 +1,21 @@
 const initialState = {
     curFolder: null,
-    folders: null,
-    media: null,
-    mediaOffset: null,
-    mediaLimit: null,
-    errorMessage: null,
-    depth: 0
+    foldersAndMedia: null,
+    errorMessage: null
 }
 
 export const MediaLibraryReducer = (initialState, action) => {
     switch (action.type) {
-        case 'GET_FOLDERS':
-            let limit = null
-            if (action.payload.page_size > action.payload.count) {
-                limit = 16 - action.payload.count
-            }
-            let mediaOffset = 0
-            if (initialState?.mediaOffset) {
-                mediaOffset = initialState.mediaOffset
-            }
+        case 'GET_FOLDERS_AND_MEDIA':
             return {
                 ...initialState,
-                folders: action.payload,
-                mediaLimit: limit || null,
-                mediaOffset: mediaOffset
+                foldersAndMedia: action.payload,
             };
         case 'SET_CURFOLDER':
             return {
                 ...initialState,
-                curFolder: action.payload
+                curFolder: action.payload,
+                mediaOffset: 0
             }
         case 'CREATE_FOLDER':
             const folderCount = initialState?.folders?.count;
@@ -74,16 +61,15 @@ export const MediaLibraryReducer = (initialState, action) => {
         case 'CREATE_MEDIA':
             const folderCountMedia = initialState?.folders?.count;
             const mediaCountMedia = initialState?.media?.count;
-            console.log(initialState)
             var foldersMedia = JSON.parse(JSON.stringify(initialState?.folders))
             var mediaMedia = JSON.parse(JSON.stringify(initialState?.media))
             if (folderCountMedia && folderCountMedia === 16) {
                 foldersMedia.results.slice(0, 15)
-                mediaMedia.results =[action.payload,...mediaMedia.results]
+                mediaMedia.results = [action.payload, ...mediaMedia.results]
             } else if (mediaCountMedia && folderCountMedia + mediaCountMedia === 16) {
                 mediaMedia.results = [action.payload, ...mediaMedia.results.slice(0, mediaCountMedia - 1)]
             } else {
-                mediaMedia.results =[action.payload,...mediaMedia.results]
+                mediaMedia.results = [action.payload, ...mediaMedia.results]
                 mediaMedia.count += 1
             }
             return {
@@ -98,12 +84,17 @@ export const MediaLibraryReducer = (initialState, action) => {
                     return media.id !== action.payload.media.id
                 })
             }
+        case 'SET_PAGE_COUNT':
+            return {
+                ...initialState,
+                pageCount: action.payload
+            }
         case 'MEDIA_ERROR':
             return {
                 ...initialState,
-                errorMessage: action.errorMessage
+                errorMessage: action.errorMessage,
             }
         default:
             throw new Error(`Unhandled action type: ${action.type}`);
     }
-}
+} 

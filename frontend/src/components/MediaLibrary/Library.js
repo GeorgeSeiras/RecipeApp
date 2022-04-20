@@ -10,7 +10,8 @@ import OverlayTrigger from 'react-bootstrap/esm/OverlayTrigger';
 
 import { UserContext } from '../Context/authContext';
 import { MediaLibraryReducer } from '../../reducers/MediaLibraryReducer';
-import { getFolders, getMedia, setCurFolder, createFolder, createMedia } from '../../actions/MediaLibraryActions';
+import Pagination from './Pagination';
+import { getFoldersAndMedia, setCurFolder, createFolder, createMedia, getPageCount, setPageCount } from '../../actions/MediaLibraryActions';
 import add_folder from '../../static/add_folder.webp'
 import image_upload from '../../static/image_upload.webp'
 import folder_img from '../../static/folder_img.svg'
@@ -27,24 +28,22 @@ export default function Library() {
     const [mediaName, setMediaName] = useState('');
     const [hiddenInput, setHiddenInput] = useState(createRef(null));
     const [image, setImage] = useState(null);
+    const [active, setActive] = useState(1)
+    const [pageClicked, setPageClicked] = useState(null);
+
 
     useEffect(() => {
         (async () => {
-            if (!state?.curFolder) {
-                await getFolders(dispatch, null, userData.user.token.key)
-            } else {
-                const response = await getFolders(dispatch, state?.curFolder?.id, userData.user.token.key)
-                if (response.page_size > response.count) {
-                    const limit = 16 - response.count
-                    await getMedia(dispatch, state.curFolder.id, limit, state.mediaOffset, userData.user.token.key)
-                }
+            const response = await getFoldersAndMedia(dispatch, state?.curFolder?.id, pageClicked, userData.user.token.key)
+            if (response?.data) {
+                setActive(pageClicked);
             }
         })()
-    }, [state?.curFolder])
+    }, [state?.curFolder, pageClicked])
 
     const handleFolderClick = (e) => {
         const folderId = e.target.parentNode.id
-        const folder = state.folders.results.find(elem => {
+        const folder = state.foldersAndMedia.results.find(elem => {
             return elem.id === Number(folderId)
         })
         setCurFolder(dispatch, folder);
@@ -60,7 +59,7 @@ export default function Library() {
         formData.append('image', image)
         formData.append('name', mediaName)
         formData.append('folder', state.curFolder.id)
-        const response = await createMedia(dispatch, formData, userData.user.token.key)
+        await createMedia(dispatch, formData, userData.user.token.key)
     }
 
     const handleFolderSubmit = async (e) => {
@@ -75,7 +74,6 @@ export default function Library() {
     const handleBackClick = (e) => {
         setCurFolder(dispatch, state.curFolder.parent)
     }
-
 
     const overlayFolder = (
         <Popover>
@@ -176,41 +174,45 @@ export default function Library() {
                 </Col>
             </Row>
             <Row xs={'auto'}>
-                {state?.folders?.results &&
-                    state.folders.results.map((folder, index) => {
-                        return (
-                            <Col key={index} id={folder.id} style={{ paddingBottom: '1em', textAlign: 'center' }}>
-                                <Image
-                                    src={folder_img}
-                                    onClick={(e) => { handleFolderClick(e) }}
-                                    width='80px'
-                                    style={{ paddingBottom: '0.5em' }}
+                {state?.foldersAndMedia?.results &&
+                    state.foldersAndMedia.results.map((folderOrMedia, index) => {
+                        if (folderOrMedia.type === 'folder') {
+                            return (
+                                <Col key={index} id={folderOrMedia.id} style={{ paddingBottom: '1em', textAlign: 'center' }}>
+                                    <Image
+                                        src={folder_img}
+                                        onClick={(e) => { handleFolderClick(e) }}
+                                        width='80px'
+                                        style={{ paddingBottom: '0.5em' }}
 
-                                />
-                                <h6>{folder.name}</h6>
-                            </Col>
-                        )
-                    })
-                }
-                {
-                    state?.media?.results &&
-                    state.media.results.map((media, index) => {
-                        return (
-                            <Col key={index} id={media.id} style={{ paddingBottom: '1em', textAlign: 'center' }}>
-                                <Image
-                                    src={`${MEDIA_URL}${media.image}`}
-                                    onClick={(e) => { handleImageClick(e) }}
-                                    width='150px'
-                                    height='auto'
-                                    style={{ paddingBottom: '0.5em', objectFit: 'contain' }}
+                                    />
+                                    <h6>{folderOrMedia.name}</h6>
+                                </Col>
+                            )
+                        } else if (folderOrMedia.type === 'image') {
+                            return (
+                                <Col key={index} id={folderOrMedia.id} style={{ paddingBottom: '1em', textAlign: 'center' }}>
+                                    <Image
+                                        src={`${MEDIA_URL}${folderOrMedia.image}`}
+                                        onClick={(e) => { handleImageClick(e) }}
+                                        width='150px'
+                                        height='auto'
+                                        style={{ paddingBottom: '0.5em', objectFit: 'contain' }}
 
-                                />
-                                <h6>{media.name}</h6>
-                            </Col>
-                        )
+                                    />
+                                    <h6>{folderOrMedia.name}</h6>
+                                </Col>
+                            )
+                        }
+
                     })
                 }
             </Row>
+            {state?.foldersAndMedia?.total_pages &&
+                <Row xs={'auto'} style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Pagination active={active} totalPages={state.foldersAndMedia.total_pages} setPageClicked={setPageClicked} />
+                </Row>
+            }
         </Container >
     )
 }

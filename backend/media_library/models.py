@@ -20,7 +20,7 @@ class Folder(models.Model):
     depth = models.IntegerField()
 
     def to_dict(self):
-        dict={}
+        dict = {}
         dict['id'] = self.id
         if self.parent != None:
             dict['parent'] = self.parent.to_dict()
@@ -29,6 +29,7 @@ class Folder(models.Model):
         dict['user'] = self.user.to_dict()
         dict['name'] = self.name
         dict['depth'] = self.depth
+        dict['type'] = 'folder'
         return dict
 
     def to_list(folders):
@@ -46,7 +47,7 @@ class Folder(models.Model):
             folder_dict[folder['id']] = folder
         for folder in folder_list:
             if(folder['parent'] != None):
-                parent =  folder_dict[folder['parent'].id]
+                parent = folder_dict[folder['parent'].id]
                 parent['children'].append(folder)
                 folder['parent'] = folder['parent'].id
                 folders_to_delete.append(folder['id'])
@@ -54,18 +55,19 @@ class Folder(models.Model):
             del folder_dict[id]
         return json.loads(json.dumps(list(folder_dict.values())))
 
+
 class FolderImage(models.Model):
-    folder = models.ForeignKey(Folder,on_delete=CASCADE)
+    folder = models.ForeignKey(Folder, on_delete=CASCADE)
     image = models.ImageField(upload_to=get_file_path)
     name = models.TextField(max_length=25)
 
-
     def to_dict(self):
-        dict={}
+        dict = {}
         dict['id'] = self.id
         dict['folder'] = self.folder.to_dict()
         dict['name'] = self.name
         dict['image'] = str(self.image)
+        dict['type'] = 'image'
         return dict
 
     def to_list(media):
@@ -73,6 +75,7 @@ class FolderImage(models.Model):
         for item in media:
             list.append(item.to_dict())
         return list
+
 
 @receiver(models.signals.post_delete, sender=FolderImage)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
