@@ -38,7 +38,7 @@ export default function EditableRecipeBody(props) {
         copy[index] = value;
         setter(copy);
     }
-    
+
     return (
         <Container>
             <Form.Group className='mb-3' >
@@ -60,7 +60,10 @@ export default function EditableRecipeBody(props) {
                 <Form.Label>Carousel Images</Form.Label>
                 <UploadImageCard images={props.carousel} setImages={props.setCarousel} type={'many'} />
             </Form.Group>
-            <CustomEditor setDescription={props.setDescription} description={props.description} />
+            <Form.Group className="mb-3">
+                <Form.Label>Description</Form.Label>
+                <CustomEditor setDescription={props.setDescription} description={props.description} />
+            </Form.Group>
             <Row>
                 <Col>
                     <Form.Group>

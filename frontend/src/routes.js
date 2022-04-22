@@ -7,7 +7,7 @@ import CreateRecipe from './components/CreateRecipe/CreateRecipe';
 import EditUser from './components/EditUser/EditUser';
 import List from './components/RecipeList/List';
 import ContinueThread from './components/Comment/ContinueThread';
-import Library from './components/MediaLibrary/Library'
+// import Library from './components/MediaLibrary/Library'
 
 export const privateRoutes = [
     {
@@ -18,10 +18,10 @@ export const privateRoutes = [
         path: '/user/:id/edit',
         element: <EditUser />
     },
-    {
-        path: '/user/library',
-        element: <Library/>
-    }
+    // {
+    //     path: '/user/library',
+    //     element: <Library/>
+    // }
 ]
 
 export const publicRoutes = [

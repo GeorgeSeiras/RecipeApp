@@ -20,7 +20,7 @@ import plus_sign from '../../static/plus_sign.svg'
 
 import './Library.css';
 
-export default function Library() {
+export const Library = () => {
     const [state, dispatch] = useReducer(MediaLibraryReducer)
     const userData = useContext(UserContext);
     const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
@@ -136,7 +136,7 @@ export default function Library() {
     return (
         <Container className='border'>
             <Row xs={'auto'} style={{ justifyContent: 'right', paddingBottom: '1em', paddingTop: '0.2em' }}>
-                <Col className='me-auto'>
+                <Col className='me-auto' >
                     {state?.curFolder &&
                         <Button variant='info' style={{ justifyContent: 'center' }}
                             onClick={(e) => { handleBackClick(e) }}>
@@ -173,12 +173,13 @@ export default function Library() {
                     }
                 </Col>
             </Row>
-            <Row xs={'auto'}>
+            <Row xs={'auto'} style={{maxWidth:'700px'}}  >
                 {state?.foldersAndMedia?.results &&
                     state.foldersAndMedia.results.map((folderOrMedia, index) => {
                         if (folderOrMedia.type === 'folder') {
                             return (
-                                <Col key={index} id={folderOrMedia.id} style={{ paddingBottom: '1em', textAlign: 'center' }}>
+                                <Col key={index} id={folderOrMedia.id} 
+                                style={{ paddingBottom: '1em', textAlign: 'center' }}>
                                     <Image
                                         src={folder_img}
                                         onClick={(e) => { handleFolderClick(e) }}
