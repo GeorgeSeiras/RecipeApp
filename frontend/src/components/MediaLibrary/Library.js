@@ -7,11 +7,12 @@ import Image from 'react-bootstrap/Image';
 import Form from 'react-bootstrap/Form';
 import Popover from 'react-bootstrap/Popover';
 import OverlayTrigger from 'react-bootstrap/esm/OverlayTrigger';
+import Modal from 'react-bootstrap/Modal';
 
 import { UserContext } from '../Context/authContext';
 import { MediaLibraryReducer } from '../../reducers/MediaLibraryReducer';
 import Pagination from './Pagination';
-import { getFoldersAndMedia, setCurFolder, createFolder, createMedia, getPageCount, setPageCount } from '../../actions/MediaLibraryActions';
+import { getFoldersAndMedia, setCurFolder, createFolder, createMedia, getPageCount, setPageCount, deleteFolder, deleteMedia } from '../../actions/MediaLibraryActions';
 import add_folder from '../../static/add_folder.webp'
 import image_upload from '../../static/image_upload.webp'
 import folder_img from '../../static/folder_img.svg'
@@ -30,6 +31,10 @@ export const Library = (props) => {
     const [image, setImage] = useState(null);
     const [active, setActive] = useState(1)
     const [pageClicked, setPageClicked] = useState(null);
+    const [mediaModal, setMediaModal] = useState(false);
+    const [mediaToDeleteId, setMediaToDeleteId] = useState(null);
+    const [folderModal, setFolderModal] = useState(false);
+    const [folderToDeleteId, setFolderToDeleteId] = useState(null);
 
     useEffect(() => {
         (async () => {
@@ -41,7 +46,7 @@ export const Library = (props) => {
     }, [state?.curFolder, pageClicked])
 
     const handleFolderClick = (e) => {
-        const folderId = e.target.parentNode.id
+        const folderId = e.target.parentNode.parentNode.id
         const folder = state.foldersAndMedia.results.find(elem => {
             return elem.id === Number(folderId)
         })
@@ -70,6 +75,18 @@ export const Library = (props) => {
 
     const handleBackClick = (e) => {
         setCurFolder(dispatch, state.curFolder.parent)
+    }
+
+    const handleFolderDelete = async (e) => {
+        await deleteFolder(dispatch, userData.user.token.key, folderToDeleteId)
+        await getFoldersAndMedia(dispatch, state?.curFolder?.id, pageClicked, userData.user.token.key)
+        setFolderModal(false)
+    }
+
+    const handleMediaDelete = async (e) => {
+        await deleteMedia(dispatch, userData.user.token.key, mediaToDeleteId)
+        await getFoldersAndMedia(dispatch, state?.curFolder?.id, pageClicked, userData.user.token.key)
+        setMediaModal(false)
     }
 
     const overlayFolder = (
@@ -177,28 +194,62 @@ export const Library = (props) => {
                             return (
                                 <Col key={index} id={folderOrMedia.id}
                                     style={{ paddingBottom: '1em', textAlign: 'center' }}>
-                                    <Image
-                                        src={folder_img}
-                                        onClick={(e) => { handleFolderClick(e) }}
-                                        width='80px'
-                                        style={{ paddingBottom: '0.5em' }}
-
-                                    />
-                                    <h6>{folderOrMedia.name}</h6>
+                                    <Container style={{ position: 'relative', padding: '0' }}>
+                                        <Image
+                                            src={folder_img}
+                                            onClick={(e) => { handleFolderClick(e) }}
+                                            cursor='pointer'
+                                            width='80px'
+                                            style={{ paddingBottom: '0.5em' }}
+                                        />
+                                        <h6>{folderOrMedia.name}</h6>
+                                        <Button
+                                            variant="danger"
+                                            style={{
+                                                width: '1.5em',
+                                                height: '1.5em',
+                                                position: "absolute",
+                                                top: "0",
+                                                right: "0",
+                                                padding: '0',
+                                                textAlign: 'center',
+                                            }}
+                                            onClick={(e) => {
+                                                setFolderToDeleteId(e.target.parentNode.parentNode.id)
+                                                setFolderModal(true)
+                                            }}>X</Button>
+                                    </Container>
                                 </Col>
                             )
                         } else if (folderOrMedia.type === 'image') {
                             return (
                                 <Col key={index} id={folderOrMedia.id} style={{ paddingBottom: '1em', textAlign: 'center' }}>
-                                    <Image
-                                        src={`${MEDIA_URL}${folderOrMedia.image}`}
-                                        onClick={(e) => { props?.handleInsertImage(e) }}
-                                        width='150px'
-                                        height='auto'
-                                        style={{ paddingBottom: '0.5em', objectFit: 'contain' }}
+                                    <Container style={{ position: 'relative', padding: '0' }}>
+                                        <Image
+                                            src={`${MEDIA_URL}${folderOrMedia.image}`}
+                                            onClick={(e) => { props?.handleInsertImage(e) }}
+                                            width='150px'
+                                            height='auto'
+                                            style={{ paddingBottom: '0.5em', objectFit: 'contain' }}
 
-                                    />
-                                    <h6>{folderOrMedia.name}</h6>
+                                        />
+                                        <Button
+                                            variant="danger"
+                                            style={{
+                                                width: '1.5em',
+                                                height: '1.5em',
+                                                position: "absolute",
+                                                top: "0",
+                                                right: "0",
+                                                padding: '0',
+                                                textAlign: 'center',
+                                            }}
+                                            onClick={(e) => {
+                                                setMediaToDeleteId(e.target.parentNode.parentNode.id)
+                                                setMediaModal(true)
+                                            }}>X</Button>
+                                        <h6>{folderOrMedia.name}</h6>
+                                    </Container>
                                 </Col>
                             )
                         }
@@ -211,6 +262,42 @@ export const Library = (props) => {
                     <Pagination active={active} totalPages={state.foldersAndMedia.total_pages} setPageClicked={setPageClicked} />
                 </Row>
             }
+
+            <Modal show={folderModal} onHide={() => setFolderModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Delete Folder</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to delete this Folder?
+                    This action is not reversible
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setFolderModal(false)}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={() => handleFolderDelete()}>
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={mediaModal} onHide={() => setMediaModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Delete Media</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to delete this Media?
+                    This action is not reversible
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setMediaModal(false)}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={() => handleMediaDelete()}>
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Container >
     )
 }

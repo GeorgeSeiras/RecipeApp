@@ -25,10 +25,7 @@ export const MediaLibraryReducer = (initialState, action) => {
 
         case 'DELETE_FOLDER':
             return {
-                ...initialState,
-                folders: initialState.folders.results.filter(folder => {
-                    return folder.id !== action.payload.folder.id
-                })
+                ...initialState
             };
         case 'UPDATE_DEPTH':
             return {
@@ -47,10 +44,7 @@ export const MediaLibraryReducer = (initialState, action) => {
             }
         case 'DELETE_MEDIA':
             return {
-                ...initialState,
-                media: initialState.media.results.filter(media => {
-                    return media.id !== action.payload.media.id
-                })
+                ...initialState
             }
         case 'SET_PAGE_COUNT':
             return {

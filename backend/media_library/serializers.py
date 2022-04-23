@@ -27,6 +27,7 @@ class FolderQuerySerializer(serializers.Serializer):
 class ImageCreateSerializer(serializers.Serializer):
     image = serializers.ImageField()
     folder = serializers.PrimaryKeyRelatedField(many=False, queryset=Folder.objects.all())
+    name = serializers.CharField(max_length=25)
 
 class FolderMediaSerializer(serializers.Serializer):
     folder = serializers.PrimaryKeyRelatedField(many=False, queryset=Folder.objects.all())
