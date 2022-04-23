@@ -1,16 +1,24 @@
-import { createPluginFactory,onKeyDownToggleElement } from '@udecode/plate'
-import {Library} from '../MediaLibrary/Library';
+import {
+    createPluginFactory,
+    ELEMENT_IMAGE
+} from '@udecode/plate'
 
-const createCustomImagePlugin = createPluginFactory({
-    key: 'ELEMENT_CUSTOM_IMAGE'
-})
 
-export const imagePlugin = createCustomImagePlugin({
-    key: 'img',
-    type: 'image',
-    isElement:true,
-    component: Library,
-    handlers:{
-        onKeyDown:onKeyDownToggleElement
-    }
+export const customImagePlugin = createPluginFactory({
+    key: ELEMENT_IMAGE,
+    isElement: true,
+    isVoid: true,
+    then: (editor, { type }) => ({
+        deserializeHtml: {
+            rules: [
+                {
+                    validNodeName: 'IMG',
+                },
+            ],
+            getNode: (el) => ({
+                type,
+                url: el.getAttribute('src'),
+            }),
+        },
+    })
 })

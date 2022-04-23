@@ -20,7 +20,7 @@ import plus_sign from '../../static/plus_sign.svg'
 
 import './Library.css';
 
-export const Library = () => {
+export const Library = (props) => {
     const [state, dispatch] = useReducer(MediaLibraryReducer)
     const userData = useContext(UserContext);
     const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
@@ -47,10 +47,6 @@ export const Library = () => {
             return elem.id === Number(folderId)
         })
         setCurFolder(dispatch, folder);
-    }
-
-    const handleImageClick = (e) => {
-        console.log('click')
     }
 
     const handleImageSubmit = async (e) => {
@@ -132,14 +128,13 @@ export const Library = () => {
                 </Form>
             </Popover.Body>
         </Popover>)
-
     return (
         <Container className='border'>
             <Row xs={'auto'} style={{ justifyContent: 'right', paddingBottom: '1em', paddingTop: '0.2em' }}>
                 <Col className='me-auto' >
                     {state?.curFolder &&
                         <Button variant='info' style={{ justifyContent: 'center' }}
-                            onClick={(e) => { handleBackClick(e) }}>
+                            onClick={ (e)=>props?.handleInsertImage(e) }>
                             <Image
                                 src={previous}
                                 alt='previous_button'
@@ -195,7 +190,7 @@ export const Library = () => {
                                 <Col key={index} id={folderOrMedia.id} style={{ paddingBottom: '1em', textAlign: 'center' }}>
                                     <Image
                                         src={`${MEDIA_URL}${folderOrMedia.image}`}
-                                        onClick={(e) => { handleImageClick(e) }}
+                                        onClick={(e) => { props?.handleInsertImage(e) }}
                                         width='150px'
                                         height='auto'
                                         style={{ paddingBottom: '0.5em', objectFit: 'contain' }}

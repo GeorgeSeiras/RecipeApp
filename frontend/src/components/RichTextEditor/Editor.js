@@ -9,7 +9,6 @@ import {
     createHeadingPlugin,
     createHighlightPlugin,
     createKbdPlugin,
-    createImagePlugin,
     createItalicPlugin,
     createLinkPlugin,
     createListPlugin,
@@ -34,19 +33,18 @@ import {
     createPlugins,
     createDeserializeDocxPlugin,
     createJuicePlugin,
-    createAlignPlugin
+    createAlignPlugin,
 
 } from '@udecode/plate'
 import { ToolbarButtons } from './SlateToolbar'
 import { CONFIG } from './config'
-import { imagePlugin } from './CustomImagePlugin'
+import { customImagePlugin } from './CustomImagePlugin'
 
 const plugins = createPlugins([
     createParagraphPlugin(),
     createBlockquotePlugin(),
     createTodoListPlugin(),
     createHeadingPlugin(),
-    createImagePlugin(),
     createHorizontalRulePlugin(),
     createLinkPlugin(),
     createListPlugin(),
@@ -73,7 +71,7 @@ const plugins = createPlugins([
     createDeserializeDocxPlugin(),
     createJuicePlugin(),
     createAlignPlugin(CONFIG.align),
-    imagePlugin
+    customImagePlugin()
 ], {
     // Plate components
     components: createPlateUI(),

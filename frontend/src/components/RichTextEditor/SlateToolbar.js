@@ -26,14 +26,13 @@ import { LooksTwo } from '@styled-icons/material/LooksTwo'
 import Button from 'react-bootstrap/Button'
 import image_upload from '../../static/image_upload.svg';
 import Image from 'react-bootstrap/Image';
-import Popover from 'react-bootstrap/Popover';
 import Overlay from 'react-bootstrap/Overlay';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 
 import { Library } from '../MediaLibrary/Library'
 
 import {
   ELEMENT_BLOCKQUOTE,
+  ELEMENT_PARAGRAPH,
   ELEMENT_H1,
   ELEMENT_H2,
   ELEMENT_H3,
@@ -42,6 +41,7 @@ import {
   ELEMENT_H6,
   ELEMENT_OL,
   ELEMENT_UL,
+  ELEMENT_IMAGE,
   getPluginType,
   getPreventDefaultHandler,
   indent,
@@ -56,12 +56,11 @@ import {
   AlignToolbarButton,
   ToolbarButton,
   BlockToolbarButton,
-  ImageToolbarButton,
   ListToolbarButton,
   MarkToolbarButton,
   usePlateEditorRef,
+  insertNodes
 } from '@udecode/plate'
-
 
 export const BasicElementToolbarButtons = () => {
   const editor = usePlateEditorRef()
@@ -184,37 +183,44 @@ export const BasicMarkToolbarButtons = () => {
   )
 }
 
-const CustomImageUploadButton = (props) => {
-  const [url, setUrl] = useState(null)
+const CustomImageUploadButton = ({ id, getImageUrl, ...props }) => {
   const [show, setShow] = useState(false)
   const target = useRef(null);
+  const editor = usePlateEditorRef(id)
 
-  const CustomPopover = React.forwardRef((props, ref) => {
-    return (
-      <Popover id='popover-basic' {...props} ref={ref}>
-        <Popover.Title as='h3'>Popover right
-        </Popover.Title>
-        <Popover.Content> And here's some <strong>amazing</strong> content. It's very engaging. right?
-        </Popover.Content>
-      </Popover>
-    );
-  });
+  const handleInsertImage = async (event) => {
+    if (!editor) return;
+    event.preventDefault();
+    const url = event.target.src;
+    const text = { text: '' }
+    const image = [
+      {
+        type: getPluginType(editor, ELEMENT_IMAGE),
+        url,
+        children: [text],
+      },
+      {
+        type: getPluginType(editor, ELEMENT_PARAGRAPH),
+        children: [text]
+      }
+    ];
 
-  const overlayUpload = React.forwardRef((props, ref) => {
-    return (
-      <Popover {...props} ref={ref}>
-        <Popover.Header>HELLO</Popover.Header>
-        <Popover.Body>
-          <Library setUrl={setUrl} />
-        </Popover.Body>
-      </Popover>
-    )
-  })
+    insertNodes(editor, image)
+    setShow(false)
+  }
 
   return (
 
     <>
-      <Button ref={target} onClick={() => setShow(!show)} style={{ backgroundColor: 'white', border: 'none',paddingTop:'0',paddingLeft:'10px'}} >
+      <Button ref={target} onClick={() => setShow(!show)}
+        style={{
+          backgroundColor: 'white',
+          border: 'none',
+          paddingTop: '0',
+          paddingLeft: '10px'
+        }}
+        {...props}
+      >
         <Image
           src={image_upload}
           alt='image_upload'
@@ -233,17 +239,15 @@ const CustomImageUploadButton = (props) => {
               ...props.style,
             }}
           >
-            <Library setUrl={setUrl} />
+            <Library handleInsertImage={handleInsertImage} />
           </div>
         )}
       </Overlay>
+
     </>
   )
 
 }
-
-
-
 
 export const ToolbarButtons = () => (
   <>
