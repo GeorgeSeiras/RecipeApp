@@ -153,7 +153,7 @@ export default function EditRecipe(props) {
         }
         if (recipeResponse?.result) {
             setShow(false)
-            window.location.reload()
+            // window.location.reload()
         }
     }
 
@@ -163,7 +163,7 @@ export default function EditRecipe(props) {
             <Button size='sm' onClick={() => setShow(true)} >
                 EDIT
             </Button>
-            <Modal show={show} onHide={() => setShow(false)} >
+            <Modal show={show} onHide={() => setShow(false)} enforceFocus={false}>
                 <Modal.Header closeButton />
                 <Modal.Title style={{textAlign:'center'}}>Edit Recipe</Modal.Title>
                 <Modal.Body >

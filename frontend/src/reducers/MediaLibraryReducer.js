@@ -18,28 +18,11 @@ export const MediaLibraryReducer = (initialState, action) => {
                 mediaOffset: 0
             }
         case 'CREATE_FOLDER':
-            const folderCount = initialState?.folders?.count;
-            const mediaCount = initialState?.media?.count;
-            let folders = [action.payload, ...initialState.folders.results]
-            let media = initialState.media
-            if (mediaCount) {
-                if (folderCount + mediaCount === 16) {
-                    media.count -= 1
-                    media.results = [...initialState.media.results.slice(0, mediaCount - 1)]
-                }
-            } else if (folderCount === 16) {
-                folders = [action.payload, ...initialState.folders.results.slice(0, folderCount - 1)]
-            }
-            var folderFinal = JSON.parse(JSON.stringify(initialState.folders))
-            folderFinal.results = folders
-            if (folderFinal.count !== 16) {
-                folderFinal.count += 1
-            }
             return {
-                ...initialState,
-                folders: folderFinal,
-                media: media
+                ...initialState
             }
+
+
         case 'DELETE_FOLDER':
             return {
                 ...initialState,
@@ -59,23 +42,8 @@ export const MediaLibraryReducer = (initialState, action) => {
                 mediaOffset: Number(initialState.mediaOffset) + Number(action.payload.count)
             }
         case 'CREATE_MEDIA':
-            const folderCountMedia = initialState?.folders?.count;
-            const mediaCountMedia = initialState?.media?.count;
-            var foldersMedia = JSON.parse(JSON.stringify(initialState?.folders))
-            var mediaMedia = JSON.parse(JSON.stringify(initialState?.media))
-            if (folderCountMedia && folderCountMedia === 16) {
-                foldersMedia.results.slice(0, 15)
-                mediaMedia.results = [action.payload, ...mediaMedia.results]
-            } else if (mediaCountMedia && folderCountMedia + mediaCountMedia === 16) {
-                mediaMedia.results = [action.payload, ...mediaMedia.results.slice(0, mediaCountMedia - 1)]
-            } else {
-                mediaMedia.results = [action.payload, ...mediaMedia.results]
-                mediaMedia.count += 1
-            }
             return {
                 ...initialState,
-                media: mediaMedia,
-                folder: foldersMedia
             }
         case 'DELETE_MEDIA':
             return {

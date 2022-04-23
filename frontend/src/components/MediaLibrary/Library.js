@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, useReducer, createRef } from 'react';
+import React, { useEffect, useContext, useState, useReducer, useRef, createRef } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -31,7 +31,6 @@ export const Library = (props) => {
     const [active, setActive] = useState(1)
     const [pageClicked, setPageClicked] = useState(null);
 
-
     useEffect(() => {
         (async () => {
             const response = await getFoldersAndMedia(dispatch, state?.curFolder?.id, pageClicked, userData.user.token.key)
@@ -56,6 +55,7 @@ export const Library = (props) => {
         formData.append('name', mediaName)
         formData.append('folder', state.curFolder.id)
         await createMedia(dispatch, formData, userData.user.token.key)
+        await getFoldersAndMedia(dispatch, state?.curFolder?.id, pageClicked, userData.user.token.key)
     }
 
     const handleFolderSubmit = async (e) => {
@@ -65,6 +65,7 @@ export const Library = (props) => {
             name: folderName
         }
         await createFolder(dispatch, payload, userData.user.token.key)
+        await getFoldersAndMedia(dispatch, state?.curFolder?.id, pageClicked, userData.user.token.key)
     }
 
     const handleBackClick = (e) => {
@@ -128,13 +129,14 @@ export const Library = (props) => {
                 </Form>
             </Popover.Body>
         </Popover>)
+
     return (
         <Container className='border'>
             <Row xs={'auto'} style={{ justifyContent: 'right', paddingBottom: '1em', paddingTop: '0.2em' }}>
                 <Col className='me-auto' >
                     {state?.curFolder &&
                         <Button variant='info' style={{ justifyContent: 'center' }}
-                            onClick={ (e)=>props?.handleInsertImage(e) }>
+                            onClick={(e) => handleBackClick(e)} data-modal="false">
                             <Image
                                 src={previous}
                                 alt='previous_button'
@@ -144,7 +146,7 @@ export const Library = (props) => {
                     }
                 </Col>
                 <Col >
-                    <OverlayTrigger trigger="click" placement={'left'} overlay={overlayFolder}>
+                    <OverlayTrigger trigger="click" placement={'left'} overlay={overlayFolder} >
                         <Button variant="success">
                             <Image
                                 src={add_folder}
@@ -156,7 +158,7 @@ export const Library = (props) => {
                 </Col>
                 <Col >
                     {state?.curFolder &&
-                        <OverlayTrigger trigger="click" placement={'left'} overlay={overlayMedia}>
+                        <OverlayTrigger trigger="click" placement={'left'} overlay={overlayMedia} >
                             <Button variant='success'>
                                 <Image
                                     src={image_upload}
@@ -168,13 +170,13 @@ export const Library = (props) => {
                     }
                 </Col>
             </Row>
-            <Row xs={'auto'} style={{maxWidth:'700px'}}  >
+            <Row xs={'auto'} style={{ maxWidth: '700px' }}  >
                 {state?.foldersAndMedia?.results &&
                     state.foldersAndMedia.results.map((folderOrMedia, index) => {
                         if (folderOrMedia.type === 'folder') {
                             return (
-                                <Col key={index} id={folderOrMedia.id} 
-                                style={{ paddingBottom: '1em', textAlign: 'center' }}>
+                                <Col key={index} id={folderOrMedia.id}
+                                    style={{ paddingBottom: '1em', textAlign: 'center' }}>
                                     <Image
                                         src={folder_img}
                                         onClick={(e) => { handleFolderClick(e) }}
