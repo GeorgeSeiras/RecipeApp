@@ -3,12 +3,88 @@ import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import ReactHtmlParser from 'html-react-parser';
+import {
+    createPlateUI,
+    HeadingToolbar,
+    Plate,
+    createBlockquotePlugin,
+    createBoldPlugin,
+    createCodePlugin,
+    createHeadingPlugin,
+    createHighlightPlugin,
+    createKbdPlugin,
+    createItalicPlugin,
+    createLinkPlugin,
+    createListPlugin,
+    createMediaEmbedPlugin,
+    createNodeIdPlugin,
+    createParagraphPlugin,
+    createDndPlugin,
+    createStrikethroughPlugin,
+    createSubscriptPlugin,
+    createSuperscriptPlugin,
+    createTablePlugin,
+    createTodoListPlugin,
+    createUnderlinePlugin,
+    createComboboxPlugin,
+    createMentionPlugin,
+    createFontColorPlugin,
+    createFontBackgroundColorPlugin,
+    createDeserializeMdPlugin,
+    createDeserializeCsvPlugin,
+    createFontSizePlugin,
+    createHorizontalRulePlugin,
+    createPlugins,
+    createDeserializeDocxPlugin,
+    createJuicePlugin,
+    createAlignPlugin,
+
+} from '@udecode/plate'
+import { CONFIG } from '../RichTextEditor/config'
+
+import { customImagePlugin } from '../RichTextEditor/CustomImagePlugin';
 
 export default function ActualRecipe(props) {
     const [prep, setPrep] = useState();
     const [cook, setCook] = useState();
     const [total, setTotal] = useState();
-
+    const plugins = createPlugins([
+        createParagraphPlugin(),
+        createBlockquotePlugin(),
+        createTodoListPlugin(),
+        createHeadingPlugin(),
+        createHorizontalRulePlugin(),
+        createLinkPlugin(),
+        createListPlugin(),
+        createTablePlugin(),
+        createMediaEmbedPlugin(),
+        createBoldPlugin(),
+        createCodePlugin(),
+        createItalicPlugin(),
+        createHighlightPlugin(),
+        createUnderlinePlugin(),
+        createStrikethroughPlugin(),
+        createSubscriptPlugin(),
+        createSuperscriptPlugin(),
+        createFontColorPlugin(),
+        createFontBackgroundColorPlugin(),
+        createFontSizePlugin(),
+        createKbdPlugin(),
+        createNodeIdPlugin(),
+        createDndPlugin(),
+        createComboboxPlugin(),
+        createMentionPlugin(),
+        createDeserializeMdPlugin(),
+        createDeserializeCsvPlugin(),
+        createDeserializeDocxPlugin(),
+        createJuicePlugin(),
+        createAlignPlugin(CONFIG.align),
+        customImagePlugin()
+    ], {
+        // Plate components
+        components: createPlateUI(),
+    });
 
     /*
     ** This function takes seconds as input and returns
@@ -46,10 +122,9 @@ export default function ActualRecipe(props) {
 
     }, [props.recipe])
 
-
     return (
         <div>
-            {props.recipe &&
+            {props?.recipe &&
                 <Container style={{
                     paddingTop: '2%',
                     margin: 'auto',
@@ -59,9 +134,16 @@ export default function ActualRecipe(props) {
                     paddingRight: '5%'
                 }}>
                     <Row>
-                        <h4 style={{ paddingTop: '2%', paddingLeft: '0', paddingRight: '0' }}>
-                            {props.recipe.desc}
-                        </h4>
+                        <Plate
+                            id='2'
+                            initialValue={props?.recipe?.desc || [{ children: [{ text: '', },], },]}
+                            editableProps={{
+                                readOnly: true,
+                            }}
+                            plugins={plugins}
+                        >
+                        </Plate>
+
                     </Row>
                     <Row xs={'auto'} style={{
                         margin: 'auto',

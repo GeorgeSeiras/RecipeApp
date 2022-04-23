@@ -1,0 +1,5 @@
+.modal-dialog{
+    max-width: none !important;
+    padding-left:50px;
+    padding-right:50px;
+}

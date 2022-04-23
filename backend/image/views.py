@@ -3,13 +3,47 @@ from django.http.response import JsonResponse
 from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.views import APIView
 from rest_framework import status
+import environ
+import os
 
-from utils.custom_exceptions import CustomException
+from utils.custom_exceptions import CustomException, CustomExceptionUpload
 from backend.decorators import user_required
 from user.models import User
 from recipe.models import Recipe
 from .serializers import DeleteRecipeImagesSerializer, RecipeImageSerializer
-from .models import RecipeImage
+from .models import RecipeImage, get_file_path
+
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
+
+env = environ.Env()
+environ.Env.read_env()
+
+
+class ImageUpload(APIView):
+    def post(self, request):
+        if('upload' not in request.data):
+            raise CustomExceptionUpload('No file found', 400)
+        file = request.data['upload']
+        filename = get_file_path(None, str(file))
+        path = default_storage.save(filename, ContentFile(file.read()))
+        response = {
+
+            "url": 'http://'+env('URL')+'/media/'+path,
+
+        }
+        return JsonResponse(response)
+
+    def delete(self, request):
+        filepath = request.data['url']
+        split_text = filepath.split('/')
+        if(not os.path.exists(os.path.join(settings.MEDIA_ROOT,
+                                           split_text[len(split_text)-1]))):
+            raise CustomException('File not found', 404)
+        os.remove(os.path.join(settings.MEDIA_ROOT,
+                  split_text[len(split_text)-1]))
+        return JsonResponse({'result': 'ok'})
 
 
 class RecipeImageView(APIView):
@@ -74,6 +108,7 @@ class RecipeImageDetail(APIView):
             image.delete()
             return JsonResponse({"result": "ok"})
 
+
 class RecipeImagesView(APIView):
 
     @user_required
@@ -92,5 +127,6 @@ class RecipeImagesView(APIView):
                     {"message':'Cannot edit another user's recipe"})
             serializer = DeleteRecipeImagesSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            RecipeImage.objects.filter(id__in=serializer.validated_data['images']).delete()
+            RecipeImage.objects.filter(
+                id__in=serializer.validated_data['images']).delete()
             return JsonResponse({"result": 'ok'})

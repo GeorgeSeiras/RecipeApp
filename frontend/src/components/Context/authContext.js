@@ -26,14 +26,16 @@ export const AuthProvider = ({ children }) => {
                         'Authorization': 'Bearer '.concat(user.token.key)
                     }
                 };
-                await fetch(`${API_URL}/user/me`, requestOptions)
-                    .then(res => res.json())
-                    .then(data => {
-                        setUser({...user,
-                            user: data.user,
-                            isAuth:true
-                        })
-                    }).catch(() => setUser({ ...user, isAuth: false }))
+                const response = await fetch(`${API_URL}/user/me`, requestOptions)
+                if (response.status !== 200) {
+                    cookies.remove('token', { path: '/' });
+                }
+                const data = await response.json()
+                setUser({
+                    ...user,
+                    user: data.user,
+                    isAuth: true
+                })
             } else {
                 setUser({ ...user, isAuth: false })
             }

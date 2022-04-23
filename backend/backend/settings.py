@@ -57,7 +57,8 @@ INSTALLED_APPS = [
     'comment',
     'image',
     'hitcount',
-    'ipware'
+    'ipware',
+    'media_library'
 ]
 
 AUTH_USER_MODEL = 'user.User'
@@ -219,3 +220,5 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
+CKEDITOR_UPLOAD_PATH = "/media/"

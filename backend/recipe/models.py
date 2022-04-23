@@ -50,8 +50,7 @@ class Recipe(models.Model):
     )
     prep_time = models.IntegerField()
     cook_time = models.IntegerField()
-    desc = models.TextField(
-        max_length=1000,
+    desc = models.JSONField(
         blank=True,
         null=True
     )

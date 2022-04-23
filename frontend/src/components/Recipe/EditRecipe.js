@@ -9,7 +9,9 @@ import { updateRecipe, deleteRecipeImages, updateRecipeState } from '../../actio
 import { uploadRecipeImages } from '../../actions/RecipeActions';
 import { UserContext } from '../Context/authContext';
 import useError from '../ErrorHandler/ErrorHandler';
+import { usePlateEditorRef } from '@udecode/plate-core';
 
+import './editRecipe.css'
 export default function EditRecipe(props) {
 
     const [title, setTitle] = useState(props?.recipe?.title || '');
@@ -27,6 +29,7 @@ export default function EditRecipe(props) {
     const [cuisine, setCuisine] = useState(props?.recipe?.cuisine || ['']);
     const [show, setShow] = useState(false);
     const {addError} = useError();
+    const editor = usePlateEditorRef(2)
 
     const userData = useContext(UserContext);
 
@@ -150,6 +153,7 @@ export default function EditRecipe(props) {
         }
         if (recipeResponse?.result) {
             setShow(false)
+            // window.location.reload()
         }
     }
 
@@ -159,10 +163,10 @@ export default function EditRecipe(props) {
             <Button size='sm' onClick={() => setShow(true)} >
                 EDIT
             </Button>
-            <Modal show={show} onHide={() => setShow(false)} >
+            <Modal show={show} onHide={() => setShow(false)} enforceFocus={false}>
                 <Modal.Header closeButton />
-                <Modal.Title>Edit Recipe</Modal.Title>
-                <Modal.Body>
+                <Modal.Title style={{textAlign:'center'}}>Edit Recipe</Modal.Title>
+                <Modal.Body >
                     <Form onSubmit={(e) => handleSubmit(e)}>
                         <EditableRecipeBody title={title} setTitle={setTitle} description={description} setDescription={setDescription} prepHours={prepHours} setPrepHours={setPrepHours}
                             prepMins={prepMins} setPrepMins={setPrepMins} cookHours={cookHours} setCookHours={setCookHours} cookMins={cookMins} setCookMins={setCookMins} servings={servings} setServings={setServings} ingredients={ingredients}
