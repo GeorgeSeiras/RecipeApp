@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, useReducer, useRef, createRef } from 'react';
+import React, { useEffect, useContext, useState, useReducer, createRef } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -12,7 +12,7 @@ import Modal from 'react-bootstrap/Modal';
 import { UserContext } from '../Context/authContext';
 import { MediaLibraryReducer } from '../../reducers/MediaLibraryReducer';
 import Pagination from './Pagination';
-import { getFoldersAndMedia, setCurFolder, createFolder, createMedia, getPageCount, setPageCount, deleteFolder, deleteMedia } from '../../actions/MediaLibraryActions';
+import { getFoldersAndMedia, setCurFolder, createFolder, createMedia, deleteFolder, deleteMedia } from '../../actions/MediaLibraryActions';
 import add_folder from '../../static/add_folder.webp'
 import image_upload from '../../static/image_upload.webp'
 import folder_img from '../../static/folder_img.svg'
@@ -253,7 +253,6 @@ export const Library = (props) => {
                                 </Col>
                             )
                         }
-
                     })
                 }
             </Row>

@@ -1,4 +1,3 @@
-import { usePlateEditorRef } from "@udecode/plate-core";
 
 export const initialState = {
     images: null,

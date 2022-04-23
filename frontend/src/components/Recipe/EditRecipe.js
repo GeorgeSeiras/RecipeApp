@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useReducer, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 
 import EditableRecipeBody from './EditableRecipeBody';
-import { updateRecipe, deleteRecipeImages, updateRecipeState } from '../../actions/RecipeActions';
+import { updateRecipe, deleteRecipeImages } from '../../actions/RecipeActions';
 import { uploadRecipeImages } from '../../actions/RecipeActions';
 import { UserContext } from '../Context/authContext';
 import useError from '../ErrorHandler/ErrorHandler';
-import { usePlateEditorRef } from '@udecode/plate-core';
 
 import './editRecipe.css'
 export default function EditRecipe(props) {
@@ -28,8 +27,7 @@ export default function EditRecipe(props) {
     const [course, setCourse] = useState(props?.recipe?.course || ['']);
     const [cuisine, setCuisine] = useState(props?.recipe?.cuisine || ['']);
     const [show, setShow] = useState(false);
-    const {addError} = useError();
-    const editor = usePlateEditorRef(2)
+    const { addError } = useError();
 
     const userData = useContext(UserContext);
 
@@ -103,7 +101,6 @@ export default function EditRecipe(props) {
                     'ingredient': ingredient[2]
                 })
             })
-        const imagesToDelete = [];
         const images = []
         if (thumbnail !== null) {
             images.push({ 'image': thumbnail, 'type': 'THUMBNAIL' })
@@ -149,11 +146,11 @@ export default function EditRecipe(props) {
         const imageResponse = await uploadRecipeImages(props.dispatch, form, userData.user.token.key, props.recipe.id);
         const recipeResponse = await updateRecipe(props.dispatch, payload, userData.user.token.key, props.recipe.id);
         if (!imageResponse?.result) {
-           addError('Error while modifying images')
+            addError('Error while modifying images')
         }
         if (recipeResponse?.result) {
             setShow(false)
-            // window.location.reload()
+            window.location.reload()
         }
     }
 
@@ -165,7 +162,7 @@ export default function EditRecipe(props) {
             </Button>
             <Modal show={show} onHide={() => setShow(false)} enforceFocus={false}>
                 <Modal.Header closeButton />
-                <Modal.Title style={{textAlign:'center'}}>Edit Recipe</Modal.Title>
+                <Modal.Title style={{ textAlign: 'center' }}>Edit Recipe</Modal.Title>
                 <Modal.Body >
                     <Form onSubmit={(e) => handleSubmit(e)}>
                         <EditableRecipeBody title={title} setTitle={setTitle} description={description} setDescription={setDescription} prepHours={prepHours} setPrepHours={setPrepHours}

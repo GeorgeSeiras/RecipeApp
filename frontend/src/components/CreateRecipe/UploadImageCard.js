@@ -7,7 +7,6 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 
 import plus_sign from '../../static/plus_sign.svg'
-import { instanceOf } from 'prop-types';
 
 export default function ImageUploadCard(props) {
     const [hiddenInputs, setHiddenInputs] = useState([]);
