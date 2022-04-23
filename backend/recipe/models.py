@@ -4,7 +4,6 @@ from django.db.models.deletion import CASCADE
 from django.db.models import Avg
 from django.contrib.contenttypes.fields import GenericRelation
 from hitcount.models import HitCount
-from ckeditor_uploader.fields import RichTextUploadingField
 
 from rating.models import Rating
 from image.models import RecipeImage
@@ -51,8 +50,7 @@ class Recipe(models.Model):
     )
     prep_time = models.IntegerField()
     cook_time = models.IntegerField()
-    desc = RichTextUploadingField(
-        max_length=10000,
+    desc = models.JSONField(
         blank=True,
         null=True
     )

@@ -29,7 +29,7 @@ import Image from 'react-bootstrap/Image';
 import Overlay from 'react-bootstrap/Overlay';
 
 import { Library } from '../MediaLibrary/Library'
-
+import './overlay.css'
 import {
   ELEMENT_BLOCKQUOTE,
   ELEMENT_PARAGRAPH,
@@ -197,6 +197,7 @@ const CustomImageUploadButton = ({ id, getImageUrl, ...props }) => {
       {
         type: getPluginType(editor, ELEMENT_IMAGE),
         url,
+        width: 540,
         children: [text],
       },
       {

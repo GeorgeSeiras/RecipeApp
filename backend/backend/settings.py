@@ -58,7 +58,6 @@ INSTALLED_APPS = [
     'image',
     'hitcount',
     'ipware',
-    'ckeditor',
     'media_library'
 ]
 

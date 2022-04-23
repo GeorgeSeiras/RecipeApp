@@ -9,6 +9,7 @@ import { updateRecipe, deleteRecipeImages, updateRecipeState } from '../../actio
 import { uploadRecipeImages } from '../../actions/RecipeActions';
 import { UserContext } from '../Context/authContext';
 import useError from '../ErrorHandler/ErrorHandler';
+import { usePlateEditorRef } from '@udecode/plate-core';
 
 import './editRecipe.css'
 export default function EditRecipe(props) {
@@ -28,6 +29,7 @@ export default function EditRecipe(props) {
     const [cuisine, setCuisine] = useState(props?.recipe?.cuisine || ['']);
     const [show, setShow] = useState(false);
     const {addError} = useError();
+    const editor = usePlateEditorRef(2)
 
     const userData = useContext(UserContext);
 
@@ -151,6 +153,7 @@ export default function EditRecipe(props) {
         }
         if (recipeResponse?.result) {
             setShow(false)
+            window.location.reload()
         }
     }
 
