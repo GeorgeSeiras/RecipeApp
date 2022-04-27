@@ -4,7 +4,11 @@ from recipe.models import Recipe
 from user.models import User
 from .models import Comment
 
-
+class CommentSerializer(serializers.Serializer):
+    class Meta:
+        model=Recipe
+        fields='__all__'
+        
 class CreateCommentSerializer(serializers.Serializer):
     text = serializers.CharField()
     parent = serializers.PrimaryKeyRelatedField(

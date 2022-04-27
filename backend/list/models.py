@@ -6,10 +6,12 @@ from django.db.models.fields.related import ForeignKey, ManyToManyField
 from user.models import User
 from recipe.models import Recipe
 
+
 class List(models.Model):
     user = ForeignKey(User, on_delete=CASCADE)
     name = CharField(max_length=20)
     desc = CharField(max_length=150)
+    removed = models.BooleanField(default=False)
 
     def to_dict(self):
         dict = {}
@@ -34,7 +36,7 @@ class RecipesInList(models.Model):
         dict = {}
         dict['recipe'] = self.recipe.to_dict()
         dict['list'] = self.list.to_dict()
-        return dict 
+        return dict
 
     def recipes_in_list_to_list(recipes_in_list):
         list = []

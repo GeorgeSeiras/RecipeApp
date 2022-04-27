@@ -58,7 +58,9 @@ INSTALLED_APPS = [
     'image',
     'hitcount',
     'ipware',
-    'media_library'
+    'media_library',
+    'generic_relations',
+    'report'
 ]
 
 AUTH_USER_MODEL = 'user.User'

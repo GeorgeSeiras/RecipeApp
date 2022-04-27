@@ -5,7 +5,6 @@ import json
 
 from utils.custom_exceptions import CustomException
 
-
 class Comment(models.Model):
     recipe = models.ForeignKey('recipe.recipe', on_delete=CASCADE)
     user = models.ForeignKey('user.user', on_delete=CASCADE)
@@ -13,6 +12,7 @@ class Comment(models.Model):
     parent = models.ForeignKey(
         'self', on_delete=CASCADE, null=True)
     deleted = models.BooleanField(default=False)
+    removed = models.BooleanField(default=False)
 
     def get_parent(self):
         

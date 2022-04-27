@@ -95,3 +95,8 @@ class RecipesQuerySerializer(serializers.Serializer):
     cuisine = serializers.CharField(required=False)
     course = serializers.CharField(required=False)
     sort = serializers.ChoiceField(choices=sort_choices, required=False)
+
+class RecipeModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = '__all__'

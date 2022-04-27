@@ -3,6 +3,10 @@ from recipe.models import Recipe
 
 from list.models import List
 
+class ListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=List
+        fields='__all__'
 
 class ListCreateSerializer(serializers.Serializer):
     name = serializers.CharField()
