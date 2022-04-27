@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.exceptions import NotFound, PermissionDenied
+from rest_framework.exceptions import NotFound
 from django.db import transaction
 from django.db.models import Q
 
@@ -13,10 +13,9 @@ from list.models import List
 from comment.models import Comment
 from backend.decorators import user_required, admin_required
 from .serializers import ReportCreateSerializer, ReportQuerySerializer, ReportSerializer, ReportVerdictSerializer
-from utils.custom_exceptions import CustomException
 
 
-class ReportView(APIView):
+class ReportCreateView(APIView):
 
     @user_required
     def post(self, request):
@@ -69,6 +68,15 @@ class ReportView(APIView):
 class ReportView(APIView):
 
     @admin_required
+    def get(self,request,report_id):
+        try:
+            report = Report.objects.get(pk=report_id)
+        except Report.DoesNotExist:
+            raise NotFound('Report not found')
+        response = ReportSerializer(report)
+        return JsonResponse({'result': response.data})
+
+    @admin_required
     def put(self, request, report_id):
         with transaction.atomic():
             try:
@@ -82,15 +90,6 @@ class ReportView(APIView):
             response = ReportSerializer(report)
             return JsonResponse({'result': response.data})
 
-    @admin_required
-    def get(self,request,report_id):
-        try:
-            report = Report.objects.get(pk=report_id)
-        except Report.DoesNotExist:
-            raise NotFound('Report not found')
-        response = ReportSerializer(report)
-        return JsonResponse({'result': response.data})
-
 class ReportQuery(APIView,myPagination):
 
     @admin_required
@@ -98,7 +97,7 @@ class ReportQuery(APIView,myPagination):
         serializer = ReportQuerySerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
         query = Q()
-        if status in serializer.validated_data:
+        if 'status' in serializer.validated_data:
             query &=Q(status__iexact=serializer.validated_data['status'])
         reports = Report.objects.filter(query)
         objects = []

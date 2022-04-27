@@ -39,6 +39,7 @@ class User(AbstractUser):
         dict['id'] = self.pk
         dict['username'] = self.username
         dict['email'] = self.email
+        dict['is_staff'] = self.is_staff
         if(self.image != None):
             dict['image'] = str(self.image)
         return dict

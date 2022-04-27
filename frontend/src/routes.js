@@ -7,7 +7,7 @@ import CreateRecipe from './components/CreateRecipe/CreateRecipe';
 import EditUser from './components/EditUser/EditUser';
 import List from './components/RecipeList/List';
 import ContinueThread from './components/Comment/ContinueThread';
-import {Library} from './components/MediaLibrary/Library'
+import Reports from './components/Report/Reports'
 
 export const privateRoutes = [
     {
@@ -17,10 +17,6 @@ export const privateRoutes = [
     {
         path: '/user/:id/edit',
         element: <EditUser />
-    },
-    {
-        path: '/user/library',
-        element: <Library/>
     }
 ]
 
@@ -46,6 +42,7 @@ export const publicRoutes = [
         element: <ContinueThread />
     }
 ]
+
 export const authRoutes = [
     {
 
@@ -57,4 +54,11 @@ export const authRoutes = [
         element: <Signup />,
 
     },
+]
+
+export const adminRoutes = [
+    {
+        path: '/reports',
+        element: <Reports />
+    }
 ]

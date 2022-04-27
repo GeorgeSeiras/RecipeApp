@@ -7,8 +7,8 @@ from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 class Reason(models.TextChoices):
-    OFFENSIVE_CONTENT = 'OFFENSIVE', _('OFFENSIVE_CONTENT'),
-    UNRELATED_CONTENT = 'UNRELATED', _('UNRELATED_CONTENT'),
+    OFFENSIVE_CONTENT = 'OFFENSIVE_CONTENT', _('OFFENSIVE_CONTENT'),
+    UNRELATED_CONTENT = 'UNRELATED_CONTENT', _('UNRELATED_CONTENT'),
     OTHER = 'OTHER', _('OTHER')
 
 
