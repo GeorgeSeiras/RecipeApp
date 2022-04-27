@@ -8,6 +8,7 @@ import EditUser from './components/EditUser/EditUser';
 import List from './components/RecipeList/List';
 import ContinueThread from './components/Comment/ContinueThread';
 import Reports from './components/Report/Reports'
+import Report from './components/Report/Report';
 
 export const privateRoutes = [
     {
@@ -60,5 +61,9 @@ export const adminRoutes = [
     {
         path: '/reports',
         element: <Reports />
+    },
+    {
+        path:'/reports/:reportId',
+        element: <Report/>
     }
 ]

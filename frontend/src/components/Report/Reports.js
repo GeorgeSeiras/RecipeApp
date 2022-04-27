@@ -86,7 +86,7 @@ export default function Reports() {
                 <Table>
                     <thead>
                         <tr>
-                            <th style={{ textAlign: 'center' }}>ID</th>
+                            <th style={{ textAlign: 'center' }}></th>
                             <th style={{ textAlign: 'center' }}>STATUS</th>
                             <th style={{ textAlign: 'center' }}>REASON</th>
                             <th style={{ textAlign: 'center' }}>DESCRIPTION</th>
@@ -95,10 +95,8 @@ export default function Reports() {
                     <tbody>
                         {state?.reports &&
                             state.reports.results.map((report, index) => {
-
-                                console.log(index)
                                 return (
-                                    <tr key={index} id={index}
+                                    <tr key={index} id={report.id}
                                         onClick={(e) => handleReportClick(e)}
                                         style={{ cursor: 'pointer' }}
                                     >

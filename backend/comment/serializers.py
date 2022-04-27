@@ -4,11 +4,18 @@ from recipe.models import Recipe
 from user.models import User
 from .models import Comment
 
-class CommentSerializer(serializers.Serializer):
+
+class CommentSerializer(serializers.ModelSerializer):
+    model = serializers.SerializerMethodField('model_name')
+
+    def model_name(self, object):
+        return 'comment'
+
     class Meta:
-        model=Recipe
-        fields='__all__'
-        
+        model = Comment
+        fields = ['id,recipe,user,parent,text,deleted,removed,model']
+
+
 class CreateCommentSerializer(serializers.Serializer):
     text = serializers.CharField()
     parent = serializers.PrimaryKeyRelatedField(
