@@ -11,11 +11,11 @@ from recipe.models import Recipe
 from list.models import List
 from comment.models import Comment
 from backend.decorators import user_required, admin_required
-from .serializers import ReportCreateSerializer, ReportSerializer
+from .serializers import ReportCreateSerializer, ReportSerializer, ReportVerdictSerializer
 from utils.custom_exceptions import CustomException
 
 
-class ReportView(APIView, myPagination):
+class ReportView(APIView):
 
     @user_required
     def post(self, request):
@@ -55,11 +55,30 @@ class ReportView(APIView, myPagination):
                 except Comment.DoesNotExist:
                     raise NotFound('Comment not found')
             report = Report.objects.create(
-                user = serializer.validated_data['user'],
-                reason = serializer.validated_data['reason'],
-                desc = serializer.validated_data['desc'],
-                status = serializer.validated_data['status'],
-                content_object = content_object
+                user=serializer.validated_data['user'],
+                reason=serializer.validated_data['reason'],
+                desc=serializer.validated_data['desc'],
+                status=serializer.validated_data['status'],
+                content_object=content_object
             )
             report_json = ReportSerializer(report)
             return JsonResponse({'result': report_json.data})
+
+
+class ReportView(APIView):
+
+    def put(self, request, report_id):
+        try:
+            user = User.objects.get(username=request.user)
+        except User.DoesNotExist:
+            raise NotFound('User not found')
+        try:
+            report = Report.objects.get(pk=report_id)
+        except Report.DoesNotExist:
+            raise NotFound('Report not found')
+        serializer = ReportVerdictSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        report.status = serializer.validated_data['status']
+        report.save()
+        response = ReportSerializer(report)
+        return JsonResponse({'result': response.data})

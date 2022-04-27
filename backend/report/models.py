@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.deletion import CASCADE
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 
@@ -49,3 +50,14 @@ class Report(models.Model):
         dict['content_object'] = self.content_object
         dict['object_id'] = self.object_id
         return dict
+
+@receiver(models.signals.pre_save, sender=Report)
+def report_pre_save(sender, instance, **kwargs):
+    content_object = instance.content_object
+    if instance.status == Status.REMOVED:
+        if(content_object.removed == False):
+            content_object.removed = True
+            content_object.save()
+    else:
+        content_object.removed = False
+        content_object.save()

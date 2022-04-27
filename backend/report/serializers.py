@@ -11,6 +11,9 @@ from comment.models import Comment
 from comment.serializers import CommentSerializer
 from .models import Report, Reason, Status, Type
 
+class ReportVerdictSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(choices=Status.choices)
+
 
 class ReportSerializer(serializers.ModelSerializer):
     content_object = GenericRelatedField({

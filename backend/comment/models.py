@@ -71,8 +71,8 @@ class Comment(models.Model):
             
 
 '''
-    instance.deleted == True means that either
-    a moderator or the user deleted the comment
+    instance.deleted == True means that 
+    the user deleted the comment
 '''
 
 @receiver(models.signals.pre_save, sender=Comment)

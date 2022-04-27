@@ -7,7 +7,7 @@ from . import views
 urlpatterns = [
     path('report',views.ReportView.as_view()), #post report
     # path('reports'), #get reports w/ query params
-    # path('report/<int:report_id>') #get:view report, put:pass verdict
+    path('report/<int:report_id>',views.ReportView.as_view()) #get:view report, put:pass verdict
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
