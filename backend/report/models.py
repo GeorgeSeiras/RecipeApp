@@ -6,7 +6,6 @@ from django.db.models.deletion import CASCADE
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
-
 class Reason(models.TextChoices):
     OFFENSIVE_CONTENT = 'OFFENSIVE', _('OFFENSIVE_CONTENT'),
     UNRELATED_CONTENT = 'UNRELATED', _('UNRELATED_CONTENT'),
@@ -38,18 +37,6 @@ class Report(models.Model):
     object_id = models.PositiveBigIntegerField()
     content_object = GenericForeignKey() 
 
-    def to_dict(self):
-        print(self.content_type)
-        dict = {}
-        dict['id'] = self.id
-        dict['user'] = self.user.to_dict()
-        dict['reason'] = self.reason
-        dict['desc'] = self.desc
-        dict['status'] = self.status
-        dict['content_type'] = self.content_type
-        dict['content_object'] = self.content_object
-        dict['object_id'] = self.object_id
-        return dict
 
 @receiver(models.signals.pre_save, sender=Report)
 def report_pre_save(sender, instance, **kwargs):

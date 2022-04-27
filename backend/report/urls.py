@@ -5,9 +5,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('report',views.ReportView.as_view()), #post report
-    # path('reports'), #get reports w/ query params
-    path('report/<int:report_id>',views.ReportView.as_view()) #get:view report, put:pass verdict
+    path('report', views.ReportView.as_view()),
+    path('reports', views.ReportQuery.as_view()),
+    path('report/<int:report_id>', views.ReportView.as_view())
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
