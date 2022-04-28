@@ -25,3 +25,11 @@ export const NormalRoute = ({ children }) => {
     }
     return children
 }
+
+export const AdminRoute = ({ children }) => {
+    const { user } = useContext(UserContext);
+    if (user.isAuth === null) {
+        return null
+    }
+    return !user.user.is_staff ? <Navigate to='/' /> : children
+}

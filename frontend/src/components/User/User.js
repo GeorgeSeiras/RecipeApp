@@ -17,6 +17,7 @@ import { UserContext } from '../Context/authContext';
 import { UserReducer } from '../../reducers/UserReducer'
 import { getUser } from '../../actions/UserActions';
 import useError from '../ErrorHandler/ErrorHandler';
+import ReportButton from '../Report/CreateReportButton';
 
 export default function User() {
     const [recipesState, recipesDispatch] = useReducer(RecipesReducer);
@@ -60,6 +61,11 @@ export default function User() {
         <Container>
             {userState?.user &&
                 <Container>
+                    {userData?.user?.user &&
+                        <Container style={{ textAlign: 'right' }}>
+                            <ReportButton id={userState.user.id} userData={userData} type={'USER'} />
+                        </Container>
+                    }
                     <UserInfo user={userState?.user} />
                     {window.location.pathname.split('/').pop() === String(userData?.user?.user?.username) &&
                         <Button variant="success"
@@ -71,12 +77,12 @@ export default function User() {
                         <Col style={{ width: '15%', paddingLeft: '0', paddingTop: '0.5em' }}>
                             <RecipeLists user={userState?.user} />
                         </Col>
-                        <Col style={{ width: '85%', paddingLeft: '0', paddingRight: '0'}}>
-                                <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} username={username} />
-                                <RecipeCards response={recipesState?.recipes} />
-                                {recipesState?.length > 0 &&
-                                    <Pagination response={recipesState?.recipes} active={active} setPageClicked={setPageClicked} />
-                                }
+                        <Col style={{ width: '85%', paddingLeft: '0', paddingRight: '0' }}>
+                            <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} username={username} />
+                            <RecipeCards response={recipesState?.recipes} />
+                            {recipesState?.length > 0 &&
+                                <Pagination response={recipesState?.recipes} active={active} setPageClicked={setPageClicked} />
+                            }
                         </Col>
                     </Row>
                 </Container>

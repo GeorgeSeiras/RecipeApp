@@ -2,6 +2,7 @@ import React, { useState, useEffect, useReducer, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Modal from 'react-bootstrap/Modal';
@@ -16,6 +17,7 @@ import ListRecipeCards from './ListRecipeCards';
 import PaginationBar from '../Home/Pagination';
 import SearchBar from '../Home/SearchBar';
 import useError from '../ErrorHandler/ErrorHandler';
+import ReportButton from '../Report/CreateReportButton'
 
 export default function List() {
     const userData = useContext(UserContext);
@@ -41,7 +43,6 @@ export default function List() {
 
     useEffect(() => {
         (async () => {
-            console.log(stateList?.list && !stateRecipesList?.recipes)
             if (stateList?.list && !stateRecipesList?.recipes) {
                 const res = await getListRecipes(dispatchRecipesList, listId, queryParams, pageClicked);
                 if (res) {
@@ -71,19 +72,28 @@ export default function List() {
     }
 
     return (
-        <Container style={{paddingBottom:'3em'}}>
-            {userData?.user?.isAuth && stateList?.list?.user?.username === userData?.user?.user?.username &&
-                <DropdownButton
-                    variant={'danger'}
-                    title={String.fromCharCode('8942')}
-                    style={{ paddingTop: '0.5em' }}
-                >
-                    <Dropdown.Item onClick={() => setShowModal(true)}>
-                        Delete List
-                    </Dropdown.Item>
-                </DropdownButton>
+        <Container style={{ paddingBottom: '3em' }}>
+            <Row>
+                <Col>
+                    {userData?.user?.isAuth && stateList?.list?.user?.username === userData?.user?.user?.username &&
+                        <DropdownButton
+                            variant={'danger'}
+                            title={String.fromCharCode('8942')}
+                            style={{ paddingTop: '0.5em' }}
+                        >
+                            <Dropdown.Item onClick={() => setShowModal(true)}>
+                                Delete List
+                            </Dropdown.Item>
+                        </DropdownButton>
 
-            }
+                    }
+                </Col>
+                <Col style={{textAlign:'right',paddingTop:'10px'}}>
+                    {userData?.user?.user && stateList &&
+                        <ReportButton id={stateList.list.id} userData={userData} type={'LIST'} />
+                    }
+                </Col>
+            </Row>
             {
                 stateList?.list?.desc &&
                 <Row style={{
@@ -98,7 +108,7 @@ export default function List() {
             <Row style={{
                 paddingLeft: '2%',
                 paddingRight: '2%',
-                paddingBottom:'1em'
+                paddingBottom: '1em'
             }}>
                 <ListRecipeCards state={stateRecipesList}
                     setRerender={setRerender} rerender={rerender} user={stateList?.list?.user} dispatch={dispatchRecipesList} />

@@ -1,14 +1,13 @@
-from typing import Optional
 from rest_framework import serializers
 
 from user.models import User
 from .models import Recipe, Ingredient
-from .enum import sort_choices, query_rating_choices
+from .enum import sort_choices
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-    amount = serializers.CharField(required=False,allow_blank=True)
-    unit = serializers.CharField(required=False,allow_blank=True)
+    amount = serializers.CharField(required=False, allow_blank=True)
+    unit = serializers.CharField(required=False, allow_blank=True)
     ingredient = serializers.CharField()
     recipe = serializers.RelatedField(source="recipe.recipe", read_only=True)
 
@@ -38,7 +37,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.Serializer):
-    user = serializers.PrimaryKeyRelatedField(many=False, queryset=User.objects.all())
+    user = serializers.PrimaryKeyRelatedField(
+        many=False, queryset=User.objects.all())
     title = serializers.CharField()
     prep_time = serializers.IntegerField()
     cook_time = serializers.IntegerField()
@@ -54,7 +54,8 @@ class RecipeSerializer(serializers.Serializer):
         recipe = Recipe.objects.create(**self.validated_data)
         ingredients = []
         for ingredient in ingredient_data:
-            created_ingredient = IngredientSerializer.create(ingredient, recipe)
+            created_ingredient = IngredientSerializer.create(
+                ingredient, recipe)
             ingredients.append(created_ingredient)
         res = Recipe.objects.get(pk=recipe.id)
         return res.to_dict()
@@ -67,20 +68,23 @@ class RecipePatchSerializer(serializers.Serializer):
     desc = serializers.JSONField(required=False)
     ingredients = IngredientSerializer(required=False, many=True)
     servings = serializers.IntegerField(required=False)
-    cuisine = serializers.ListField(required=False, child=serializers.CharField())
-    course = serializers.ListField(required=False, child=serializers.CharField())
-    steps = serializers.ListField(required=False, child=serializers.CharField())
+    cuisine = serializers.ListField(
+        required=False, child=serializers.CharField())
+    course = serializers.ListField(
+        required=False, child=serializers.CharField())
+    steps = serializers.ListField(
+        required=False, child=serializers.CharField())
 
 
 class IngredientCreateSerializer(serializers.Serializer):
-    amount = serializers.CharField(required=False,allow_blank=True)
-    unit = serializers.CharField(required=False,allow_blank=True)
+    amount = serializers.CharField(required=False, allow_blank=True)
+    unit = serializers.CharField(required=False, allow_blank=True)
     ingredient = serializers.CharField()
 
 
 class IngredientPatchSerializer(serializers.Serializer):
-    amount = serializers.CharField(required=False,allow_blank=True)
-    unit = serializers.CharField(required=False,allow_blank=True)
+    amount = serializers.CharField(required=False, allow_blank=True)
+    unit = serializers.CharField(required=False, allow_blank=True)
     ingredient = serializers.CharField(required=False)
 
 
@@ -95,3 +99,14 @@ class RecipesQuerySerializer(serializers.Serializer):
     cuisine = serializers.CharField(required=False)
     course = serializers.CharField(required=False)
     sort = serializers.ChoiceField(choices=sort_choices, required=False)
+
+
+class RecipeModelSerializer(serializers.ModelSerializer):
+    model = serializers.SerializerMethodField('model_name')
+
+    def model_name(self,object):
+        return 'recipe'
+
+    class Meta:
+        model = Recipe
+        fields = ['id','title','user','cuisine','course','desc','servings','steps','prep_time','cook_time','model']

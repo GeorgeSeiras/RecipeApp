@@ -1,9 +1,9 @@
 import React from 'react';
 import './App.css';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
-import { authRoutes, publicRoutes, privateRoutes, } from './routes';
+import { authRoutes, publicRoutes, privateRoutes, adminRoutes } from './routes';
 import { AuthProvider } from './components/Context/authContext';
-import { PrivateRoute, NoLoggedInRoute, NormalRoute } from './components/CustomRoutes'
+import { PrivateRoute, NoLoggedInRoute, NormalRoute, AdminRoute } from './components/CustomRoutes'
 import Navigation from './components/NavBar/NavBar';
 import { ErrorHandler } from './components/ErrorHandler/ErrorHandler';
 import Page_404 from './components/404';
@@ -38,6 +38,13 @@ function App() {
                 key={route.path}
                 exact path={route.path}
                 element={<NoLoggedInRoute>{route.element}</NoLoggedInRoute>}
+              />
+            ))}
+            {adminRoutes.map((route) => (
+              <Route
+                key={route.path}
+                exact path={route.path}
+                element={<AdminRoute>{route.element}</AdminRoute>}
               />
             ))}
             <Route key="*" path="*" element={<Page_404 />} />

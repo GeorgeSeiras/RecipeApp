@@ -46,6 +46,7 @@ export const Library = (props) => {
     }, [state?.curFolder, pageClicked])
 
     const handleFolderClick = (e) => {
+        e.preventDefault()
         const folderId = e.target.parentNode.parentNode.id
         const folder = state.foldersAndMedia.results.find(elem => {
             return elem.id === Number(folderId)
@@ -74,16 +75,19 @@ export const Library = (props) => {
     }
 
     const handleBackClick = (e) => {
+        e.preventDefault()
         setCurFolder(dispatch, state.curFolder.parent)
     }
 
     const handleFolderDelete = async (e) => {
+        e.preventDefault()
         await deleteFolder(dispatch, userData.user.token.key, folderToDeleteId)
         await getFoldersAndMedia(dispatch, state?.curFolder?.id, pageClicked, userData.user.token.key)
         setFolderModal(false)
     }
 
     const handleMediaDelete = async (e) => {
+        e.preventDefault()
         await deleteMedia(dispatch, userData.user.token.key, mediaToDeleteId)
         await getFoldersAndMedia(dispatch, state?.curFolder?.id, pageClicked, userData.user.token.key)
         setMediaModal(false)

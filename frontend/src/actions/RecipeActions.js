@@ -118,12 +118,25 @@ export async function deleteRecipe(dispatch, recipeId, token) {
     }
 }
 
-export async function getRecipe(dispatch, payload) {
+export async function getRecipe(dispatch, payload, token) {
 
-    const requestOptions = {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    };
+    var requestOptions = {}
+    if (token) {
+        requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '.concat(token)
+            },
+        }
+    } else {
+        requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+    }
 
     try {
         let response = await fetch(`${API_URL}/recipe/${payload.recipe}`, requestOptions);
@@ -189,6 +202,6 @@ export function updateRecipeState(dispatch, recipe) {
     dispatch({ type: 'UPDATE_RECIPE_STATE', payload: recipe })
 }
 
-export function updateErrorMessage(dispatch,payload){
-    dispatch({type:'UPDATE_ERROR_MESSAGE',payload})
+export function updateErrorMessage(dispatch, payload) {
+    dispatch({ type: 'UPDATE_ERROR_MESSAGE', payload })
 }
