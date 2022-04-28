@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container'
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import { getRecipe,incrementRecipeHits } from '../../actions/RecipeActions';
+import { getRecipe, incrementRecipeHits } from '../../actions/RecipeActions';
 import RecipeCarousel from "./Carousel";
 import { RecipeReducer } from '../../reducers/RecipeReducer';
 import Thumbnail from "./Thumbnail";
@@ -18,6 +18,7 @@ import AddToList from './AddToList.js';
 import { UserContext } from '../Context/authContext';
 import DeleteRecipe from "./deleteRecipe";
 import useError from '../ErrorHandler/ErrorHandler';
+import ReportButton from "../Report/CreateReportButton";
 
 export default function Recipe() {
     const [state, dispatch] = useReducer(RecipeReducer);
@@ -32,8 +33,8 @@ export default function Recipe() {
     useEffect(() => {
         (async () => {
             const payload = { 'recipe': id }
-            await getRecipe(dispatch, payload)
-            await incrementRecipeHits(dispatch,id)
+            await getRecipe(dispatch, payload, userData?.user?.token?.key)
+            await incrementRecipeHits(dispatch, id)
         })()
     }, [id, MEDIA_URL])
 
@@ -65,29 +66,33 @@ export default function Recipe() {
 
     }, [state?.recipe])
 
-   
+
 
     return (
         <div>
             {state?.recipe &&
 
                 <Container style={{ margin: 'auto' }}>
-                    <Row className='container-fluid ml-auto' style={{ paddingTop: '0.5em' }}>
-                        <Col >
-                            {userData?.user?.isAuth && userData?.user?.user?.id === state?.recipe?.user?.id &&
-                                <Row className='container-fluid ml-auto'>
-                                    <Col style={{ display: 'flex', justifyContent: 'left' }}>
-                                        <EditRecipe recipe={state?.recipe} dispatch={dispatch} />
-                                    </Col>
-                                    <Col style={{ display: 'flex', justifyContent: 'left' }}>
-                                        <DeleteRecipe recipe={state?.recipe} userData={userData} />
-                                    </Col>
-                                </Row>
-                            }
-                        </Col>
-                        <Col className='ms-auto' style={{ display: 'flex', justifyContent: 'center' }}>
-                            <AddToList recipe={state?.recipe} />
-                        </Col>
+                    <Row className='container-fluid' style={{ paddingTop: '0.5em' }}>
+                        {userData?.user?.isAuth && userData?.user?.user?.id === state?.recipe?.user?.id &&
+                            <>
+                                <Col style={{ display: 'flex', justifyContent: 'left' }}>
+                                    <EditRecipe recipe={state?.recipe} dispatch={dispatch} />
+                                </Col>
+                                <Col style={{ display: 'flex', justifyContent: 'left' }}>
+                                    <DeleteRecipe recipe={state?.recipe} userData={userData} />
+                                </Col>
+
+                                <Col style={{ display: 'flex', justifyContent: 'right', paddingRight: '0' }}>
+                                    <AddToList recipe={state?.recipe} />
+                                </Col>
+                            </>
+                        }
+                        {userData?.user?.user &&
+                            <Col style={{ display: 'flex', justifyContent: 'right', paddingLeft: '0', paddingRight: '0' }}>
+                                <ReportButton id={state.recipe.id} userData={userData} type={'RECIPE'} />
+                            </Col>
+                        }
                     </Row>
                     <Col>
                         <RecipeInfo recipe={state?.recipe} avatar={avatar} userData={state?.recipe?.user} />

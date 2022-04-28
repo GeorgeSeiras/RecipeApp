@@ -1,5 +1,4 @@
 from django.http.response import JsonResponse
-from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.exceptions import NotFound, PermissionDenied
@@ -14,17 +13,15 @@ from comment.models import Comment
 from recipe.models import Recipe, Ingredient
 from user.models import User
 from recipe.serializers import (
-    IngredientCreateSerializer,
-    IngredientPatchSerializer,
     IngredientSerializer,
     RecipeSerializer,
     RecipePatchSerializer,
-    StepCreateSerializer,
     RecipesQuerySerializer,
 )
 from utils.customPagination import myPagination
+from utils.custom_exceptions import CustomException
 from .enum import sort_choices
-from backend.decorators import admin_required, user_required
+from backend.decorators import user_required
 
 
 class RecipeCreate(APIView):
@@ -45,7 +42,14 @@ class RecipeDetail(APIView):
 
     def get(self, request, pk):
         try:
+            user = User.objects.get(username=request.user)
+        except User.DoesNotExist:
+            pass
+        try:
             recipe = Recipe.objects.get(pk=pk)
+            if recipe.removed == True and user.is_staff == False:
+                raise CustomException(
+                    'This recipe has been removed by an administrator', status.HTTP_400_BAD_REQUEST)
             return JsonResponse({"result": recipe.to_dict()})
         except Recipe.DoesNotExist:
             raise NotFound({"message": "Recipe not found"})
@@ -115,6 +119,7 @@ class RecipesQuery(APIView, myPagination):
         serializer.is_valid(raise_exception=True)
         choices = {value: key for key, value in sort_choices}
         query = Q()
+        query &= Q(removed=False)
         if "username" in serializer.validated_data:
             query &= Q(
                 user__username__iexact=serializer.validated_data["username"])

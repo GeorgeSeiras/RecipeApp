@@ -99,7 +99,7 @@ class ReportQuery(APIView,myPagination):
         query = Q()
         if 'status' in serializer.validated_data:
             query &=Q(status__iexact=serializer.validated_data['status'])
-        reports = Report.objects.filter(query)
+        reports = Report.objects.filter(query).order_by('-created_at')
         objects = []
         for report in reports:
             objects.append(ReportSerializer(report).data)

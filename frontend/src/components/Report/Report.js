@@ -7,7 +7,7 @@ import Table from 'react-bootstrap/Table';
 import { Link } from 'react-router-dom';
 
 import { UserContext } from '../Context/authContext';
-import { getReport } from '../../actions/ReportActions';
+import { getReport, updateReport } from '../../actions/ReportActions';
 import { ReportReducer } from '../../reducers/ReportReducer';
 
 export default function Report() {
@@ -47,6 +47,16 @@ export default function Report() {
         }
     }
 
+    const handleVerdictButton = async (value) => {
+        switch (value) {
+            case 'CANCEL':
+                await updateReport(dispatch, { 'status': 'CLOSED' }, reportId, userData.user.token.key)
+                break;
+            case 'REMOVE':
+                await updateReport(dispatch, { 'status': 'REMOVED' }, reportId, userData.user.token.key)
+                break;
+        }
+    }
     return (
         <Container style={{ justifyContent: 'center' }}>
             {state?.report &&
@@ -73,7 +83,7 @@ export default function Report() {
                                 </td>
                             </tr>
                             <tr>
-                                <td colSpan={2} style={{textAlign:'center'}}>
+                                <td colSpan={2} style={{ textAlign: 'center' }}>
                                     <Link
                                         to={getLink(state.report)}
                                         target={'_blank'}
@@ -87,13 +97,13 @@ export default function Report() {
                                     <DropdownButton title='Pass Verdict'>
                                         <Dropdown.Item
                                             style={{ backgroundColor: 'gray', textAlign: 'center' }}
-                                            onClick={(e) => { }}
+                                            onClick={(e) => handleVerdictButton('CANCEL')}
                                         >
                                             CLOSE REPORT
                                         </Dropdown.Item>
                                         <Dropdown.Item
                                             style={{ backgroundColor: 'red', textAlign: 'center' }}
-                                            onClick={(e) => { }}
+                                            onClick={(e) => handleVerdictButton('REMOVE')}
                                         >
                                             REMOVE CONTENT
                                         </Dropdown.Item>

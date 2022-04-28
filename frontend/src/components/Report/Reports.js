@@ -29,7 +29,6 @@ export default function Reports() {
     }, [pageClicked, query])
 
     const handleReportClick = (e) => {
-        console.log(e.target.parentNode.id)
         navigate(`/reports/${e.target.parentNode.id}`)
     }
 

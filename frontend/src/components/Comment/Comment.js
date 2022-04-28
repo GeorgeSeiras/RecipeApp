@@ -9,6 +9,8 @@ import Nav from 'react-bootstrap/Nav';
 import { UserContext } from '../Context/authContext';
 import CreateComment from './CreateComment';
 import DeleteComment from './DeleteComment';
+import no_avatar from '../../static/no_avatar.svg'
+import ReportButton from '../Report/CreateReportButton';
 
 export default function Comment(props) {
     const [commentDeleted, setCommentDeleted] = useState(false);
@@ -46,7 +48,7 @@ export default function Comment(props) {
                             <Image
                                 width='30'
                                 className='img-fluid rounded-circle'
-                                src={`${MEDIA_URL}${props.comment.user?.image}`}
+                                src={`${props.comment.user?.avatar ? MEDIA_URL + props.comment.user.avatar : no_avatar}`}
                                 alt='avatar'
                             />
                         </Col>
@@ -75,15 +77,20 @@ export default function Comment(props) {
                             </Col>
                             {props.comment.user.id === userData?.user?.user?.id &&
                                 !props.comment.deleted && !commentDeleted &&
-                                <Col className='ms-auto'>
+                                <Col className='ms-auto' style={{paddingRight:'0'}}>
                                     <DeleteComment commentId={props.comment.id} setCommentDeleted={setCommentDeleted} dispatch={props.dispatch} />
+                                </Col>
+                            }
+                            {userData?.user?.user &&
+                                <Col style={{paddingLeft:'0'}}>
+                                    <ReportButton id={props.comment.id} userData={userData} type={'COMMENT'} />
                                 </Col>
                             }
                         </Row>
                     </Row>
                     <Row style={{ display: 'none', paddingTop: '0.5em' }} ref={ref}>
                         <CreateComment setSuccessAlert={props.setSuccessAlert} parentId={props.comment.id}
-                            dispatch={props.dispatch} recipeId={props.comment.recipe}/>
+                            dispatch={props.dispatch} recipeId={props.comment.recipe} />
                     </Row>
                 </Card.Footer>
                 {props.comment.children.length > 0 &&

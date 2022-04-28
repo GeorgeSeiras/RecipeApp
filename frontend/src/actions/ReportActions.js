@@ -64,8 +64,8 @@ export async function updateReport(dispatch, payload, id, token) {
     };
 
     try {
-        let response = await fetch(`${API_URL}/report/${id}`, requestOptions);
-        let data = await response.json();
+        const response = await fetch(`${API_URL}/report/${id}`, requestOptions);
+        const data = await response.json();
         if (data?.result) {
             dispatch({ type: 'UPDATE_REPORT', payload: data.result })
             return data
@@ -76,3 +76,26 @@ export async function updateReport(dispatch, payload, id, token) {
     }
 }
 
+export async function createReport(dispatch, payload, token) {
+
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '.concat(token)
+        },
+        body: JSON.stringify(payload)
+    };
+
+    try {
+        const response = await fetch(`${API_URL}/report`, requestOptions);
+        const data = await response.json();
+        if (data?.result) {
+            dispatch({ type: 'CREATE_REPORT', payload: data.result })
+            return data
+        }
+        dispatch({ type: 'REPORT_ERROR', errorMessage: data?.message })
+    } catch (error) {
+        dispatch({ type: 'REPORT_ERROR', errorMessage: error })
+    }
+}

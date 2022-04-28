@@ -35,8 +35,9 @@ class ReportSerializer(serializers.ModelSerializer):
 
 class ReportCreateSerializer(serializers.Serializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    reason = serializers.ChoiceField(choices=Reason.choices)
+    reason = serializers.ChoiceField(choices=Reason.choices, default=Reason.OFFENSIVE_CONTENT)
     desc = serializers.CharField(max_length=150)
-    status = serializers.ChoiceField(choices=Status.choices)
+    status = serializers.ChoiceField(
+        choices=Status.choices,default=Status.PENDING)
     object_id = serializers.IntegerField()
     type = serializers.ChoiceField(choices=Type.choices)

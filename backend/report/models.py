@@ -36,7 +36,9 @@ class Report(models.Model):
         ContentType, related_name='content_type_reports', on_delete=CASCADE)
     object_id = models.PositiveBigIntegerField()
     content_object = GenericForeignKey() 
-
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
 
 @receiver(models.signals.pre_save, sender=Report)
 def report_pre_save(sender, instance, **kwargs):

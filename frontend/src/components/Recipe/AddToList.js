@@ -18,14 +18,14 @@ export default function AddToList(props) {
     const [state, dispatch] = useReducer(GetUserListsReducer);
     const [clicked, setClicked] = useState();
     const userData = useContext(UserContext);
-    const {addError} = useError();
+    const { addError } = useError();
 
     useEffect(() => {
         if (state?.errorMessage) {
             addError(state.errorMessage)
         }
     }, [state?.errorMessage])
-    
+
     useEffect(() => {
         async function getLists() {
             if (userData?.user?.user?.id && !clicked) {
@@ -65,42 +65,38 @@ export default function AddToList(props) {
     }
 
     return (
-        <Row xs='auto'>
+        <>
+            <DropdownButton
+                variant={'success'}
+                title={'Add To List'}
+                size='sm'
+                style={{ alignText: 'center' }}
+            >
+                {state?.lists?.results && userData?.user?.user &&
+                    state?.lists?.results.map((list, index) => {
+                        return (
+                            <Dropdown.Item key={index} id={index} style={{
+                                marginTop: '-0.8em',
+                                marginBottom: '-0.3em',
+                                paddingRight: '0',
+                                paddingLeft: '0'
+                            }}>
+                                <ListGroup.Item action onClick={(e) => handleClick(e)} disabled={!disabledCheck(list.id)}>
+                                    {list.name}
+                                </ListGroup.Item>
+                            </Dropdown.Item>
+                        )
+                    })
+                }
+                {state?.lists &&
+                    <ListPagination setClicked={setClicked} next={state?.lists?.next} previous={state?.lists?.previous} />
+                }
+            </DropdownButton>
 
-            <Col>
-                <DropdownButton
-                    variant={'success'}
-                    title={'Add To List'}
-                    size='sm'
-                    style={{ alignText: 'center' }}
-                >
-                    {state?.lists?.results && userData?.user?.user &&
-                        state?.lists?.results.map((list, index) => {
-                            return (
-                                <Dropdown.Item key={index} id={index} style={{
-                                    marginTop: '-0.8em',
-                                    marginBottom: '-0.3em',
-                                    paddingRight: '0',
-                                    paddingLeft: '0'
-                                }}>
-                                    <ListGroup.Item action onClick={(e) => handleClick(e)} disabled={!disabledCheck(list.id)}>
-                                        {list.name}
-                                    </ListGroup.Item>
-                                </Dropdown.Item>
-                            )
-                        })
-                    }
-                    {state?.lists &&
-                        <ListPagination setClicked={setClicked} next={state?.lists?.next} previous={state?.lists?.previous} />
-                    }
-                </DropdownButton>
-            </Col>
-            <Row>
-                <Alert show={show} variant="success" dismissible onClick={() => setShow(false)}>
-                    <Alert.Heading>Recipe successfuly added to list!</Alert.Heading>
+            <Alert show={show} variant="success" dismissible onClick={() => setShow(false)}>
+                <Alert.Heading>Recipe successfuly added to list!</Alert.Heading>
 
-                </Alert>
-            </Row>
-        </Row>
+            </Alert>
+        </>
     )
 }
