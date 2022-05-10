@@ -9,18 +9,26 @@ import { Link } from 'react-router-dom';
 import { UserContext } from '../Context/authContext';
 import { getReport, updateReport } from '../../actions/ReportActions';
 import { ReportReducer } from '../../reducers/ReportReducer';
+import useError from '../ErrorHandler/ErrorHandler';
 
 export default function Report() {
 
     const [state, dispatch] = useReducer(ReportReducer);
     const userData = useContext(UserContext);
     const { reportId } = useParams();
+    const { addError } = useError();
 
     useEffect(() => {
         (async () => {
             await getReport(dispatch, reportId, userData.user.token.key)
         })()
     }, [reportId])
+
+    useEffect(() => {
+        if (state?.errorMessage) {
+            addError(state.errorMessage)
+        }
+    }, [state?.errorMessage])
 
     const getBackgroundColor = (value) => {
         let color = ''
@@ -44,6 +52,12 @@ export default function Report() {
         switch (value.content_object.model) {
             case 'recipe':
                 return `/recipe/${value.content_object.id}`
+            case 'comment':
+                return `/recipe/${value.content_object.recipe}/comment/${value.content_object.id}`
+            case 'user':
+                return `/user/${value.content_object.username}`
+            case 'list':
+                return `/user/${value.content_object.user.username}/list/${value.content_object.id}`
         }
     }
 

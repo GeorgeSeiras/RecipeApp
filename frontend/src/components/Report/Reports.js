@@ -88,6 +88,7 @@ export default function Reports() {
                             <th style={{ textAlign: 'center' }}></th>
                             <th style={{ textAlign: 'center' }}>STATUS</th>
                             <th style={{ textAlign: 'center' }}>REASON</th>
+                            <th style={{ textAlign: 'center' }}>OBJECT</th>
                             <th style={{ textAlign: 'center' }}>DESCRIPTION</th>
                         </tr>
                     </thead>
@@ -109,6 +110,10 @@ export default function Reports() {
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
                                             {report.reason}
+                                        </td>
+                                        <td style={{textAlign:'center'}}>
+                                            {report.content_object.model}
+
                                         </td>
                                         <td style={{ textAlign: 'center' }}>
                                             {report.desc}

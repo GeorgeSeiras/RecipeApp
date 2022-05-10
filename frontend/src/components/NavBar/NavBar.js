@@ -44,6 +44,9 @@ const Navigation = () => {
                             <NavDropdown.ItemText>{userData.user.user.username}</NavDropdown.ItemText>
                             <NavDropdown.Divider />
                             <NavDropdown.Item href={'/user/' + userData.user.user.username}>Profile</NavDropdown.Item>
+                            { userData.user.user.is_staff === true &&
+                                <NavDropdown.Item href={'/reports'}>Handle Reports</NavDropdown.Item>
+                            }
                             <NavDropdown.Item href={'/user/' + userData.user.user.id + '/edit'}>Edit Profile</NavDropdown.Item>
                             <NavDropdown.Item onClick={() => {
                                 userData.logout();

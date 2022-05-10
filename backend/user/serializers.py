@@ -3,12 +3,6 @@ from user.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'email', 'username', 'password', 'image']
-
-
-class UserSerializerNoPassword(serializers.ModelSerializer):
     model = serializers.SerializerMethodField('model_name')
 
     def model_name(self, object):
@@ -16,7 +10,14 @@ class UserSerializerNoPassword(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'image', 'model')
+        fields = ['id', 'email', 'username', 'password', 'image', 'model']
+
+
+class UserSerializerNoPassword(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ('id', 'email', 'username', 'image')
 
 
 class UserLoginSerializer(serializers.Serializer):

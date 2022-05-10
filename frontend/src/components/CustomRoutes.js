@@ -31,5 +31,5 @@ export const AdminRoute = ({ children }) => {
     if (user.isAuth === null) {
         return null
     }
-    return !user.user.is_staff ? <Navigate to='/' /> : children
+    return !user?.user?.is_staff ? <Navigate to='/' /> : children
 }
