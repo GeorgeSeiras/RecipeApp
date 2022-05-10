@@ -66,7 +66,6 @@ class RecipeDetail(APIView):
                     "You cannot modify another user's recipe")
             serializer = RecipePatchSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            print(serializer.validated_data['desc'])
             for key, value in serializer.validated_data.items():
                 # replaces existing ingredients
                 if key == "ingredients":

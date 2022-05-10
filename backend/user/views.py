@@ -25,7 +25,6 @@ class UserByUsername(APIView):
         except User.DoesNotExist:
             pass
         try:
-            print(cur_user)
             user = User.objects.get(username=username)
             if cur_user is not None:
                 if cur_user.is_staff == True:
