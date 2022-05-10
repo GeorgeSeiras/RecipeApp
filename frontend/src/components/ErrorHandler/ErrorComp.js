@@ -7,7 +7,6 @@ export default function ErrorComp() {
 
     const { error, dismissError } = useError();
 
-    console.log(error)
     return (
         <Container style={{
             justifyContent: 'center',

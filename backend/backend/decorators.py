@@ -27,6 +27,11 @@ def user_required(function):
         try:
             user = User.objects.get(username=request.user)
             if user.is_active:
+                if not user.removed:
+                    return function(self, request, *args, **kwargs)
+                else:
+                    raise PermissionDenied(
+                        {"message": 'Your account has been suspended'})
                 return function(self, request, *args, **kwargs)
             else:
                 raise NotAuthenticated({"message": 'Access Unauthorized'})
