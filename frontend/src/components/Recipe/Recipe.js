@@ -82,14 +82,15 @@ export default function Recipe() {
                                 <Col style={{ display: 'flex', justifyContent: 'left' }}>
                                     <DeleteRecipe recipe={state?.recipe} userData={userData} />
                                 </Col>
-
-                                <Col style={{ display: 'flex', justifyContent: 'right', paddingRight: '0' }}>
-                                    <AddToList recipe={state?.recipe} />
-                                </Col>
                             </>
                         }
-                        {userData?.user?.user &&
-                            <Col style={{ display: 'flex', justifyContent: 'right', paddingLeft: '0', paddingRight: '0' }}>
+                        {userData?.user?.isAuth &&
+                            <Col style={{ display: 'flex', justifyContent: 'right', paddingRight: '0' }}>
+                                <AddToList recipe={state?.recipe} />
+                            </Col>
+                        }
+                        {userData?.user?.isAuth && userData?.user?.user?.id !== state?.recipe?.user?.id &&
+                            <Col style={{ display: 'flex', justifyContent: 'right', paddingLeft: '0', paddingRight: '0',maxWidth:'35px' }}>
                                 <ReportButton id={state.recipe.id} userData={userData} type={'RECIPE'} />
                             </Col>
                         }

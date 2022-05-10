@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { userLogin, getMe } from '../../actions/LoginActions';
 import { AuthReducer, GetMeReducer } from '../../reducers/LoginReducer'
 import { UserContext } from '../Context/authContext';
+import useError from '../ErrorHandler/ErrorHandler';
 
 function Login(props) {
     const [username, setUsername] = useState("");
@@ -13,8 +14,9 @@ function Login(props) {
     const [state, dispatch] = useReducer(AuthReducer);
     const [stateGetMe, dispatchGetMe] = useReducer(GetMeReducer);
     const { login } = useContext(UserContext);
-
-    const initialState = useRef(true);
+    const { addError } = useError();
+    const initialState = useRef(true)
+    ;
     useEffect(() => {
         if (initialState.current) {
             initialState.current = false;
@@ -41,7 +43,12 @@ function Login(props) {
             if (!responseMe) {
                 return;
             }
-            await login({ user: responseMe.user, token: responseLogin.access })
+            if(responseMe)
+            if(responseMe?.user?.removed === true){
+                addError({"message":'Your account has been suspended by an administrator'})
+            }else{
+                await login({ user: responseMe.user, token: responseLogin.access })
+            }
             navigate('/')
         } catch (error) {
             console.log(error);

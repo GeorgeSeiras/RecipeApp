@@ -43,11 +43,20 @@ export async function createList(dispatch, token, payload) {
     }
 }
 
-export async function getList(dispatch, listId) {
-
-    const requestOptions = {
-        method: 'GET',
-    };
+export async function getList(dispatch, listId, token) {
+    var requestOptions = {};
+    if (token) {
+        requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer '.concat(token),
+            }
+        }
+    }else{
+        requestOptions={
+            method:'GET'
+        }
+    }
 
     try {
         const response = await fetch(`${API_URL}/list/${listId}`, requestOptions);

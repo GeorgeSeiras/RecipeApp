@@ -1,10 +1,20 @@
 const API_URL = process.env.REACT_APP_API_URL;
 
-export async function getUser(dispatch, username) {
+export async function getUser(dispatch, username, token) {
+    var requestOptions = {}
+    if (token) {
+        requestOptions = {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer '.concat(token)
+            },
+        };
+    } else {
+        requestOptions = {
+            method: 'GET'
+        }
+    }
 
-    const requestOptions = {
-        method: 'GET'
-    };
 
     try {
         let response = await fetch(`${API_URL}/user/${username}`, requestOptions);

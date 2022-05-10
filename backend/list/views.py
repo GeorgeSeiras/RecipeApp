@@ -1,6 +1,7 @@
 from django.http.response import JsonResponse
 from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.views import APIView
+from rest_framework import status
 from django.db import transaction
 from django.db.models import Q
 
@@ -33,10 +34,21 @@ class ListCreate(APIView):
 class ListDetail(APIView):
 
     def get(self, request, list_id):
+        user = None
+        try:
+            user = User.objects.get(username=request.user)
+        except User.DoesNotExist:
+            pass
         try:
             list = List.objects.get(pk=list_id)
         except List.DoesNotExist:
             raise NotFound({'message': 'List does not exist'})
+        if user is not None:
+            if user.is_staff == True:
+                return JsonResponse({'result': list.to_dict()})
+        if list.removed == True:
+            raise CustomException(
+                'This list has been removed by an administrator', status.HTTP_400_BAD_REQUEST)
         return JsonResponse({'result': list.to_dict()})
 
     @user_required
@@ -93,7 +105,7 @@ class ListRecipe(APIView):
                 raise NotFound({'message': 'List not found'})
             if(user != list.user):
                 raise PermissionDenied(
-                    {"message":"You cannot edit another user's lists"})
+                    {"message": "You cannot edit another user's lists"})
             try:
                 recipe = Recipe.objects.get(pk=recipe_id)
             except Recipe.DoesNotExist:
@@ -123,7 +135,7 @@ class ListRecipe(APIView):
                 raise NotFound({'message': 'List not found'})
             if(user != list.user):
                 raise PermissionDenied(
-                    {"message":"You cannot edit another user's lists"})
+                    {"message": "You cannot edit another user's lists"})
             try:
                 recipe = Recipe.objects.get(pk=recipe_id)
             except Recipe.DoesNotExist:

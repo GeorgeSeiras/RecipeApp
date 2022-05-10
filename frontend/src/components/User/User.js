@@ -33,7 +33,7 @@ export default function User() {
 
     useEffect(() => {
         (async () => {
-            const userResponse = await getUser(userDispatch, username);
+            const userResponse = await getUser(userDispatch, username,userData?.user?.token?.key);
             if (userResponse?.result) {
                 var query = queryParams
                 if (query === '') {
@@ -61,7 +61,7 @@ export default function User() {
         <Container>
             {userState?.user &&
                 <Container>
-                    {userData?.user?.user &&
+                    {userData?.user?.user && userData?.user?.user?.id !== userState?.user?.id &&
                         <Container style={{ textAlign: 'right' }}>
                             <ReportButton id={userState.user.id} userData={userData} type={'USER'} />
                         </Container>

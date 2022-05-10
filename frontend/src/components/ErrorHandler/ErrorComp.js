@@ -7,6 +7,7 @@ export default function ErrorComp() {
 
     const { error, dismissError } = useError();
 
+    console.log(error)
     return (
         <Container style={{
             justifyContent: 'center',
@@ -17,10 +18,10 @@ export default function ErrorComp() {
                     {error.map((elem, index) => {
                         let message = ''
                         if (elem?.status_code) {
-                            message += `${elem.status_code} :`
+                            message += `${elem.status_code}:`
                         }
                         if (elem?.message) {
-                            message += `${elem.message}`
+                            message += ` ${elem.message}`
                         } else {
                             message += 'Something went wrong, please try again later.'
 

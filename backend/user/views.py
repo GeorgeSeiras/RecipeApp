@@ -15,11 +15,24 @@ from .serializers import UserImageSerializer, UserSerializer, UserSerializerNoPa
 from backend.decorators import user_required, admin_required
 from utils.custom_exceptions import CustomException
 
+
 class UserByUsername(APIView):
 
     def get(self, request, username):
+        cur_user = None
         try:
+            cur_user = User.objects.get(username=request.user)
+        except User.DoesNotExist:
+            pass
+        try:
+            print(cur_user)
             user = User.objects.get(username=username)
+            if cur_user is not None:
+                if cur_user.is_staff == True:
+                    return JsonResponse({'result': user.to_dict()})
+            if user.removed == True:
+                raise CustomException(
+                    'This user has been removed by an administrator', status.HTTP_400_BAD_REQUEST)
             return JsonResponse({'result': user.to_dict()})
         except User.DoesNotExist:
             raise NotFound({"message": "User not found"})
@@ -43,7 +56,7 @@ class UserDetail(APIView):
                     raise PermissionDenied(
                         {"Cannot delete another user's acount"})
                 user.delete()
-                return JsonResponse({'result':'ok'},status=status.HTTP_200_OK)
+                return JsonResponse({'result': 'ok'}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             raise NotFound({"message": "User not found"})
 
@@ -153,6 +166,7 @@ class ChangePassword(APIView):
         except User.DoesNotExist:
             raise NotFound({'message': 'User not found'})
 
+
 class UserImageView(APIView):
 
     @user_required
@@ -163,10 +177,10 @@ class UserImageView(APIView):
             serializer.is_valid(raise_exception=True)
             try:
                 user = User.objects.get(username=request.user)
-            
+
             except User.DoesNotExist:
                 raise NotFound({"message": "User not found"})
-            user.image=serializer.validated_data['image']
+            user.image = serializer.validated_data['image']
             user.save()
             return JsonResponse({"result": user.to_dict()})
 

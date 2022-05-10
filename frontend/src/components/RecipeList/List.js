@@ -36,7 +36,7 @@ export default function List() {
     useEffect(() => {
         (async () => {
             if (listId && !stateList?.list) {
-                await getList(dispatchList, listId);
+                await getList(dispatchList, listId, userData?.user?.token?.key);
             }
         })()
     }, [listId]);
@@ -88,8 +88,8 @@ export default function List() {
 
                     }
                 </Col>
-                <Col style={{textAlign:'right',paddingTop:'10px'}}>
-                    {userData?.user?.user && stateList &&
+                <Col style={{ textAlign: 'right', paddingTop: '10px' }}>
+                    {userData?.user?.user && stateList?.list &&
                         <ReportButton id={stateList.list.id} userData={userData} type={'LIST'} />
                     }
                 </Col>
