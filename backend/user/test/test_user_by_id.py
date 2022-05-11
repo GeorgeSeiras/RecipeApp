@@ -31,7 +31,7 @@ class UserMeTest(APITestCase):
         self.assertEqual(response.status_code,status.HTTP_200_OK)
         data = json.loads(response.content)['result']
         self.assertEqual(data['id'],self.user_object.id)
-        self.assertEqual(data['image']['id'],self.user_object.image.id)
+        self.assertEqual(data['image'],self.user_object.image)
     
     def test_get_user_by_id_not_exists(self):
         response = self.client.get(self.user_by_id_not_exists_url)

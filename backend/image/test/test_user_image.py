@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
 from rest_framework_simplejwt.tokens import RefreshToken
-from image.models import UserImage
 
 
 from user.test.factory import UserFactory
@@ -25,10 +24,9 @@ class UserImageTest(APITestCase):
     @classmethod
     def tearDown(self):
         User.objects.all().delete()
-        UserImage.objects.all().delete()
 
     def test_create_user_image(self):
-        original_image = self.user.image.image
+        original_image = self.user.image
         image = (
             b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9\x04'
             b'\x01\x0a\x00\x01\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02'
@@ -40,7 +38,7 @@ class UserImageTest(APITestCase):
             self.create_user_image_url, {'image': uploaded}, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = json.loads(response.content)['result']
-        self.assertNotEqual(data['image']['image'], original_image)
+        self.assertNotEqual(data['image'], original_image)
 
     def test_create_user_image_no_file(self):
         response = self.client.put(
@@ -58,7 +56,7 @@ class UserImageTest(APITestCase):
             self.create_user_image_url, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         user = User.objects.get(username=self.user.username)
-        self.assertEqual(user.image, None)
+        self.assertEqual(user.to_dict()['image'], '')
 
     def test_delete_user_image_no_credentials(self):
         response = self.client.delete(self.create_user_image_url)
