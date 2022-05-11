@@ -1,5 +1,4 @@
-import email
-from factory import django, Faker, SubFactory, LazyAttribute, Sequence
+from factory import django, Faker, LazyAttribute, Sequence
 from django.contrib.auth.hashers import make_password
 import random
 from faker import Faker as FakerClass

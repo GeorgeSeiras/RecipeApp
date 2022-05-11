@@ -1,9 +1,9 @@
-from re import S
 from django.db import transaction
 from django.http.response import JsonResponse
 from django.db.models import Q
 from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.views import APIView
+from rest_framework import status
 
 from utils.custom_exceptions import CustomException
 from backend.decorators import user_required
@@ -61,7 +61,7 @@ class FolderView(APIView, myPagination):
                 data={**request.data, 'user': user.id})
             serializer.is_valid(raise_exception=True)
             created = serializer.create()
-            return JsonResponse({'result': created.to_dict()})
+            return JsonResponse({'result': created.to_dict()}, status=status.HTTP_201_CREATED)
 
 
 class FolderDetail(APIView):
@@ -114,12 +114,11 @@ class MediaCreate(APIView):
             raise NotFound({"message": "User not found"})
         serializer = ImageCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        print(serializer.validated_data)
         if serializer.validated_data['folder'].user.id != user.id:
             raise PermissionDenied(
                 {'message': "Cannot edit another user's folders"})
         image = FolderImage.objects.create(**serializer.validated_data)
-        return JsonResponse({'result': image.to_dict()})
+        return JsonResponse({'result': image.to_dict()}, status=status.HTTP_201_CREATED)
 
 
 class MediaDetail(APIView):
@@ -153,11 +152,6 @@ class FolderMedia(APIView):
         serializer.is_valid(raise_exception=True)
         if user.id != serializer.validated_data['folder'].user.id:
             raise PermissionDenied({'message': 'This belongs to another user'})
-        # images = FolderImage.objects.filter(folder=serializer.validated_data['folder'])
-        # objects = Folder.to_list(images)
-        # page = self.paginate_queryset(objects, request)
-        # response = self.get_paginated_response(page)
-        # return response
         limit = serializer.validated_data['limit']
         offset = serializer.validated_data['offset']
         images = FolderImage.objects.filter(
