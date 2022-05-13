@@ -62,7 +62,7 @@ class ReportCreateView(APIView):
                 content_object=content_object
             )
             report_json = ReportSerializer(report)
-            return JsonResponse({'result': report_json.data})
+            return JsonResponse({'result': report_json.data},status=status.HTTP_201_CREATED)
 
 
 class ReportView(APIView):
