@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_auth',
     'corsheaders',
+    'channels',
     'user',
     'recipe',
     'rating',
@@ -60,7 +61,8 @@ INSTALLED_APPS = [
     'ipware',
     'media_library',
     'generic_relations',
-    'report'
+    'report',
+    'notifications'
 ]
 
 AUTH_USER_MODEL = 'user.User'
@@ -113,6 +115,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 
 
 # Database
@@ -224,3 +227,13 @@ SIMPLE_JWT = {
 }
 
 CKEDITOR_UPLOAD_PATH = "/media/"
+
+#reddit
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}

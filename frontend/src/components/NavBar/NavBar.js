@@ -6,6 +6,8 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import NAV_LOGO from '../../static/nav_logo.png';
 import NO_AVATAR from '../../static/no_avatar.svg';
 
+import Notifications from '../Notifications/Notifications';
+
 import './NavBar.css'
 const Navigation = () => {
     const userData = useContext(UserContext);
@@ -21,27 +23,31 @@ const Navigation = () => {
     }, [userData?.user?.user?.image])
 
     return (
-        <Navbar sticky='top' collapseOnSelect fixed='top' expand='sm' bg='primary' variant='light'>
+        <Navbar sticky='top' collapseOnSelect fixed='top' expand='sm' bg='primary' variant='light' style={{paddingLeft:'25px'}}>
             <Navbar.Brand id="Brand" href="/">
                 <img src={NAV_LOGO} width="50px" height="auto" alt="logo" className="img-responsive" />
-                RecipeApp
+                {' RecipeApp'}
             </Navbar.Brand>
             <Navbar.Toggle aria-controls='responsive-navbar-nav' />
             <Navbar.Collapse id='responsive-navbar-nav'>
                 <Nav className="container-fluid ml-auto">
-                    {/* <Nav.Link href='/' style={{fontSize:'25px',padding:'8px'}}>Recipes</Nav.Link> */}
                     {(userData?.user?.token && userData?.user?.user) &&
-                        <Nav.Link href='/recipe/new' style={{fontSize:'30px',padding:'5px'}}>+</Nav.Link>
+                        <>
+                            <Nav.Link href='/recipe/new' style={{ fontSize: '30px', paddingTop: '5px' }}>+</Nav.Link>
+                            <div className='ms-auto' style={{ paddingTop: '15px' }}>
+                                <Notifications userData={userData} />
+                            </div >
+                        </>
                     }
                     {(!userData?.user?.token || !userData?.user?.user) &&
-                        < Nav className="ms-auto">
+                        < Nav className="ms-auto" style={{paddingRight:'25px'}}>
                             <Nav.Link href='/login'>Login</Nav.Link>
                             <Nav.Link href='/register'>Register</Nav.Link>
                         </Nav>
                     }
                 </Nav>
                 {(userData?.user?.token && userData?.user?.user) &&
-                    <Nav className="ms-auto">
+                    <Nav className="ms-auto" style={{paddingRight:'25px'}}>
                         <NavDropdown id="dropdown-basic-button" drop="start"
                             title={<img className="avatar" src={avatar} alt="avatar" width="40px" height="auto" />}>
                             <NavDropdown.ItemText>{userData.user.user.username}</NavDropdown.ItemText>
