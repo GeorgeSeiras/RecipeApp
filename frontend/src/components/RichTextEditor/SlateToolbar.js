@@ -189,8 +189,8 @@ const CustomImageUploadButton = ({ id, getImageUrl, ...props }) => {
   const editor = usePlateEditorRef(id)
 
   const handleInsertImage = async (event) => {
-    if (!editor) return;
     event.preventDefault();
+    if (!editor) return;
     const url = event.target.src;
     const text = { text: '' }
     const image = [
@@ -228,7 +228,7 @@ const CustomImageUploadButton = ({ id, getImageUrl, ...props }) => {
           width='20px'
         />
       </Button>
-      <Overlay target={target.current} show={show} >
+      <Overlay target={target.current} show={show} rootClose={true} onHide={()=>setShow(false)}>
         {({ placement, arrowProps, show: _show, popper, ...props }) => (
           <div
             {...props}

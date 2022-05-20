@@ -39,7 +39,7 @@ export const Library = (props) => {
     useEffect(() => {
         (async () => {
             const response = await getFoldersAndMedia(dispatch, state?.curFolder?.id, pageClicked, userData.user.token.key)
-            if (response?.data) {
+            if (response?.results) {
                 setActive(pageClicked);
             }
         })()
@@ -62,6 +62,10 @@ export const Library = (props) => {
         formData.append('folder', state.curFolder.id)
         await createMedia(dispatch, formData, userData.user.token.key)
         await getFoldersAndMedia(dispatch, state?.curFolder?.id, pageClicked, userData.user.token.key)
+        setImage(false)
+        setMediaName(null)
+        e.target.parentNode.parentNode.parentNode.click()
+
     }
 
     const handleFolderSubmit = async (e) => {
@@ -72,6 +76,9 @@ export const Library = (props) => {
         }
         await createFolder(dispatch, payload, userData.user.token.key)
         await getFoldersAndMedia(dispatch, state?.curFolder?.id, pageClicked, userData.user.token.key)
+        setFolderName('')
+        e.target.parentNode.parentNode.parentNode.click()
+        
     }
 
     const handleBackClick = (e) => {
@@ -96,7 +103,7 @@ export const Library = (props) => {
     const overlayFolder = (
         <Popover>
             <Popover.Body style={{ textAlign: 'center' }}>
-                <Form onSubmit={(e) => handleFolderSubmit(e)}>
+                <>
                     <Form.Group className='mb-2'>
                         <Form.Label>Folder Name</Form.Label>
                         <Form.Control
@@ -106,17 +113,17 @@ export const Library = (props) => {
                             onChange={(e) => setFolderName(e.target.value)}
                         />
                     </Form.Group>
-                    <Button type='submit' variant="success" disabled={folderName === ''}>
+                    <Button onClick={(e) => { handleFolderSubmit(e) }} type='submit' variant="success" disabled={folderName === ''}>
                         Create
                     </Button>
-                </Form>
+                </>
             </Popover.Body>
         </Popover>)
 
     const overlayMedia = (
         <Popover>
             <Popover.Body style={{ textAlign: 'center' }}>
-                <Form onSubmit={(e) => handleImageSubmit(e)}>
+                <>
                     <Form.Group>
                         <Form.Control
                             type="file"
@@ -144,10 +151,10 @@ export const Library = (props) => {
                             onChange={(e) => setMediaName(e.target.value)}
                         />
                     </Form.Group>
-                    <Button type='submit' variant="success" disabled={(image === null || mediaName === '')}>
+                    <Button onClick={(e) => handleImageSubmit(e)} type='submit' variant="success" disabled={(image === null || mediaName === '')}>
                         Create
                     </Button>
-                </Form>
+                </>
             </Popover.Body>
         </Popover>)
 
@@ -167,7 +174,7 @@ export const Library = (props) => {
                     }
                 </Col>
                 <Col >
-                    <OverlayTrigger trigger="click" placement={'left'} overlay={overlayFolder} >
+                    <OverlayTrigger trigger="click" placement={'left'} overlay={overlayFolder} rootClose={true} >
                         <Button variant="success">
                             <Image
                                 src={add_folder}
@@ -179,7 +186,7 @@ export const Library = (props) => {
                 </Col>
                 <Col >
                     {state?.curFolder &&
-                        <OverlayTrigger trigger="click" placement={'left'} overlay={overlayMedia} >
+                        <OverlayTrigger trigger="click" placement={'left'} overlay={overlayMedia} rootClose={true}>
                             <Button variant='success'>
                                 <Image
                                     src={image_upload}

@@ -21,7 +21,7 @@ const Navigation = () => {
     }, [userData?.user?.user?.image])
 
     return (
-        <Navbar sticky='top' collapseOnSelect fixed='top' expand='sm' bg='secondary' variant='dark'>
+        <Navbar sticky='top' collapseOnSelect fixed='top' expand='sm' bg='primary' variant='light'>
             <Navbar.Brand id="Brand" href="/">
                 <img src={NAV_LOGO} width="50px" height="auto" alt="logo" className="img-responsive" />
                 RecipeApp
@@ -29,7 +29,10 @@ const Navigation = () => {
             <Navbar.Toggle aria-controls='responsive-navbar-nav' />
             <Navbar.Collapse id='responsive-navbar-nav'>
                 <Nav className="container-fluid ml-auto">
-                    <Nav.Link href='/'>Recipes</Nav.Link>
+                    {/* <Nav.Link href='/' style={{fontSize:'25px',padding:'8px'}}>Recipes</Nav.Link> */}
+                    {(userData?.user?.token && userData?.user?.user) &&
+                        <Nav.Link href='/recipe/new' style={{fontSize:'30px',padding:'5px'}}>+</Nav.Link>
+                    }
                     {(!userData?.user?.token || !userData?.user?.user) &&
                         < Nav className="ms-auto">
                             <Nav.Link href='/login'>Login</Nav.Link>
@@ -44,7 +47,7 @@ const Navigation = () => {
                             <NavDropdown.ItemText>{userData.user.user.username}</NavDropdown.ItemText>
                             <NavDropdown.Divider />
                             <NavDropdown.Item href={'/user/' + userData.user.user.username}>Profile</NavDropdown.Item>
-                            { userData.user.user.is_staff === true &&
+                            {userData.user.user.is_staff === true &&
                                 <NavDropdown.Item href={'/reports'}>Handle Reports</NavDropdown.Item>
                             }
                             <NavDropdown.Item href={'/user/' + userData.user.user.id + '/edit'}>Edit Profile</NavDropdown.Item>
