@@ -62,7 +62,8 @@ INSTALLED_APPS = [
     'media_library',
     'generic_relations',
     'report',
-    'notifications'
+    'notifications',
+    'tokens'
 ]
 
 AUTH_USER_MODEL = 'user.User'
@@ -228,7 +229,7 @@ SIMPLE_JWT = {
 
 CKEDITOR_UPLOAD_PATH = "/media/"
 
-#reddit
+#redis
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
@@ -237,3 +238,13 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+#gmail
+EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'recipeappthesis@gmail.com'
+EMAIL_HOST_PASSWORD = env('GMAIL_APP_PASSWORD')
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False

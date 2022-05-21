@@ -12,7 +12,8 @@ from .models import User
 from recipe.models import Recipe
 from list.models import List
 from .serializers import UserImageSerializer, UserSerializer, UserSerializerNoPassword, UserPatchSerializer, ChangePasswordSerializer
-from backend.decorators import user_required, admin_required
+from backend.decorators import user_required
+from utils.emailProvider import send_verification_email
 from utils.custom_exceptions import CustomException
 
 
@@ -71,9 +72,10 @@ class UserRegister(APIView):
                     'Password must be atleast 8 characters long', 400)
             password = make_password(request.data['password'])
             serializer = UserSerializer(
-                data={**request.data, 'password': password})
+                data={**request.data, 'password': password, 'is_active': False})
             serializer.is_valid(raise_exception=True)
             serializer.save()
+            send_verification_email(serializer.data)
             res = serializer.data
             del res['password']
             return JsonResponse({'result': res}, status=status.HTTP_201_CREATED)
