@@ -20,7 +20,8 @@ class myPagination(pagination.PageNumberPagination):
 
 
 class myPaginationNotifications(pagination.PageNumberPagination):
-
+    page_size = 6
+    
     def get_paginated_response(self, data, new_notifications_number):
         return Response({
             'links': {

@@ -17,9 +17,11 @@ class Type(models.TextChoices):
 
 class Notifications(models.Model):
     user_sender = models.ForeignKey(
-        User, null=True, related_name='user_sender', on_delete=models.CASCADE)
+        User, related_name='user_sender', on_delete=models.CASCADE)
     user_receiver = models.ForeignKey(
-        User, null=True, related_name='user_receiver', on_delete=models.CASCADE)
+        User, related_name='user_receiver', on_delete=models.CASCADE)
+    comment = models.ForeignKey(
+        Comment, on_delete=models.CASCADE)
     type = models.CharField(choices=Type.choices, max_length=10)
     read = models.BooleanField(default=False)
     created_at = models.DateTimeField(
@@ -32,6 +34,7 @@ class Notifications(models.Model):
         dict['receiver'] = self.user_receiver.to_dict()
         dict['type'] = self.type
         dict['read'] = self.read
+        dict['comment'] = self.comment.to_dict()
         return dict
 
     def to_list(notifications):

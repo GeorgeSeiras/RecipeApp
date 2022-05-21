@@ -1,6 +1,6 @@
 const API_URL = process.env.REACT_APP_API_URL;
 
-export async function setNotificationsAsRead(dispatch, payload, token, recipeId) {
+export async function setNotificationsAsRead(dispatch, token,) {
 
     const requestOptions = {
         method: 'PUT',
@@ -8,23 +8,22 @@ export async function setNotificationsAsRead(dispatch, payload, token, recipeId)
             'Content-Type': 'application/json',
             'Authorization': 'Bearer '.concat(token),
         },
-        body: JSON.stringify(payload)
     };
 
     try {
-        let response = await fetch(`${API_URL}/recipe/${recipeId}/rating`, requestOptions);
-        let data = await response.json();
+        const response = await fetch(`${API_URL}/notifications`, requestOptions);
+        const data = await response.json();
         if (data?.result) {
-            dispatch({ type: 'RATE_RECIPE', payload: data.result })
+            dispatch({ type: 'SET_AS_READ', payload: data.result })
             return data
         }
-        dispatch({ type: 'RATING_ERROR', errorMessage: data })
+        dispatch({ type: 'NOTIFICATIONS_ERROR', errorMessage: data })
     } catch (error) {
-        dispatch({ type: 'RATING_ERROR', errorMessage: error })
+        dispatch({ type: 'NOTIFICATIONS_ERROR', errorMessage: error })
     }
 }
 
-export async function getNotifications(dispatch, token) {
+export async function getNotifications(dispatch, pageClicked, token) {
     const requestOptions = {
         method: 'GET',
         headers: {
@@ -33,9 +32,8 @@ export async function getNotifications(dispatch, token) {
     };
 
     try {
-        const response = await fetch(`${API_URL}/notifications`, requestOptions);
-
-        let data = await response.json();
+        const response = await fetch(`${API_URL}/notifications?page=${pageClicked}`, requestOptions);
+        const data = await response.json();
         if (data?.results) {
             dispatch({ type: 'GET_NOTIFICATIONS', payload: data })
             return data
@@ -44,4 +42,12 @@ export async function getNotifications(dispatch, token) {
     } catch (error) {
         dispatch({ type: 'NOTIFICATIONS_ERROR', errorMessage: error })
     }
+}
+
+export function setSocket(dispatch, socket) {
+    dispatch({ type: 'SET_SOCKET', payload: socket })
+}
+
+export function pushNotification(dispatch, notification) {
+    dispatch({ type: 'PUSH_NOTIFICATION', payload: notification })
 }
