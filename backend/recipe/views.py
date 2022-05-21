@@ -22,7 +22,7 @@ from utils.customPagination import myPagination
 from utils.custom_exceptions import CustomException
 from .enum import sort_choices
 from backend.decorators import user_required
-
+from notifications.models import Notifications,Type
 
 class RecipeCreate(APIView):
     @user_required
@@ -158,6 +158,18 @@ class createCommentView(APIView):
             not serializer.is_valid(raise_exception=True)
             comment = Comment.objects.create(
                 user=user, **serializer.validated_data)
+            type = Type.COMMENT
+            if comment.parent != None:
+                type = Type.REPLY
+            if(user == comment.recipe.user or (type == Type.REPLY and comment.parent.user == comment.user)):
+                return JsonResponse({'result': comment.to_dict()})
+
+            notifications = Notifications(
+                user_sender=user,
+                user_receiver=comment.recipe.user,
+                type=type,
+                comment=comment)
+            notifications.save()
             return JsonResponse({'result': comment.to_dict()})
 
 

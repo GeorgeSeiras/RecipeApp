@@ -8,9 +8,25 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/asgi/
 """
 
 import os
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+from notifications import consumer
 
+from django.urls import re_path, path
 from django.core.asgi import get_asgi_application
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
 
-application = get_asgi_application()
+from django.conf.urls import url
+from notifications import consumer
+
+websocket_urlpatterns = [
+    path('notification/<str:username>', consumer.NotificationConsumer.as_asgi()),
+]
+
+application = ProtocolTypeRouter({
+    'websocket': AuthMiddlewareStack(
+        URLRouter(
+            websocket_urlpatterns
+        )
+    ),
+})
