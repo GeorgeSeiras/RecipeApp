@@ -13,11 +13,11 @@ export const NotificationReducer = (initialState, action) => {
                 notifications: action.payload
             };
         case 'SET_AS_READ':
-            var notifications = initialState.notifications;
-            notifications.new = 0;
+            var notifications_new = initialState.notifications;
+            notifications_new.new = 0;
             return {
                 ...initialState,
-                notifications: notifications
+                notifications: notifications_new
             }
         case 'SET_SOCKET':
             return {
@@ -26,20 +26,20 @@ export const NotificationReducer = (initialState, action) => {
             }
         case 'PUSH_NOTIFICATION':
             const pageSize = initialState?.notifications?.page_size
-            var notifications = initialState.notifications
-            notifications.new++
+            var notifications_push = initialState.notifications
+            notifications_push.new++
             if (initialState.notifications.length < pageSize) {
-                notifications.results.push(action.payload)
+                notifications_push.results.push(action.payload)
                 return {
                     ...initialState,
-                    notifications: notifications
+                    notifications: notifications_push
                 }
             } else {
-                notifications.results.splice(pageSize - 1, 1)
-                notifications.results.unshift(action.payload)
+                notifications_push.results.splice(pageSize - 1, 1)
+                notifications_push.results.unshift(action.payload)
                 return {
                     ...initialState,
-                    notifications: notifications
+                    notifications: notifications_push
                 }
             }
 

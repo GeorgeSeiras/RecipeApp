@@ -9,6 +9,9 @@ import List from './components/RecipeList/List';
 import ContinueThread from './components/Comment/ContinueThread';
 import Reports from './components/Report/Reports'
 import Report from './components/Report/Report';
+import EmailVerification from './components/Signup/EmailVerificationNotification';
+import VerifyEmail from './components/Signup/VerifyEmail';
+import NewToken from './components/Signup/NewToken';
 
 export const privateRoutes = [
     {
@@ -46,15 +49,25 @@ export const publicRoutes = [
 
 export const authRoutes = [
     {
-
         path: '/login',
         element: <Login />,
     },
     {
         path: '/register',
         element: <Signup />,
-
     },
+    {
+        path: '/verification',
+        element: <EmailVerification />
+    },
+    {
+        path: '/user/confirmation',
+        element: <VerifyEmail />
+    },
+    {
+        path: '/verification/new-token',
+        element: <NewToken />
+    }
 ]
 
 export const adminRoutes = [
@@ -63,7 +76,7 @@ export const adminRoutes = [
         element: <Reports />
     },
     {
-        path:'/reports/:reportId',
-        element: <Report/>
+        path: '/reports/:reportId',
+        element: <Report />
     }
 ]
