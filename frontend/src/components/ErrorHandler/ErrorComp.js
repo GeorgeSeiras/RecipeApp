@@ -21,6 +21,8 @@ export default function ErrorComp() {
                         }
                         if (elem?.message) {
                             message += ` ${elem.message}`
+                        } else if (elem?.detail) {
+                            message += ` ${elem.detail}`
                         } else {
                             message += 'Something went wrong, please try again later.'
 

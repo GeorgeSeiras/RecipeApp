@@ -16,7 +16,7 @@ function Login(props) {
     const { login } = useContext(UserContext);
     const { addError } = useError();
     const initialState = useRef(true)
-    ;
+        ;
     useEffect(() => {
         if (initialState.current) {
             initialState.current = false;
@@ -43,12 +43,12 @@ function Login(props) {
             if (!responseMe) {
                 return;
             }
-            if(responseMe)
-            if(responseMe?.user?.removed === true){
-                addError({"message":'Your account has been suspended by an administrator'})
-            }else{
-                await login({ user: responseMe.user, token: responseLogin.access })
-            }
+            if (responseMe)
+                if (responseMe?.user?.removed === true) {
+                    addError({ "message": 'Your account has been suspended by an administrator' })
+                } else {
+                    await login({ user: responseMe.user, token: responseLogin.access })
+                }
             navigate('/')
         } catch (error) {
             console.log(error);
@@ -83,7 +83,7 @@ function Login(props) {
                     placeholder="Enter Password"
                     onChange={(e) => setPassword(e.target.value)}
                 />
-                <div className="form-check" style={{paddingTop:'0.3em'}}>
+                <div className="form-check" style={{ paddingTop: '0.3em' }}>
                     <input className="form-check-input"
                         id="rememberMe"
                         type="checkbox"
@@ -92,13 +92,16 @@ function Login(props) {
                         RememberMe
                     </label>
                 </div>
+                <a href='/verification/new-token' style={{ fontSize: '15px' }}>
+                    Resend verification email
+                </a>
             </div>
 
             <button type="submit" className="btn-lg btn-primary" disabled={!validateForm()}>
                 Login
             </button>
             {errorMessage &&
-                <h4 className="Error" style={{color:'red'}}>{errorMessage}</h4>}
+                <h4 className="Error" style={{ color: 'red' }}>{errorMessage}</h4>}
         </form>
     );
 

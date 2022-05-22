@@ -31,6 +31,7 @@ urlpatterns = [
     path('api/', include('media_library.urls')),
     path('api/',include('report.urls')),
     path('api/',include('notifications.urls')),
+    path('api/',include('tokens.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh')
 ]

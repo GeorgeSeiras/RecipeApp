@@ -6,8 +6,8 @@ from . import views
 
 
 urlpatterns = [
-    path('token<str:token>', views.UserMe.as_view(), name='token'),
-
+    path('verification/new', views.TokenNew.as_view(), name='token-new'),
+    path('verification/<str:token>', views.Token.as_view(), name='token'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

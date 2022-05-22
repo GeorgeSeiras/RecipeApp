@@ -75,7 +75,7 @@ class UserRegister(APIView):
                 data={**request.data, 'password': password, 'is_active': False})
             serializer.is_valid(raise_exception=True)
             serializer.save()
-            send_verification_email(serializer.data)
+            send_verification_email(serializer.data.get('id'),serializer.data.get('email'))
             res = serializer.data
             del res['password']
             return JsonResponse({'result': res}, status=status.HTTP_201_CREATED)

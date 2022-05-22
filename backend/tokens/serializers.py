@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
 
-class NewTokenSerializer(serializers.ModelSerializer):
+class NewTokenSerializer(serializers.Serializer):
     
     email = serializers.EmailField()

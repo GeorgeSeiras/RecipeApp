@@ -122,8 +122,13 @@ export default function Signup() {
                 {genericError &&
                     <h4 style={{ color: 'red' }}>{genericError}</h4>}
             </Form>
+            <div style={{ fontSize: '15px', textAlign: 'center' }}>
+                <a href='/verification/new-token'>
+                    Resend verification email
+                </a>
+            </div>
             {success &&
-                <Navigate to='../login' />}
+                <Navigate to={`../verification?email=${email}`} />}
         </div>
     );
 }

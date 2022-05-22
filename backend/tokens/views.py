@@ -1,4 +1,5 @@
 from datetime import timedelta
+import uuid
 from django.http import JsonResponse
 from django.utils import timezone
 from rest_framework.views import APIView
@@ -18,8 +19,8 @@ class Token(APIView):
     def get(self, request, token):
         with transaction.atomic():
             try:
-                token = RegistrationToken(uuid=token)
-            except RegistrationToken.DoesNotExist():
+                token = RegistrationToken.objects.get(uuid=uuid.UUID(token))
+            except RegistrationToken.DoesNotExist:
                 raise NotFound('Token not found')
             if(token.expired):
                 raise CustomException(
@@ -34,19 +35,19 @@ class Token(APIView):
 
 class TokenNew(APIView):
 
-    def get(self, request):
+    def post(self, request):
         serializer = NewTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         with transaction.atomic():
             try:
                 user = User.objects.get(
                     email=serializer.validated_data['email'])
-            except User.DoesNotExist():
+            except User.DoesNotExist:
                 raise NotFound('User not found')
             if user.is_active:
                 raise CustomException(
                     'This email is tied with an already activated user', status.HTTP_400_BAD_REQUEST)
             RegistrationToken.objects.filter(
-                email=serializer.validated_data['email']).update(expired=True)
-            send_verification_email(request, serializer.data)
-            return JsonResponse({'result':'ok'},status_code=status.HTTP_200_OK)
+                user=user).update(expired=True)
+            send_verification_email(user.id,user.email)
+            return JsonResponse({'result':'ok'},status=status.HTTP_200_OK)
