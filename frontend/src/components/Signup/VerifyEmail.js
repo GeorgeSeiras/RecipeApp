@@ -26,7 +26,7 @@ export default function VerifyEmail() {
         }
     }, [state?.errorMessage])
 
-    useState(() => {
+    useEffect(() => {
         if (state?.success === 'ok') {
             navigate('/login');
         }

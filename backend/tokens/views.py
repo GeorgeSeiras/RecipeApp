@@ -30,7 +30,9 @@ class Token(APIView):
                     'This token has expired', status.HTTP_400_BAD_REQUEST)
             token.user.is_active = True
             token.expired = True
-            return JsonResponse({'result':'ok'},status_code=status.HTTP_200_OK)
+            token.user.save()
+            token.save()
+            return JsonResponse({'result':'ok'},status=status.HTTP_200_OK)
 
 
 class TokenNew(APIView):

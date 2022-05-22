@@ -30,7 +30,7 @@ export default function NewToken() {
         setSuccessMessage('');
         const payload = { 'email': email };
         const res = await newToken(dispatch, payload);
-        if(res.success === 'ok'){
+        if(res?.result === 'ok'){
             setSuccessMessage(`Verification email has been sent to ${email}`)
         }
     }
