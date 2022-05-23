@@ -16,30 +16,35 @@ function Login(props) {
     const { login } = useContext(UserContext);
     const { addError } = useError();
     const initialState = useRef(true)
-        ;
+
     useEffect(() => {
         if (initialState.current) {
             initialState.current = false;
             return
         }
         if (state?.errorMessage) {
-            setErrorMessage(state.errorMessage)
+            setErrorMessage(String(state.errorMessage))
         }
     }, [state])
 
     function validateForm() {
         return username.length > 0 && password.length > 0;
     }
-
     const handleSumbit = async (e) => {
         e.preventDefault();
-        let payload = { username, password };
+        const payload = {
+            username,
+            password,
+            grant_type:'password',
+            client_id:process.env.REACT_APP_CLIENT_ID,
+            client_secret:process.env.REACT_APP_CLIENT_SECRET
+        };
         try {
-            let responseLogin = await userLogin(dispatch, payload, remember);
-            if (!responseLogin?.access) {
+            const responseLogin = await userLogin(dispatch, payload, remember);
+            if (!responseLogin?.access_token) {
                 return;
             }
-            let responseMe = await getMe(dispatchGetMe, responseLogin.access);
+            const responseMe = await getMe(dispatchGetMe, responseLogin.access_token);
             if (!responseMe) {
                 return;
             }
@@ -47,7 +52,7 @@ function Login(props) {
                 if (responseMe?.user?.removed === true) {
                     addError({ "message": 'Your account has been suspended by an administrator' })
                 } else {
-                    await login({ user: responseMe.user, token: responseLogin.access })
+                    await login({ user: responseMe.user, token: responseLogin.access_token })
                 }
             navigate('/')
         } catch (error) {
@@ -101,7 +106,8 @@ function Login(props) {
                 Login
             </button>
             {errorMessage &&
-                <h4 className="Error" style={{ color: 'red' }}>{errorMessage}</h4>}
+                <h4 style={{ color: 'red' }}>{errorMessage}</h4>
+            }
         </form>
     );
 

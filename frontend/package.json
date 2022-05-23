@@ -60,6 +60,8 @@
     "react-loader-spinner": "^5.1.4",
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
+    "react-social-login-buttons": "^3.6.0",
+    "reactjs-social-login": "^2.1.0",
     "slate": "^0.77.2",
     "slate-history": "^0.66.0",
     "slate-hyperscript": "^0.77.0",
@@ -69,7 +71,7 @@
     "web-vitals": "^2.1.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "HTTPS=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

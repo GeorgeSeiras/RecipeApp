@@ -1,6 +1,7 @@
 import Cookies from 'universal-cookie';
 
 const API_URL = process.env.REACT_APP_API_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_ADDRESS;
 
 export async function userLogin(dispatch, payload, remember) {
     const cookies = new Cookies();
@@ -11,10 +12,10 @@ export async function userLogin(dispatch, payload, remember) {
     };
 
     try {
-        const response = await fetch(`${API_URL}/token/`, requestOptions);
+        const response = await fetch(`http://${BACKEND_URL}/auth/token`, requestOptions);
         const data = await response.json();
-        if (data?.access) {
-            dispatch({ type: 'LOGIN', payload: data.access })
+        if (data?.access_token) {
+            dispatch({ type: 'LOGIN', payload: data.access_token })
             var expires = null;
             if (remember) {
                 const date = new Date();
@@ -22,7 +23,7 @@ export async function userLogin(dispatch, payload, remember) {
             }
 
             cookies.set('token',
-                { key: data.access },
+                { key: data.access_token },
                 {
                     path: '/',
                     httpOnly: false,
