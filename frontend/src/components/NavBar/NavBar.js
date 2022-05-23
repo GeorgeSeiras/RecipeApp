@@ -7,7 +7,6 @@ import NAV_LOGO from '../../static/nav_logo.png';
 import NO_AVATAR from '../../static/no_avatar.svg';
 
 import Notifications from '../Notifications/Notifications';
-
 import './NavBar.css'
 const Navigation = () => {
     const userData = useContext(UserContext);
@@ -34,7 +33,7 @@ const Navigation = () => {
                     {(userData?.user?.token && userData?.user?.user) &&
                         <>
                             <Nav.Link href='/recipe/new' style={{ fontSize: '30px', paddingTop: '5px' }}>+</Nav.Link>
-                            <div className='ms-auto' style={{ paddingTop: '15px' }}>
+                            <div className='ms-auto' style={{ paddingTop: '15px' }} >
                                 <Notifications userData={userData} />
                             </div >
                         </>

@@ -26,7 +26,7 @@ export default function PaginationBar(props) {
     }
 
     return (
-        <Container style={{ paddingLeft: '0', paddingRight: '0', marginBottom: '-1.5em' }}>
+        <Container style={{flex:'1',paddingLeft:'0',paddingRight:'0' }}>
             <Pagination style={{
                 flex: '1',
                 paddingRight: '0'
@@ -35,13 +35,13 @@ export default function PaginationBar(props) {
                     key={'prev'}
                     disabled={!disabled('previous')}
                     onClick={() => handleClick(-1)}
-                    style={{ flex: '1', textAlign: 'center' }}
+                    style={{ flex:'1', textAlign: 'center' }}
                 />
                 <Pagination.Next
                     key={'next'}
                     disabled={!disabled('next')}
                     onClick={() => handleClick(1)}
-                    style={{ flex: '1', textAlign: 'center' }}
+                    style={{ flex:'1', textAlign: 'center',marginRight:'0' }}
                 />
             </Pagination>
         </Container>

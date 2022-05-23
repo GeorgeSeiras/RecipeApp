@@ -4,12 +4,15 @@ import Badge from 'react-bootstrap/Badge';
 import Container from 'react-bootstrap/Container';
 import Overlay from 'react-bootstrap/esm/Overlay';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Nav from 'react-bootstrap/Nav';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 import { getNotifications, setSocket, setNotificationsAsRead, pushNotification } from '../../actions/NotificationActions'
 import { NotificationReducer } from '../../reducers/NotificationsReducer'
 
 import notification_bell from '../../static/notification_bell.svg'
 import PaginationBar from './Pagination';
+import './notifications.css'
 
 export default function Notifications(props) {
     const BACKEND_ADDRESS = process.env.REACT_APP_BACKEND_ADDRESS;
@@ -51,20 +54,47 @@ export default function Notifications(props) {
 
     return (
         <Container style={{ position: 'relative', padding: '0' }}>
-            <Image
-                width={35}
-                src={notification_bell}
-                alt='notification_bell'
-                ref={ref}
-                onClick={() => {
-                    setShow(!show);
-                    if (state.notifications.new > 0) {
-                        setNotificationsAsRead(dispatch, props.userData.user.token.key)
+            <Nav style={{ display: 'flex', marginTop: '-10px' }}>
+                <NavDropdown id='dropdown-basic-button' drop='start'
+                    title={
+                        <Image
+                            width={35}
+                            src={notification_bell}
+                            alt='notification_bell'
+                            ref={ref}
+                            onClick={() => {
+                                setShow(!show);
+                                if (state.notifications.new > 0) {
+                                    setNotificationsAsRead(dispatch, props.userData.user.token.key)
+                                }
+                            }}
+                        />
                     }
-                }}
-            />
-
-            {state?.notifications?.new >0 &&
+                >
+                    {state?.notifications?.results.map((notification, index) => {
+                        return (
+                            <>
+                                <NavDropdown.Item href={`${REACT_URL}/recipe/${notification.comment.recipe}/comment/${notification.comment.id}`}
+                                    key={index}
+                                    style={{ display: 'flex', whiteSpace: 'normal', width: '200px' }}>
+                                    {
+                                        `${notification.type}` !== 'REPLY'
+                                            ? `${notification.sender.username} has commented in one of your recipes`
+                                            : `${notification.sender.username} has replied to one of your comments`
+                                    }
+                                </NavDropdown.Item>
+                                <NavDropdown.Divider style={{marginTop:'2px',marginBottom:'0'}}/>
+                            </>
+                        )
+                    })}
+                    {state?.notifications?.results &&
+                        <NavDropdown.Item onClick={(e) => e.stopPropagation()} style={{ paddingRight: '0', paddingLeft: '0', marginBottom: '-28px', paddingBottom: '0', paddingTop: '0' }}>
+                            <PaginationBar response={state?.notifications} active={active} setClicked={setPageClicked} />
+                        </NavDropdown.Item>
+                    }
+                </NavDropdown>
+            </Nav>
+            {state?.notifications?.new > 0 &&
                 <Badge
                     pill
                     bg="danger"
@@ -72,8 +102,8 @@ export default function Notifications(props) {
                         width: '20px',
                         height: '20px',
                         position: "absolute",
-                        top: "-5px",
-                        right: "0",
+                        top: "0",
+                        right: "5px",
                         padding: '0',
                         paddingTop: '3px',
                         cursor: 'default'
@@ -87,37 +117,6 @@ export default function Notifications(props) {
                 >{' '}</Badge>
 
             }
-            <Overlay
-                show={show}
-                target={ref.current}
-                placement={'bottom'}
-                rootClose={true}
-                onHide={() => setShow(false)}
-            >
-                {({ placement, arrowProps, show: _show, popper, ...props }) => (
-
-                    <ListGroup {...props} style={{ ...props.style, position: 'fixed' }}>
-                        {state?.notifications?.results.map((notification, index) => {
-                            return (
-                                <ListGroup.Item action href={`${REACT_URL}/recipe/${notification.comment.recipe}/comment/${notification.comment.id}`}
-                                    key={index}
-                                    style={{ maxWidth: '250px' }}>
-                                    {
-                                        `${notification.type}` !== 'REPLY'
-                                            ? `${notification.sender.username} has commented in one of your recipes`
-                                            : `${notification.sender.username} has replied to one of your comments`
-                                    }
-                                </ListGroup.Item>
-                            )
-                        })}
-                        {state?.notifications?.results &&
-                            <ListGroup.Item>
-                                <PaginationBar response={state?.notifications} active={active} setClicked={setPageClicked} />
-                            </ListGroup.Item>
-                        }
-                    </ListGroup>
-                )}
-            </Overlay>
         </Container>
     )
 }
