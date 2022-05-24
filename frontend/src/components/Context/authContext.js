@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }) => {
                     cookies.remove('token', { path: '/' });
                 }
                 const data = await response.json()
+                console.log(data)
                 setUser({
                     ...user,
                     user: data.user,
@@ -51,11 +52,19 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
+        const provider = cookies.get('provider')
+        switch (provider) {
+            case 'facebook':
+                // facebookRef.current?.onLogout()
+                break
+            default:
+                break
+        }
         setUser((user) => ({
             token: null,
             user: null,
             isAuth: false
-        }));
+        }))
         cookies.remove('token', { path: '/' });
     };
 

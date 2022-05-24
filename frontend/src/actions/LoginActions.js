@@ -3,6 +3,61 @@ import Cookies from 'universal-cookie';
 const API_URL = process.env.REACT_APP_API_URL;
 const BACKEND_URL = process.env.REACT_APP_BACKEND_ADDRESS;
 
+export async function facebooklogin(dispatch, accessToken) {
+    const cookies = new Cookies();
+    const payload = {
+        token: accessToken,
+        backend: 'facebook',
+        grant_type: 'convert_token',
+        client_id: process.env.REACT_APP_CLIENT_ID,
+        client_secret: process.env.REACT_APP_CLIENT_SECRET
+    }
+    var formBody = [];
+    for (var property in payload) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(payload[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        },
+        body: formBody
+    }
+    try {
+        const response = await fetch(`http://${BACKEND_URL}/auth/convert-token`, requestOptions);
+        const data = await response.json();
+        if (data) {
+            dispatch({ type: 'LOGIN', payload: data.access_token })
+            const date = new Date();
+            const expires = new Date(date.setDate(date.getDate() + 30));
+            cookies.set('token',
+                { key: data.access_token },
+                {
+                    path: '/',
+                    httpOnly: false,
+                    sameSite: 'strict',
+                    expires: expires
+                });
+            cookies.set('provider',
+                { key: 'facebook' },
+                {
+                    path: '/',
+                    httpOnly: false,
+                    sameSite: 'strict',
+                    expires: expires
+                });
+        }
+        dispatch({ type: 'LOGIN_ERROR', error: data.detail })
+
+    } catch (error) {
+        dispatch({ type: 'LOGIN_ERROR', error: error });
+    }
+}
+
 export async function userLogin(dispatch, payload, remember) {
     const cookies = new Cookies();
     const requestOptions = {

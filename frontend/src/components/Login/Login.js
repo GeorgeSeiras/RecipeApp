@@ -1,9 +1,12 @@
-import React, { useState, useReducer, useRef, useEffect, useContext } from 'react'
+import React, { useState, useReducer, useRef, useEffect, useContext, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { userLogin, getMe } from '../../actions/LoginActions';
+import { userLogin, getMe, facebooklogin } from '../../actions/LoginActions';
 import { AuthReducer, GetMeReducer } from '../../reducers/LoginReducer'
 import { UserContext } from '../Context/authContext';
 import useError from '../ErrorHandler/ErrorHandler';
+
+import { LoginSocialFacebook } from 'reactjs-social-login';
+import { FacebookLoginButton } from 'react-social-login-buttons';
 
 function Login(props) {
     const [username, setUsername] = useState("");
@@ -16,6 +19,37 @@ function Login(props) {
     const { login } = useContext(UserContext);
     const { addError } = useError();
     const initialState = useRef(true)
+
+    //
+    const [provider, setProvider] = useState('')
+    const [profile, setProfile] = useState()
+    const facebookRef = useRef(null)
+
+    const onLoginStart = useCallback(() => {
+        console.log('login start')
+    }, [])
+
+    const onLogoutFailure = useCallback(() => {
+        console.log('logout fail')
+    }, [])
+
+    const onLogoutSuccess = useCallback(() => {
+        setProfile(null)
+        setProvider('')
+        console.log('logout success')
+    }, [])
+
+
+    const onLogout = useCallback(() => {
+        switch (provider) {
+            case 'facebook':
+                facebookRef.current?.onLogout()
+                break
+            default:
+                break
+        }
+    }, [provider])
+    //
 
     useEffect(() => {
         if (initialState.current) {
@@ -30,14 +64,15 @@ function Login(props) {
     function validateForm() {
         return username.length > 0 && password.length > 0;
     }
+
     const handleSumbit = async (e) => {
         e.preventDefault();
         const payload = {
             username,
             password,
-            grant_type:'password',
-            client_id:process.env.REACT_APP_CLIENT_ID,
-            client_secret:process.env.REACT_APP_CLIENT_SECRET
+            grant_type: 'password',
+            client_id: process.env.REACT_APP_CLIENT_ID,
+            client_secret: process.env.REACT_APP_CLIENT_SECRET
         };
         try {
             const responseLogin = await userLogin(dispatch, payload, remember);
@@ -105,6 +140,31 @@ function Login(props) {
             <button type="submit" className="btn-lg btn-primary" disabled={!validateForm()}>
                 Login
             </button>
+
+            <LoginSocialFacebook
+                ref={facebookRef}
+                appId={process.env.REACT_APP_FB_APP_ID || ''}
+                onLoginStart={onLoginStart}
+                onLogoutSuccess={onLogoutSuccess}
+                fieldsProfile={'id,name,picture,email'}
+                scope={'email,public_profile'}
+                onResolve={async ({ provider, data }) => {
+                    setProvider(provider)
+                    setProfile(data)
+                    console.log(data)
+                    await facebooklogin(dispatch,data.accessToken)
+                }}
+                onReject={(err) => {
+                    console.log(err)
+                    setErrorMessage('Something went wrong.')
+                }}
+            >
+                <FacebookLoginButton />
+            </LoginSocialFacebook>
+            {provider && profile &&
+                <button onClick={() => onLogout()}>Facebook Logout</button>
+            }
+
             {errorMessage &&
                 <h4 style={{ color: 'red' }}>{errorMessage}</h4>
             }
