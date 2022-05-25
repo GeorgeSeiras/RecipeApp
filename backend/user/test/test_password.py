@@ -1,13 +1,13 @@
+
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
 from factory.fuzzy import FuzzyText
 from .factory import UserFactory
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.models import User
-
+from .utils import generate_token
 
 class UserMeTest(APITestCase):
 
@@ -19,13 +19,12 @@ class UserMeTest(APITestCase):
         self.client = APIClient()
         self.password_url = reverse('user-password')
         user = User.objects.get(username=self.user_object.username)
-        refresh = RefreshToken.for_user(user)
-        self.token = refresh.access_token
+        self.token = generate_token(user)
 
     @classmethod
     def tearDown(self):
         User.objects.all().delete()
-        
+
     def test_change_password(self):
         data = {
             'password': self.password,
@@ -50,9 +49,9 @@ class UserMeTest(APITestCase):
         response = self.client.patch(
             self.password_url, data=json.dumps(data), content_type='application/json',  **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(json.loads(response.content)['message'], 'Wrong password')
+        self.assertEqual(json.loads(response.content)[
+                         'message'], 'Wrong password')
 
-    
     def test_not_matching_new_password(self):
         password1 = FuzzyText().fuzz()
         password2 = FuzzyText().fuzz()
@@ -64,4 +63,5 @@ class UserMeTest(APITestCase):
         response = self.client.patch(
             self.password_url, data=json.dumps(data), content_type='application/json',  **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(json.loads(response.content)['message'], 'Passwords must match')
+        self.assertEqual(json.loads(response.content)[
+                         'message'], 'Passwords must match')

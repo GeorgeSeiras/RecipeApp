@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
-from rest_framework_simplejwt.tokens import RefreshToken
+from user.test.utils import generate_token
 
 from recipe.models import Recipe
 from comment.models import Comment
@@ -12,7 +12,7 @@ from recipe.test.factory import RecipeFactory
 from user.models import User
 
 
-class RecipeImageTest(APITestCase):
+class RecipeCommentCreateTest(APITestCase):
 
     @classmethod
     def setUp(self):
@@ -22,8 +22,7 @@ class RecipeImageTest(APITestCase):
             'comment', kwargs={'recipe_id': self.recipe.id})
         self.create_comment_url_not_exist = reverse(
             'comment', kwargs={'recipe_id': self.recipe.id+2342})
-        refresh = RefreshToken.for_user(self.recipe.user)
-        self.token = refresh.access_token
+        self.token = generate_token(self.recipe.user)
 
     @classmethod
     def teadDown(self):

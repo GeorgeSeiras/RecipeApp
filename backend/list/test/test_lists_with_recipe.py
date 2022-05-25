@@ -2,7 +2,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
-from rest_framework_simplejwt.tokens import RefreshToken
+
+from user.test.utils import generate_token
 
 from .list_factory import ListFactory
 from .recipe_in_list_factory import RecipeInListFactory
@@ -27,8 +28,7 @@ class ListsWithRecipeTest(APITestCase):
             'lists-with-recipe', kwargs={'recipe_id': self.recipe.id})
         self.list_detail_url_not_exist = reverse(
             'lists-with-recipe', kwargs={'recipe_id': self.recipe.id+123123})
-        refresh = RefreshToken.for_user(self.user)
-        self.token = refresh.access_token
+        self.token = generate_token(self.user)
 
     @classmethod
     def tearDown(self):

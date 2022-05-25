@@ -3,8 +3,9 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
 from factory.fuzzy import FuzzyText
+
+from user.test.utils import generate_token
 from .factory import UserFactory
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.models import User
 
@@ -16,8 +17,7 @@ class UserMeTest(APITestCase):
         self.password = FuzzyText('password').fuzz()
         self.user_object = UserFactory.create(
             password_unecrypted=self.password)
-        refresh = RefreshToken.for_user(self.user_object)
-        self.token = refresh.access_token
+        self.token = generate_token(self.user_object)        
         self.client = APIClient()
         self.user_by_username_url = reverse('user-by-username', kwargs={'username':self.user_object.username})
         self.user_by_username_not_exists_url = reverse('user-by-username', kwargs={'username':self.user_object.username+'asdasd'})

@@ -3,7 +3,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
-from rest_framework_simplejwt.tokens import RefreshToken
+from user.test.utils import generate_token
 
 from recipe.models import Recipe
 from recipe.test.factory import RecipeFactory
@@ -23,8 +23,7 @@ class RecipeImageTest(APITestCase):
         self.create_recipe_image_url_2 = reverse(
             'image-recipe', kwargs={'recipe_id': self.recipe_2.id})
         user = User.objects.get(username=self.recipe.user.username)
-        refresh = RefreshToken.for_user(user)
-        self.token = refresh.access_token
+        self.token = generate_token(user)
         self.images = []
         for i in range(0, 5):
             image = (

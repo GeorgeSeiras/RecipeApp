@@ -13,7 +13,6 @@ def get_file_path(instance, filename):
     else:
         ext = filename.split('.')[-1]
         filename = "%s.%s" % (uuid.uuid4(), ext)
-    print(filename)
     return filename
 
 

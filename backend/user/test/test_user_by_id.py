@@ -3,8 +3,9 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
 from factory.fuzzy import FuzzyText
+
+from user.test.utils import generate_token
 from .factory import UserFactory
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.models import User
 
@@ -16,8 +17,7 @@ class UserMeTest(APITestCase):
         self.password = FuzzyText('password').fuzz()
         self.user_object = UserFactory.create(
             password_unecrypted=self.password)
-        refresh = RefreshToken.for_user(self.user_object)
-        self.token = refresh.access_token
+        self.token = generate_token(self.user_object)
         self.client = APIClient()
         self.user_by_id_exists_url = reverse('user-by-id',kwargs={'pk': self.user_object.id})
         self.user_by_id_not_exists_url = reverse('user-by-id',kwargs={'pk': self.user_object.id + 1})
@@ -43,8 +43,7 @@ class UserMeTest(APITestCase):
 
     def test_delete_user_other_user(self):
         user2 = UserFactory.create()
-        refresh = RefreshToken.for_user(user2)
-        token = refresh.access_token
+        token = generate_token(user2)
         response = self.client.delete(self.user_by_id_exists_url, **{'HTTP_AUTHORIZATION': f'Bearer {token}'})
         self.assertEqual(response.status_code,status.HTTP_403_FORBIDDEN)
         self.assertEqual(json.loads(response.content)['detail'], 'You do not have permission to perform this action.')

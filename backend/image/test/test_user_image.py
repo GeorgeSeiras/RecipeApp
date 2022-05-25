@@ -3,7 +3,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
-from rest_framework_simplejwt.tokens import RefreshToken
+from user.test.utils import generate_token
 
 
 from user.test.factory import UserFactory
@@ -18,8 +18,7 @@ class UserImageTest(APITestCase):
         self.client = APIClient()
         self.create_user_image_url = reverse('image-user')
         user = User.objects.get(username=self.user.username)
-        refresh = RefreshToken.for_user(user)
-        self.token = refresh.access_token
+        self.token = generate_token(user)
 
     @classmethod
     def tearDown(self):

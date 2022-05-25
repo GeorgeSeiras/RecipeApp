@@ -2,9 +2,9 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
+from user.test.utils import generate_token
 
 from user.test.factory import UserFactory
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.models import User
 from list.models import List
@@ -18,8 +18,7 @@ class RecipeCreateTest(APITestCase):
         self.client = APIClient()
         self.create_list_url = reverse('list-create')
         user = User.objects.get(username=self.user_object.username)
-        refresh = RefreshToken.for_user(user)
-        self.token = refresh.access_token
+        self.token = generate_token(user)
 
     @classmethod
     def tearDown(self):
