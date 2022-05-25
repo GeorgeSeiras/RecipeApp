@@ -34,8 +34,8 @@ class GetListRecipesTest(APITestCase):
             'list-recipe', kwargs={'list_id': self.list.id+123123,'recipe_id':self.recipe.id})
         self.list_recipe_url_recipe_not_exists = reverse(
             'list-recipe', kwargs={'list_id': self.list.id,'recipe_id':self.recipe.id+234323})
-        self.token = generate_token(self.user)
-        self.token = generate_token(self.list_2.user)
+        self.token = generate_token(self.list.user)
+        self.token_2 = generate_token(self.list_2.user)
 
     @classmethod
     def tearDown(self):
