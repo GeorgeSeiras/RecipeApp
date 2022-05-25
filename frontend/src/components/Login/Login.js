@@ -19,25 +19,28 @@ function Login(props) {
     const { login } = useContext(UserContext);
     const { addError } = useError();
     const initialState = useRef(true)
+    const [rerender, setRerender] = useState(true)
 
-    //
     const [provider, setProvider] = useState('')
     const [profile, setProfile] = useState()
     const facebookRef = useRef(null)
     const googleRef = useRef(null)
 
     const onLoginStart = useCallback(() => {
+        console.log('login start')
     }, [])
 
     const onLogoutFailure = useCallback(() => {
-        console.log('hmmm')
-    }, [])
+        setRerender(false)
+        setRerender(true)
+    }, [rerender])
 
     const onLogoutSuccess = useCallback(() => {
         setProfile(null)
         setProvider('')
+        console.log('logout success')
     }, [])
-
+    console.log(rerender)
 
     const onLogout = useCallback(() => {
         switch (provider) {
@@ -51,7 +54,6 @@ function Login(props) {
                 break
         }
     }, [provider])
-    //
 
     useEffect(() => {
         if (initialState.current) {
@@ -145,62 +147,73 @@ function Login(props) {
             <button type="submit" className="btn-lg btn-primary" disabled={!validateForm()}>
                 Login
             </button>
-            <LoginSocialFacebook
-                ref={facebookRef}
-                appId={process.env.REACT_APP_FB_APP_ID || ''}
-                onLoginStart={onLoginStart}
-                onLogoutSuccess={onLogoutSuccess}
-                fieldsProfile={'id,name,picture,email'}
-                scope={'email,public_profile'}
-                onResolve={async ({ provider, data }) => {
-                    try {
-                        setProvider(provider)
-                        setProfile(data)
-                        const res = await sociallogin(dispatch, 'facebook', data.accessToken)
-                        if (res) {
-                            getMeAndRedirect(res)
-                        } else {
-                            onLogout()
-                            setErrorMessage('Something went wrong while connection with Facebook')
-                        }
-                    } catch (e) {
-                        console.log(e)
-                    }
-                }}
-                onReject={(err) => {
-                    console.log(err)
-                    setErrorMessage('Something went wrong.')
-                }}
-            >
-                <FacebookLoginButton style={{ disabled: 'false' }} />
-            </LoginSocialFacebook>
-            <LoginSocialGoogle
-                ref={googleRef}
-                client_id={process.env.REACT_APP_GG_APP_ID || ''}
-                onLogoutFailure={onLogoutFailure}
-                onLoginStart={onLoginStart}
-                onLogoutSuccess={onLogoutSuccess}
-                onResolve={async ({ provider, data }) => {
-                    try {
-                        setProvider(provider)
-                        setProfile(data)
-                        const res = await sociallogin(dispatch, 'google-oauth2', data.access_token)
-                        if (res) {
-                            getMeAndRedirect(res)
-                        } else {
-                            onLogout()
-                            setErrorMessage('Something went wrong while connection with Google')
-                        }
-                    } catch (e) {
-                        console.log(e)
-                    }
-                }}
-                onReject={(err) => {
-                    console.log(err)
-                }}
-            >
-                <GoogleLoginButton />
-            </LoginSocialGoogle>
+            {rerender &&
+                <>
+                    <LoginSocialFacebook
+                        ref={facebookRef}
+                        appId={process.env.REACT_APP_FB_APP_ID || ''}
+                        onLoginStart={onLoginStart}
+                        onLogoutSuccess={onLogoutSuccess}
+                        fieldsProfile={'id,name,picture,email'}
+                        scope={'email,public_profile'}
+                        onResolve={async ({ provider, data }) => {
+                            try {
+                                setProvider(provider)
+                                setProfile(data)
+                                const res = await sociallogin(dispatch, 'facebook', data.accessToken)
+                                if (res) {
+                                    getMeAndRedirect(res)
+                                } else {
+                                    onLogout()
+                                    setErrorMessage('Something went wrong while connection with Facebook')
+                                }
+                            } catch (e) {
+                                setRerender(false)
+                                setRerender(true)
+                                console.log(e)
+                            }
+                        }}
+                        onReject={(err) => {
+                            setRerender(false)
+                            setRerender(true)
+                            setErrorMessage('Something went wrong.')
+                        }}
+                    >
+                        <FacebookLoginButton style={{ disabled: 'false' }} />
+                    </LoginSocialFacebook>
+                    <LoginSocialGoogle
+                        ref={googleRef}
+                        client_id={process.env.REACT_APP_GG_APP_ID || ''}
+                        onLogoutFailure={onLogoutFailure}
+                        onLoginStart={onLoginStart}
+                        onLogoutSuccess={onLogoutSuccess}
+                        onResolve={async ({ provider, data }) => {
+                            try {
+                                setProvider(provider)
+                                setProfile(data)
+                                const res = await sociallogin(dispatch, 'google-oauth2', data.access_token)
+                                if (res) {
+                                    getMeAndRedirect(res)
+                                } else {
+                                    onLogout()
+                                    setErrorMessage('Something went wrong while connection with Google')
+                                }
+                            } catch (e) {
+                                setRerender(false)
+                                setRerender(true)
+                                console.log(e)
+                            }
+                        }}
+                        onReject={(err) => {
+                            setRerender(false)
+                            setRerender(true)
+                            console.log(err)
+                        }}
+                    >
+                        <GoogleLoginButton />
+                    </LoginSocialGoogle>
+                </>
+            }
             {errorMessage &&
                 <h4 style={{ color: 'red' }}>{errorMessage}</h4>
             }
