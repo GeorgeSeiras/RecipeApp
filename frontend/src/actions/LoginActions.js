@@ -86,7 +86,6 @@ export async function userLogin(dispatch, payload, remember) {
 }
 
 export async function getMe(dispatch, token) {
-    console.log(token)
     const requestOptions = {
         method: 'GET',
         headers: {

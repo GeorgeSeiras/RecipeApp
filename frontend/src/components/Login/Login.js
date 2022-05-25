@@ -149,14 +149,18 @@ function Login(props) {
                 fieldsProfile={'id,name,picture,email'}
                 scope={'email,public_profile'}
                 onResolve={async ({ provider, data }) => {
-                    setProvider(provider)
-                    setProfile(data)
-                    const res = await facebooklogin(dispatch, data.accessToken)
-                    if (res) {
-                        getMeAndRedirect(res)
-                    } else {
-                        onLogout()
-                        setErrorMessage('Something went wrong while connection with Facebook')
+                    try {
+                        setProvider(provider)
+                        setProfile(data)
+                        const res = await facebooklogin(dispatch, data.accessToken)
+                        if (res) {
+                            getMeAndRedirect(res)
+                        } else {
+                            onLogout()
+                            setErrorMessage('Something went wrong while connection with Facebook')
+                        }
+                    } catch(e) {
+                        console.log(e)
                     }
                 }}
                 onReject={(err) => {
