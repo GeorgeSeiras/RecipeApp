@@ -230,6 +230,9 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.facebook.FacebookAppOAuth2',
     'social_core.backends.facebook.FacebookOAuth2',
 
+    # Google OAuth2
+    'social_core.backends.google.GoogleOAuth2',
+
     # drf_social_oauth2
     'drf_social_oauth2.backends.DjangoOAuth2',
 
@@ -240,6 +243,15 @@ AUTHENTICATION_BACKENDS = (
 # Facebook configuration
 SOCIAL_AUTH_FACEBOOK_KEY = env('FB_APP_ID')
 SOCIAL_AUTH_FACEBOOK_SECRET = env('FB_APP_SECRET')
+
+# Google configuration
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env('GG_APP_ID')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env('GG_APP_SECRET')
+# Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
+]
 
 # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from Facebook.
 # Email is not sent by default, to get it, you must request the email permission.

@@ -1,12 +1,12 @@
 import React, { useState, useReducer, useRef, useEffect, useContext, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { userLogin, getMe, facebooklogin } from '../../actions/LoginActions';
+import { userLogin, getMe, sociallogin } from '../../actions/LoginActions';
 import { AuthReducer, GetMeReducer } from '../../reducers/LoginReducer'
 import { UserContext } from '../Context/authContext';
 import useError from '../ErrorHandler/ErrorHandler';
 
-import { LoginSocialFacebook } from 'reactjs-social-login';
-import { FacebookLoginButton } from 'react-social-login-buttons';
+import { LoginSocialFacebook, LoginSocialGoogle } from 'reactjs-social-login';
+import { FacebookLoginButton, GoogleLoginButton } from 'react-social-login-buttons';
 
 function Login(props) {
     const [username, setUsername] = useState("");
@@ -24,11 +24,13 @@ function Login(props) {
     const [provider, setProvider] = useState('')
     const [profile, setProfile] = useState()
     const facebookRef = useRef(null)
+    const googleRef = useRef(null)
 
     const onLoginStart = useCallback(() => {
     }, [])
 
     const onLogoutFailure = useCallback(() => {
+        console.log('hmmm')
     }, [])
 
     const onLogoutSuccess = useCallback(() => {
@@ -41,7 +43,10 @@ function Login(props) {
         switch (provider) {
             case 'facebook':
                 facebookRef.current?.onLogout()
-                break
+                break;
+            case 'google':
+                googleRef.current?.onLogout()
+                break;
             default:
                 break
         }
@@ -140,7 +145,6 @@ function Login(props) {
             <button type="submit" className="btn-lg btn-primary" disabled={!validateForm()}>
                 Login
             </button>
-
             <LoginSocialFacebook
                 ref={facebookRef}
                 appId={process.env.REACT_APP_FB_APP_ID || ''}
@@ -152,14 +156,14 @@ function Login(props) {
                     try {
                         setProvider(provider)
                         setProfile(data)
-                        const res = await facebooklogin(dispatch, data.accessToken)
+                        const res = await sociallogin(dispatch, 'facebook', data.accessToken)
                         if (res) {
                             getMeAndRedirect(res)
                         } else {
                             onLogout()
                             setErrorMessage('Something went wrong while connection with Facebook')
                         }
-                    } catch(e) {
+                    } catch (e) {
                         console.log(e)
                     }
                 }}
@@ -168,9 +172,35 @@ function Login(props) {
                     setErrorMessage('Something went wrong.')
                 }}
             >
-                <FacebookLoginButton />
+                <FacebookLoginButton style={{ disabled: 'false' }} />
             </LoginSocialFacebook>
-
+            <LoginSocialGoogle
+                ref={googleRef}
+                client_id={process.env.REACT_APP_GG_APP_ID || ''}
+                onLogoutFailure={onLogoutFailure}
+                onLoginStart={onLoginStart}
+                onLogoutSuccess={onLogoutSuccess}
+                onResolve={async ({ provider, data }) => {
+                    try {
+                        setProvider(provider)
+                        setProfile(data)
+                        const res = await sociallogin(dispatch, 'google-oauth2', data.access_token)
+                        if (res) {
+                            getMeAndRedirect(res)
+                        } else {
+                            onLogout()
+                            setErrorMessage('Something went wrong while connection with Google')
+                        }
+                    } catch (e) {
+                        console.log(e)
+                    }
+                }}
+                onReject={(err) => {
+                    console.log(err)
+                }}
+            >
+                <GoogleLoginButton />
+            </LoginSocialGoogle>
             {errorMessage &&
                 <h4 style={{ color: 'red' }}>{errorMessage}</h4>
             }

@@ -3,11 +3,11 @@ import Cookies from 'universal-cookie';
 const API_URL = process.env.REACT_APP_API_URL;
 const BACKEND_URL = process.env.REACT_APP_BACKEND_ADDRESS;
 
-export async function facebooklogin(dispatch, accessToken) {
+export async function sociallogin(dispatch,provider, accessToken) {
     const cookies = new Cookies();
     const payload = {
         token: accessToken,
-        backend: 'facebook',
+        backend: provider,
         grant_type: 'convert_token',
         client_id: process.env.REACT_APP_CLIENT_ID,
         client_secret: process.env.REACT_APP_CLIENT_SECRET
@@ -79,7 +79,7 @@ export async function userLogin(dispatch, payload, remember) {
                 });
             return data
         }
-        dispatch({ type: 'LOGIN_ERROR', error: data.detail })
+        dispatch({ type: 'LOGIN_ERROR', error: data.error_description })
     } catch (error) {
         dispatch({ type: 'LOGIN_ERROR', error: error });
     }
