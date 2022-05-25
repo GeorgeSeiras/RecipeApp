@@ -62,7 +62,6 @@ INSTALLED_APPS = [
     'report',
     'notifications',
     'tokens',
-    # auth
     'oauth2_provider',
     'social_django',
     'drf_social_oauth2',
@@ -246,9 +245,22 @@ SOCIAL_AUTH_FACEBOOK_SECRET = env('FB_APP_SECRET')
 # Email is not sent by default, to get it, you must request the email permission.
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-    'fields': 'id, name, email'
+    'fields': 'id, name, email,picture'
 }
 SOCIAL_AUTH_FACEBOOK_API_VERSION = '2.10'
 SOCIAL_AUTH_ORCID_API_VERSION = 'V3'
-SOCIAL_AUTH_USER_FIELDS=['email','username','password']
+# SOCIAL_AUTH_USER_FIELDS=['email','username','password']
 AUTH_USER_MODEL = "user.User"
+
+SOCIAL_AUTH_PIPELINE = (
+    'social.pipeline.social_auth.social_details',
+    'social.pipeline.social_auth.social_uid',
+    'social.pipeline.social_auth.auth_allowed',
+    'social.pipeline.social_auth.social_user',
+    'social.pipeline.user.get_username',
+    'social.pipeline.user.create_user',
+    'user.save_profile_pipeline.save_profile',
+    'social.pipeline.social_auth.associate_user',
+    'social.pipeline.social_auth.load_extra_data',
+    'social.pipeline.user.user_details',
+)

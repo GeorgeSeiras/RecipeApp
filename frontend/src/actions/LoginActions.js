@@ -30,7 +30,7 @@ export async function facebooklogin(dispatch, accessToken) {
     try {
         const response = await fetch(`http://${BACKEND_URL}/auth/convert-token`, requestOptions);
         const data = await response.json();
-        if (data) {
+        if (data?.access_token) {
             dispatch({ type: 'LOGIN', payload: data.access_token })
             const date = new Date();
             const expires = new Date(date.setDate(date.getDate() + 30));
@@ -42,17 +42,9 @@ export async function facebooklogin(dispatch, accessToken) {
                     sameSite: 'strict',
                     expires: expires
                 });
-            cookies.set('provider',
-                { key: 'facebook' },
-                {
-                    path: '/',
-                    httpOnly: false,
-                    sameSite: 'strict',
-                    expires: expires
-                });
+            return data.access_token;
         }
         dispatch({ type: 'LOGIN_ERROR', error: data.detail })
-
     } catch (error) {
         dispatch({ type: 'LOGIN_ERROR', error: error });
     }
@@ -94,6 +86,7 @@ export async function userLogin(dispatch, payload, remember) {
 }
 
 export async function getMe(dispatch, token) {
+    console.log(token)
     const requestOptions = {
         method: 'GET',
         headers: {

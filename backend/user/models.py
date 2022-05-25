@@ -8,8 +8,12 @@ from django.utils.translation import ugettext_lazy as _
 
 
 def get_file_path(instance, filename):
-    ext = filename.split('.')[-1]
-    filename = "%s.%s" % (uuid.uuid4(), ext)
+    if(len(filename.split('.')) == 1):
+        filename = '%s.%s' % (uuid.uuid4(),'jpg')
+    else:
+        ext = filename.split('.')[-1]
+        filename = "%s.%s" % (uuid.uuid4(), ext)
+    print(filename)
     return filename
 
 
@@ -60,7 +64,7 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
     when corresponding `MediaFile` object is updated
     with new file.
     """
-    print(instance.to_dict())
+    # print(instance.to_dict())
     if not instance.pk:
         return False
 

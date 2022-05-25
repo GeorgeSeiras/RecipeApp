@@ -52,14 +52,6 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
-        const provider = cookies.get('provider')
-        switch (provider) {
-            case 'facebook':
-                // facebookRef.current?.onLogout()
-                break
-            default:
-                break
-        }
         setUser((user) => ({
             token: null,
             user: null,

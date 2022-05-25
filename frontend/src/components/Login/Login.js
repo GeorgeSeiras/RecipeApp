@@ -26,17 +26,14 @@ function Login(props) {
     const facebookRef = useRef(null)
 
     const onLoginStart = useCallback(() => {
-        console.log('login start')
     }, [])
 
     const onLogoutFailure = useCallback(() => {
-        console.log('logout fail')
     }, [])
 
     const onLogoutSuccess = useCallback(() => {
         setProfile(null)
         setProvider('')
-        console.log('logout success')
     }, [])
 
 
@@ -79,22 +76,25 @@ function Login(props) {
             if (!responseLogin?.access_token) {
                 return;
             }
-            const responseMe = await getMe(dispatchGetMe, responseLogin.access_token);
-            if (!responseMe) {
-                return;
-            }
-            if (responseMe)
-                if (responseMe?.user?.removed === true) {
-                    addError({ "message": 'Your account has been suspended by an administrator' })
-                } else {
-                    await login({ user: responseMe.user, token: responseLogin.access_token })
-                }
-            navigate('/')
+            getMeAndRedirect(responseLogin.access_token)
         } catch (error) {
             console.log(error);
         }
     }
 
+    const getMeAndRedirect = async (token) => {
+        const responseMe = await getMe(dispatchGetMe, token);
+        if (!responseMe) {
+            return;
+        }
+        if (responseMe)
+            if (responseMe?.user?.removed === true) {
+                addError({ "message": 'Your account has been suspended by an administrator' })
+            } else {
+                await login({ user: responseMe.user, token: token })
+                navigate('/')
+            }
+    }
     return (
         <form className="Login" onSubmit={handleSumbit} style={{
             padding: '60px 0',
@@ -151,8 +151,13 @@ function Login(props) {
                 onResolve={async ({ provider, data }) => {
                     setProvider(provider)
                     setProfile(data)
-                    console.log(data)
-                    await facebooklogin(dispatch,data.accessToken)
+                    const res = await facebooklogin(dispatch, data.accessToken)
+                    if (res) {
+                        getMeAndRedirect(res)
+                    } else {
+                        onLogout()
+                        setErrorMessage('Something went wrong while connection with Facebook')
+                    }
                 }}
                 onReject={(err) => {
                     console.log(err)
@@ -161,9 +166,6 @@ function Login(props) {
             >
                 <FacebookLoginButton />
             </LoginSocialFacebook>
-            {provider && profile &&
-                <button onClick={() => onLogout()}>Facebook Logout</button>
-            }
 
             {errorMessage &&
                 <h4 style={{ color: 'red' }}>{errorMessage}</h4>
