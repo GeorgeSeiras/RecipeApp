@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
@@ -12,7 +12,7 @@ import RatingStars from './RatingStar';
 export default function RecipeCard(props) {
     const navigate = useNavigate();
     const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
-    const [avatar,setAvatar] = useState(null)
+    const [avatar, setAvatar] = useState(null)
 
     useEffect(() => {
         if (props.recipe.user?.image) {
@@ -54,13 +54,12 @@ export default function RecipeCard(props) {
                                     color: 'black',
                                     textDecoration: 'none'
                                 }}>
-                                    <Image
-                                        style={{ width: '35px', height: 'auto', paddingRight: '10px' }}
-                                        width='30'
-                                        className='img-fluid rounded-circle'
-                                        src={avatar}
-                                        alt='avatar'
-                                    />
+                                <Image
+                                    width='25'
+                                    className='img-fluid rounded-circle'
+                                    src={avatar}
+                                    alt='avatar'
+                                />
                                 {props.recipe.user.username}
                             </Card.Link>
                         </Card.Subtitle>
