@@ -8,8 +8,11 @@ from django.utils.translation import ugettext_lazy as _
 
 
 def get_file_path(instance, filename):
-    ext = filename.split('.')[-1]
-    filename = "%s.%s" % (uuid.uuid4(), ext)
+    if(len(filename.split('.')) == 1):
+        filename = '%s.%s' % (uuid.uuid4(),'jpg')
+    else:
+        ext = filename.split('.')[-1]
+        filename = "%s.%s" % (uuid.uuid4(), ext)
     return filename
 
 
@@ -55,11 +58,13 @@ class User(AbstractUser):
 
 @receiver(models.signals.pre_save, sender=User)
 def auto_delete_file_on_change(sender, instance, **kwargs):
+    print('change user')
     """
     Deletes old file from filesystem
     when corresponding `MediaFile` object is updated
     with new file.
     """
+    # print(instance.to_dict())
     if not instance.pk:
         return False
 
@@ -77,6 +82,7 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
 
 @receiver(models.signals.post_delete, sender=User)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
+    print('delete user')
     """
     Deletes file from filesystem
     when corresponding `Recipe` object is deleted.

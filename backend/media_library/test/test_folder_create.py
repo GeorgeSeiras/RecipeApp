@@ -3,8 +3,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
 from factory.fuzzy import FuzzyText
+from user.test.utils import generate_token
 from user.test.factory import UserFactory
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from media_library.models import Folder, FolderImage
 from user.models import User
@@ -20,8 +20,8 @@ class FolderCreateTest(APITestCase):
         self.client = APIClient()
         self.me_url = reverse('folder-create')
         user = User.objects.get(username=self.user_object.username)
-        refresh = RefreshToken.for_user(user)
-        self.token = refresh.access_token
+        self.token = generate_token(user)
+
 
     @classmethod
     def tearDown(self):

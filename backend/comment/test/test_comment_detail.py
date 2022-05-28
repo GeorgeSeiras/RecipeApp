@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
-from rest_framework_simplejwt.tokens import RefreshToken
+from user.test.utils import generate_token
 
 from user.test.factory import UserFactory
 from recipe.models import Recipe
@@ -13,7 +13,7 @@ from recipe.test.factory import RecipeFactory
 from user.models import User
 
 
-class RecipeImageTest(APITestCase):
+class CommentDetailTest(APITestCase):
 
     @classmethod
     def setUp(self):
@@ -24,8 +24,7 @@ class RecipeImageTest(APITestCase):
             'comment-detail', kwargs={'comment_id': self.comment.id})
         self.comment_detail_url_not_exist = reverse(
             'comment-detail', kwargs={'comment_id': self.comment.id+2342})
-        refresh = RefreshToken.for_user(self.comment.user)
-        self.token = refresh.access_token
+        self.token = generate_token(self.comment.user)
 
     @classmethod
     def teadDown(self):
@@ -71,8 +70,8 @@ class RecipeImageTest(APITestCase):
     
     def test_delete_comment_wrong_credentials(self):
         user = UserFactory.create()
-        refresh = RefreshToken.for_user(user)
+        token = generate_token(user)
         response = self.client.delete(
-            self.comment_detail_url, **{'HTTP_AUTHORIZATION': f'Bearer {refresh.access_token}'})
+            self.comment_detail_url, **{'HTTP_AUTHORIZATION': f'Bearer {token}'})
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(json.loads(response.content)['detail'],'You do not have permission to perform this action.')

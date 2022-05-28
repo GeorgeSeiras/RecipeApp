@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
 from factory.fuzzy import FuzzyText
-from rest_framework_simplejwt.tokens import RefreshToken
+from user.test.utils import generate_token
 
 from report.models import Report, Type, Reason, Status
 from report.test.reportFactory import ReportFactory
@@ -27,8 +27,7 @@ class ReportCreateTest(APITestCase):
         self.client = APIClient()
         self.url = reverse('report-create')
         user = User.objects.get(username=self.user_object.username)
-        refresh = RefreshToken.for_user(user)
-        self.token = refresh.access_token
+        self.token = generate_token(user)
         self.list = ListFactory.create()
         self.comment = CommentFactory.create()
         self.recipe = RecipeFactory.create()

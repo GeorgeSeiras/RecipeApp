@@ -73,9 +73,8 @@ export default function Notifications(props) {
                 >
                     {state?.notifications?.results.map((notification, index) => {
                         return (
-                            <>
+                            <div key={index}>
                                 <NavDropdown.Item href={`${REACT_URL}/recipe/${notification.comment.recipe}/comment/${notification.comment.id}`}
-                                    key={index}
                                     style={{ display: 'flex', whiteSpace: 'normal', width: '200px' }}>
                                     {
                                         `${notification.type}` !== 'REPLY'
@@ -83,8 +82,8 @@ export default function Notifications(props) {
                                             : `${notification.sender.username} has replied to one of your comments`
                                     }
                                 </NavDropdown.Item>
-                                <NavDropdown.Divider style={{marginTop:'2px',marginBottom:'0'}}/>
-                            </>
+                                <NavDropdown.Divider style={{ marginTop: '2px', marginBottom: '0' }} />
+                            </div>
                         )
                     })}
                     {state?.notifications?.results &&

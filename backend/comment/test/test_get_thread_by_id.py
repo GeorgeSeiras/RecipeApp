@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
-from rest_framework_simplejwt.tokens import RefreshToken
+from user.test.utils import generate_token
 
 from user.test.factory import UserFactory
 from recipe.models import Recipe
@@ -13,7 +13,7 @@ from recipe.test.factory import RecipeFactory
 from user.models import User
 
 
-class RecipeImageTest(APITestCase):
+class CommentGetThreadByIdTest(APITestCase):
 
     @classmethod
     def setUp(self):
@@ -26,8 +26,7 @@ class RecipeImageTest(APITestCase):
             'comments-thread-by-id', kwargs={'comment_id': self.comment_2.id})
         self.comment_thread_url_not_exist = reverse(
             'comments-thread-by-id', kwargs={'comment_id': self.comment.id+2342})
-        refresh = RefreshToken.for_user(self.comment.user)
-        self.token = refresh.access_token
+        self.token = generate_token(self.comment.user)
 
     @classmethod
     def teadDown(self):

@@ -12,7 +12,7 @@ export default function UserInfo(props) {
     const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
     useEffect(() => {
         if (props?.user?.image) {
-            setAvatar(MEDIA_URL + props.user.image.image);
+            setAvatar(MEDIA_URL + props.user.image);
         } else {
             setAvatar(NO_AVATAR);
         }

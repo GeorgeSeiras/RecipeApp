@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
-from rest_framework_simplejwt.tokens import RefreshToken
+from user.test.utils import generate_token
 
 from recipe.models import Recipe
 from recipe.test.factory import RecipeFactory
@@ -24,8 +24,8 @@ class RecipeImageTest(APITestCase):
             'recipe-comments', kwargs={'recipe_id': self.recipe.id})
         self.comment_thread_url_not_exist = reverse(
             'recipe-comments', kwargs={'recipe_id': self.recipe.id+2342})
-        refresh = RefreshToken.for_user(self.comment.user)
-        self.token = refresh.access_token
+        self.token = generate_token(self.recipe.user)
+
 
     @classmethod
     def teadDown(self):

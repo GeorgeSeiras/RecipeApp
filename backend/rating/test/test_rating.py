@@ -3,8 +3,9 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
 
+from user.test.utils import generate_token
+
 from .factory import RatingFactory, UserFactory
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.test.factory import UserFactory
 from recipe.test.factory import RecipeFactory
@@ -33,10 +34,8 @@ class RatingTest(APITestCase):
         self.rating_url_not_exist = reverse(
             'rating', kwargs={'recipe_id': self.recipe.id+1231})
         user = User.objects.get(username=self.user.username)
-        refresh = RefreshToken.for_user(user)
-        self.token = refresh.access_token
-        refresh_2 = RefreshToken.for_user(self.user_2)
-        self.token_2 = refresh_2.access_token
+        self.token = generate_token(user)
+        self.token_2 = generate_token(self.user_2)
 
     @classmethod
     def tearDown(self):

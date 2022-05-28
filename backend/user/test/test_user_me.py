@@ -3,8 +3,9 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
 from factory.fuzzy import FuzzyText
+
+from user.test.utils import generate_token
 from .factory import UserFactory
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.models import User
 
@@ -19,13 +20,13 @@ class UserMeTest(APITestCase):
         self.client = APIClient()
         self.me_url = reverse('user-me')
         user = User.objects.get(username=self.user_object.username)
-        refresh = RefreshToken.for_user(user)
-        self.token = refresh.access_token
+        self.token = generate_token(user)
+
 
     @classmethod
     def tearDown(self):
         User.objects.all().delete()
-        
+
     def test_get_me(self):
         response = self.client.get(
             self.me_url, **{'HTTP_AUTHORIZATION': f'Bearer {self.token}'})

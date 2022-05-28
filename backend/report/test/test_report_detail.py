@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
 from factory.fuzzy import FuzzyText
-from rest_framework_simplejwt.tokens import RefreshToken
+from user.test.utils import generate_token
 
 from report.models import Report, Type, Reason, Status
 from report.test.reportFactory import ReportFactory
@@ -32,14 +32,12 @@ class ReportDetailTest(APITestCase):
         self.url_non_existant = reverse(
             'report-detail', kwargs={'report_id': '123123123123'})
         user = User.objects.get(username=self.user_object.username)
-        refresh = RefreshToken.for_user(user)
-        self.token = refresh.access_token
+        self.token = generate_token(user)
         self.list = ListFactory.create()
         self.comment = CommentFactory.create()
         self.recipe = RecipeFactory.create()
         self.user_2 = UserFactory.create()
-        refresh = RefreshToken.for_user(self.user_2)
-        self.token_not_admin = refresh.access_token
+        self.token_not_admin = generate_token(self.user_2)
 
     @classmethod
     def tearDown(self):

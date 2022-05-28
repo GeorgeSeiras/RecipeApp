@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
-from rest_framework_simplejwt.tokens import RefreshToken
+from user.test.utils import generate_token
 
 from recipe.models import Recipe
 from user.models import User
@@ -17,11 +17,9 @@ class RecipeDetailTest(APITestCase):
         self.user_object = UserFactory.create()
         user = User.objects.get(username=self.user_object.username)
         self.recipe = RecipeFactory.create(user=user)
-        refresh = RefreshToken.for_user(user)
-        self.token = refresh.access_token
+        self.token = generate_token(user)
         self.recipe2 = RecipeFactory.create()
-        refresh2 = RefreshToken.for_user(self.recipe2.user)
-        self.token2 = refresh2.access_token
+        self.token2 = generate_token(self.recipe2.user)
         self.recipe_detail_url = reverse(
             'recipe-detail', kwargs={'pk': self.recipe.id})
         self.recipe_detail_not_exist_url = reverse(

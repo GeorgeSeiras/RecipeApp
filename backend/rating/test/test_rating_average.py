@@ -4,10 +4,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 import json
 
-from .factory import RatingFactory, UserFactory
-from rest_framework_simplejwt.tokens import RefreshToken
+from .factory import RatingFactory
 
-from user.test.factory import UserFactory
 from recipe.test.factory import RecipeFactory
 
 from user.models import User

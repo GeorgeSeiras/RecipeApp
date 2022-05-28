@@ -1,9 +1,12 @@
-import React, { useState, useReducer, useRef, useEffect, useContext } from 'react'
+import React, { useState, useReducer, useRef, useEffect, useContext, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { userLogin, getMe } from '../../actions/LoginActions';
+import { userLogin, getMe, sociallogin } from '../../actions/LoginActions';
 import { AuthReducer, GetMeReducer } from '../../reducers/LoginReducer'
 import { UserContext } from '../Context/authContext';
 import useError from '../ErrorHandler/ErrorHandler';
+
+import { LoginSocialFacebook, LoginSocialGoogle } from 'reactjs-social-login';
+import { FacebookLoginButton, GoogleLoginButton } from 'react-social-login-buttons';
 
 function Login(props) {
     const [username, setUsername] = useState("");
@@ -16,14 +19,46 @@ function Login(props) {
     const { login } = useContext(UserContext);
     const { addError } = useError();
     const initialState = useRef(true)
-        ;
+    const [rerender, setRerender] = useState(true)
+
+    const [provider, setProvider] = useState('')
+    const [profile, setProfile] = useState()
+    const facebookRef = useRef(null)
+    const googleRef = useRef(null)
+
+    const onLoginStart = useCallback(() => {
+    }, [])
+
+    const onLogoutFailure = useCallback(() => {
+        setRerender(false)
+        setRerender(true)
+    }, [rerender])
+
+    const onLogoutSuccess = useCallback(() => {
+        setProfile(null)
+        setProvider('')
+    }, [])
+
+    const onLogout = useCallback(() => {
+        switch (provider) {
+            case 'facebook':
+                facebookRef.current?.onLogout()
+                break;
+            case 'google':
+                googleRef.current?.onLogout()
+                break;
+            default:
+                break
+        }
+    }, [provider])
+
     useEffect(() => {
         if (initialState.current) {
             initialState.current = false;
             return
         }
         if (state?.errorMessage) {
-            setErrorMessage(state.errorMessage)
+            setErrorMessage(String(state.errorMessage))
         }
     }, [state])
 
@@ -33,28 +68,37 @@ function Login(props) {
 
     const handleSumbit = async (e) => {
         e.preventDefault();
-        let payload = { username, password };
+        const payload = {
+            username,
+            password,
+            grant_type: 'password',
+            client_id: process.env.REACT_APP_CLIENT_ID,
+            client_secret: process.env.REACT_APP_CLIENT_SECRET
+        };
         try {
-            let responseLogin = await userLogin(dispatch, payload, remember);
-            if (!responseLogin?.access) {
+            const responseLogin = await userLogin(dispatch, payload, remember);
+            if (!responseLogin?.access_token) {
                 return;
             }
-            let responseMe = await getMe(dispatchGetMe, responseLogin.access);
-            if (!responseMe) {
-                return;
-            }
-            if (responseMe)
-                if (responseMe?.user?.removed === true) {
-                    addError({ "message": 'Your account has been suspended by an administrator' })
-                } else {
-                    await login({ user: responseMe.user, token: responseLogin.access })
-                }
-            navigate('/')
+            getMeAndRedirect(responseLogin.access_token)
         } catch (error) {
             console.log(error);
         }
     }
 
+    const getMeAndRedirect = async (token) => {
+        const responseMe = await getMe(dispatchGetMe, token);
+        if (!responseMe) {
+            return;
+        }
+        if (responseMe)
+            if (responseMe?.user?.removed === true) {
+                addError({ "message": 'Your account has been suspended by an administrator' })
+            } else {
+                await login({ user: responseMe.user, token: token })
+                navigate('/')
+            }
+    }
     return (
         <form className="Login" onSubmit={handleSumbit} style={{
             padding: '60px 0',
@@ -100,8 +144,76 @@ function Login(props) {
             <button type="submit" className="btn-lg btn-primary" disabled={!validateForm()}>
                 Login
             </button>
+            {rerender &&
+                <>
+                    <LoginSocialFacebook
+                        ref={facebookRef}
+                        appId={process.env.REACT_APP_FB_APP_ID || ''}
+                        onLoginStart={onLoginStart}
+                        onLogoutSuccess={onLogoutSuccess}
+                        fieldsProfile={'id,name,picture,email'}
+                        scope={'email,public_profile'}
+                        onResolve={async ({ provider, data }) => {
+                            try {
+                                setProvider(provider)
+                                setProfile(data)
+                                const res = await sociallogin(dispatch, 'facebook', data.accessToken)
+                                if (res) {
+                                    getMeAndRedirect(res)
+                                } else {
+                                    onLogout()
+                                    setErrorMessage('Something went wrong while connection with Facebook')
+                                }
+                            } catch (e) {
+                                setRerender(false)
+                                setRerender(true)
+                                console.log(e)
+                            }
+                        }}
+                        onReject={(err) => {
+                            setRerender(false)
+                            setRerender(true)
+                            setErrorMessage('Something went wrong.')
+                        }}
+                    >
+                        <FacebookLoginButton style={{ disabled: 'false' }} />
+                    </LoginSocialFacebook>
+                    <LoginSocialGoogle
+                        ref={googleRef}
+                        client_id={process.env.REACT_APP_GG_APP_ID || ''}
+                        onLogoutFailure={onLogoutFailure}
+                        onLoginStart={onLoginStart}
+                        onLogoutSuccess={onLogoutSuccess}
+                        onResolve={async ({ provider, data }) => {
+                            try {
+                                setProvider(provider)
+                                setProfile(data)
+                                const res = await sociallogin(dispatch, 'google-oauth2', data.access_token)
+                                if (res) {
+                                    getMeAndRedirect(res)
+                                } else {
+                                    onLogout()
+                                    setErrorMessage('Something went wrong while connection with Google')
+                                }
+                            } catch (e) {
+                                setRerender(false)
+                                setRerender(true)
+                                console.log(e)
+                            }
+                        }}
+                        onReject={(err) => {
+                            setRerender(false)
+                            setRerender(true)
+                            console.log(err)
+                        }}
+                    >
+                        <GoogleLoginButton />
+                    </LoginSocialGoogle>
+                </>
+            }
             {errorMessage &&
-                <h4 className="Error" style={{ color: 'red' }}>{errorMessage}</h4>}
+                <h4 style={{ color: 'red' }}>{errorMessage}</h4>
+            }
         </form>
     );
 
