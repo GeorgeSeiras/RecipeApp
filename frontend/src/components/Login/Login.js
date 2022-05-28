@@ -27,7 +27,6 @@ function Login(props) {
     const googleRef = useRef(null)
 
     const onLoginStart = useCallback(() => {
-        console.log('login start')
     }, [])
 
     const onLogoutFailure = useCallback(() => {
@@ -38,9 +37,7 @@ function Login(props) {
     const onLogoutSuccess = useCallback(() => {
         setProfile(null)
         setProvider('')
-        console.log('logout success')
     }, [])
-    console.log(rerender)
 
     const onLogout = useCallback(() => {
         switch (provider) {
