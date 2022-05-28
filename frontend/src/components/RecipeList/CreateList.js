@@ -31,9 +31,14 @@ export default function CreateList(props) {
         const response = await createList(props.dispatch, props.userData.user.token.key, payload);
         if (response?.result) {
             const copy = props.lists.slice();
-            copy.pop();
+            if(props.lists.length === 16){
+                copy.pop();
+            }
             copy.splice(0,0,response.result);
             props.setLists(copy);
+            e.target.parentNode.parentNode.parentNode.click()
+            setTitle('');
+            setDesc('');
         }
     }
 
@@ -71,7 +76,7 @@ export default function CreateList(props) {
     )
 
     return (
-        <OverlayTrigger trigger="click" placement="right" overlay={overlay}>
+        <OverlayTrigger trigger="click" placement="right" overlay={overlay} rootClose={true}>
             <Button variant="success">New List</Button>
         </OverlayTrigger>
     )
