@@ -68,7 +68,6 @@ export async function userLogin(dispatch, payload, remember) {
                 const date = new Date();
                 expires = new Date(date.setDate(date.getDate() + 30));
             }
-            console.log(data)
             cookies.set('token',
                 { key: data.access_token },
                 {
