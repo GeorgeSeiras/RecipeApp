@@ -48,7 +48,7 @@ export default function Comment(props) {
                             <Image
                                 width='30'
                                 className='img-fluid rounded-circle'
-                                src={`${props.comment.user?.avatar ? MEDIA_URL + props.comment.user.avatar : no_avatar}`}
+                                src={`${props.comment.user?.image ? MEDIA_URL + props.comment.user.image : no_avatar}`}
                                 alt='avatar'
                             />
                         </Col>

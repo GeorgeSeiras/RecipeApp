@@ -29,6 +29,7 @@ export const AuthProvider = ({ children }) => {
                 const response = await fetch(`${API_URL}/user/me`, requestOptions)
                 if (response.status !== 200) {
                     cookies.remove('token', { path: '/' });
+                    setUser({ ...user, isAuth: true })
                 }
                 const data = await response.json()
                 setUser({
