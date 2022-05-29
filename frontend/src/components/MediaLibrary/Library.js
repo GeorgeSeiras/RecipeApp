@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, useReducer, createRef } from 'react';
+import React, { useEffect, useContext, useState, useReducer, createRef, useRef } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
@@ -8,6 +8,7 @@ import Form from 'react-bootstrap/Form';
 import Popover from 'react-bootstrap/Popover';
 import OverlayTrigger from 'react-bootstrap/esm/OverlayTrigger';
 import Modal from 'react-bootstrap/Modal';
+import Overlay from 'react-bootstrap/esm/Overlay';
 
 import { UserContext } from '../Context/authContext';
 import { MediaLibraryReducer } from '../../reducers/MediaLibraryReducer';
@@ -35,6 +36,10 @@ export const Library = (props) => {
     const [mediaToDeleteId, setMediaToDeleteId] = useState(null);
     const [folderModal, setFolderModal] = useState(false);
     const [folderToDeleteId, setFolderToDeleteId] = useState(null);
+    const folderRef = useRef(null)
+    const [folderShow, setFolderShow] = useState(false)
+    const mediaRef = useRef(null)
+    const [mediaShow, setMediaShow] = useState(false)
 
     useEffect(() => {
         (async () => {
@@ -78,7 +83,7 @@ export const Library = (props) => {
         await getFoldersAndMedia(dispatch, state?.curFolder?.id, pageClicked, userData.user.token.key)
         setFolderName('')
         e.target.parentNode.parentNode.parentNode.click()
-        
+
     }
 
     const handleBackClick = (e) => {
@@ -101,7 +106,7 @@ export const Library = (props) => {
     }
 
     const overlayFolder = (
-        <Popover>
+        <Popover style={{width:'200px'}}>
             <Popover.Body style={{ textAlign: 'center' }}>
                 <>
                     <Form.Group className='mb-2'>
@@ -121,8 +126,8 @@ export const Library = (props) => {
         </Popover>)
 
     const overlayMedia = (
-        <Popover>
-            <Popover.Body style={{ textAlign: 'center' }}>
+        <Popover >
+            <Popover.Body style={{ textAlign: 'center',width:'200px' }}>
                 <>
                     <Form.Group>
                         <Form.Control
@@ -157,9 +162,8 @@ export const Library = (props) => {
                 </>
             </Popover.Body>
         </Popover>)
-
     return (
-        <Container className='border'>
+        <Container className='border' id='media-library'>
             <Row xs={'auto'} style={{ justifyContent: 'right', paddingBottom: '1em', paddingTop: '0.2em' }}>
                 <Col className='me-auto' >
                     {state?.curFolder &&
@@ -174,27 +178,66 @@ export const Library = (props) => {
                     }
                 </Col>
                 <Col >
-                    <OverlayTrigger trigger="click" placement={'left'} overlay={overlayFolder} rootClose={true} >
-                        <Button variant="success">
-                            <Image
-                                src={add_folder}
-                                alt='add_folder'
-                                width='30px'
-                            />
-                        </Button>
-                    </OverlayTrigger>
+                    <Button variant="success"
+                        onClick={() => { setFolderShow(!folderShow) }}
+                        ref={folderRef}
+                        style={{
+                            backgroundColor: 'white',
+                            border: 'none',
+                            paddingTop: '0',
+                            paddingLeft: '10px'
+                        }}
+                    >
+                        <Image
+                            src={add_folder}
+                            alt='add_folder'
+                            width='30px'
+                        />
+                    </Button>
+                    <Overlay target={folderRef.current} show={folderShow} rootClose={true} onHide={() => setFolderShow(false)} >
+                        {({ placement, arrowProps, show: _show, popper, ...props }) => (
+                            <div {...props}
+                                style={{
+                                    position: 'absolute',
+                                    maxWidth: '50px',
+                                    backgroundColor: 'rgba(255, 255, 255, 1)',
+                                    color: 'black',
+                                    borderRadius: 3,
+                                    ...props.style,
+                                }}
+                            >
+                                {overlayFolder}
+                            </div>
+                        )}
+                    </Overlay>
                 </Col>
                 <Col >
                     {state?.curFolder &&
-                        <OverlayTrigger trigger="click" placement={'left'} overlay={overlayMedia} rootClose={true}>
-                            <Button variant='success'>
+                        <>
+                            <Button variant='success' ref={mediaRef} onClick={()=>setMediaShow(!mediaShow)}>
                                 <Image
                                     src={image_upload}
                                     alt='image_upload'
                                     width='30px'
                                 />
                             </Button>
-                        </OverlayTrigger>
+                            <Overlay target={mediaRef.current} show={mediaShow} rootClose={true} onHide={() => setMediaShow(false)} >
+                                {({ placement, arrowProps, show: _show, popper, ...props }) => (
+                                    <div {...props}
+                                        style={{
+                                            position: 'absolute',
+                                            maxWidth: '50px',
+                                            backgroundColor: 'rgba(255, 255, 255, 1)',
+                                            color: 'black',
+                                            borderRadius: 3,
+                                            ...props.style,
+                                        }}
+                                    >
+                                        {overlayMedia}
+                                    </div>
+                                )}
+                            </Overlay>
+                        </>
                     }
                 </Col>
             </Row>

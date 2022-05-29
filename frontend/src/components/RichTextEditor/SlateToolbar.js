@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { CodeAlt } from '@styled-icons/boxicons-regular/CodeAlt'
 import { Subscript } from '@styled-icons/foundation/Subscript'
 import { Superscript } from '@styled-icons/foundation/Superscript'
@@ -183,10 +183,12 @@ export const BasicMarkToolbarButtons = () => {
   )
 }
 
-const CustomImageUploadButton = ({ id, getImageUrl, ...props }) => {
+function CustomImageUploadButton({ id, getImageUrl, ...props }){
   const [show, setShow] = useState(false)
   const target = useRef(null);
   const editor = usePlateEditorRef(id)
+  const thisElement = useRef(null);
+  const libraryRef = useRef(null)
 
   const handleInsertImage = async (event) => {
     event.preventDefault();
@@ -207,13 +209,13 @@ const CustomImageUploadButton = ({ id, getImageUrl, ...props }) => {
     ];
 
     insertNodes(editor, image)
-    setShow(false)
+    setShow(!show)
   }
-
   return (
 
-    <>
-      <Button ref={target} onClick={() => setShow(!show)}
+    <div>
+      <Button ref={target}
+        onClick={() => { setShow(!show) }}
         style={{
           backgroundColor: 'white',
           border: 'none',
@@ -223,29 +225,31 @@ const CustomImageUploadButton = ({ id, getImageUrl, ...props }) => {
         {...props}
       >
         <Image
+          id='image-select'
           src={image_upload}
           alt='image_upload'
           width='20px'
         />
       </Button>
-      <Overlay target={target.current} show={show} rootClose={true} onHide={()=>setShow(false)}>
-        {({ placement, arrowProps, show: _show, popper, ...props }) => (
-          <div
-            {...props}
-            style={{
-              position: 'absolute',
-              backgroundColor: 'rgba(255, 255, 255, 1)',
-              color: 'black',
-              borderRadius: 3,
-              ...props.style,
-            }}
-          >
-            <Library handleInsertImage={handleInsertImage} />
-          </div>
-        )}
-      </Overlay>
-
-    </>
+        <Overlay target={target.current} show={show} >
+          {({ placement, arrowProps, show: _show, popper, ...props }) => (
+            <div
+              {...props}
+              style={{
+                position: 'absolute',
+                backgroundColor: 'rgba(255, 255, 255, 1)',
+                color: 'black',
+                borderRadius: 3,
+                ...props.style,
+              }}
+            >
+              <div ref={libraryRef}>
+                <Library handleInsertImage={handleInsertImage} />
+              </div>
+            </div>
+          )}
+        </Overlay>
+      </div>
   )
 
 }

@@ -80,7 +80,7 @@ export default function User() {
                         <Col style={{ width: '85%', paddingLeft: '0', paddingRight: '0' }}>
                             <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} username={username} />
                             <RecipeCards response={recipesState?.recipes} />
-                            {recipesState?.length > 0 &&
+                            {recipesState?.recipes &&
                                 <Pagination response={recipesState?.recipes} active={active} setPageClicked={setPageClicked} />
                             }
                         </Col>
