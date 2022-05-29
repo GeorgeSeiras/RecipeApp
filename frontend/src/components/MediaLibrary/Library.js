@@ -181,12 +181,6 @@ export const Library = (props) => {
                     <Button variant="success"
                         onClick={() => { setFolderShow(!folderShow) }}
                         ref={folderRef}
-                        style={{
-                            backgroundColor: 'white',
-                            border: 'none',
-                            paddingTop: '0',
-                            paddingLeft: '10px'
-                        }}
                     >
                         <Image
                             src={add_folder}
