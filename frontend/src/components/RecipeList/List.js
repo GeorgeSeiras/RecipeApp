@@ -89,7 +89,7 @@ export default function List() {
                     }
                 </Col>
                 <Col style={{ textAlign: 'right', paddingTop: '10px' }}>
-                    {userData?.user?.user && stateList?.list &&
+                    {userData?.user?.user && stateList?.list && userData?.user?.user?.id !== stateList?.list?.user?.id &&
                         <ReportButton id={stateList.list.id} userData={userData} type={'LIST'} />
                     }
                 </Col>
