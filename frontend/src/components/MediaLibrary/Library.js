@@ -69,7 +69,7 @@ export const Library = (props) => {
         await getFoldersAndMedia(dispatch, state?.curFolder?.id, pageClicked, userData.user.token.key)
         setImage(false)
         setMediaName(null)
-        e.target.parentNode.parentNode.parentNode.click()
+        setMediaShow(false);
 
     }
 
@@ -82,7 +82,7 @@ export const Library = (props) => {
         await createFolder(dispatch, payload, userData.user.token.key)
         await getFoldersAndMedia(dispatch, state?.curFolder?.id, pageClicked, userData.user.token.key)
         setFolderName('')
-        e.target.parentNode.parentNode.parentNode.click()
+        setFolderShow(false)
 
     }
 
