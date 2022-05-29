@@ -65,7 +65,7 @@ export default function AddToList(props) {
     }
 
     return (
-        <>
+        <Row>
             <DropdownButton
                 variant={'success'}
                 title={'Add To List'}
@@ -97,6 +97,6 @@ export default function AddToList(props) {
                 <Alert.Heading>Recipe successfuly added to list!</Alert.Heading>
 
             </Alert>
-        </>
+        </Row>
     )
 }
