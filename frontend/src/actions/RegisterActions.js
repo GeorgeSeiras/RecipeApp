@@ -1,4 +1,4 @@
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = process.env.REACT_APP_BACKEND_URL+'/api'
 
 export async function register(dispatch, payload) {
 

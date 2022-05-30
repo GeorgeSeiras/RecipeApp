@@ -11,7 +11,7 @@ import './NavBar.css'
 const Navigation = () => {
     const userData = useContext(UserContext);
     const [avatar, setAvatar] = useState(null);
-    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
+    const MEDIA_URL = process.env.REACT_APP_BACKEND_URL+'/media/';
 
     useEffect(() => {
         if (userData?.user?.user?.image) {

@@ -26,7 +26,7 @@ export default function Recipe() {
     const { id } = useParams();
     const [gallery, setGallery] = useState([]);
     const [thumbnail, setThumbnail] = useState();
-    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
+    const MEDIA_URL = process.env.REACT_APP_BACKEND_URL+'/media/';
     const [avatar, setAvatar] = useState(null);
     const { addError } = useError();
 

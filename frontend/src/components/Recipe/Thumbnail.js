@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'react-bootstrap/Image';
 
 export default function Thumbnail(props) {
-    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
+    const MEDIA_URL = process.env.REACT_APP_BACKEND_URL+'/media/';
     return (
         <div>
             {props?.thumbnail &&

@@ -16,7 +16,7 @@ export default function Comment(props) {
     const [commentDeleted, setCommentDeleted] = useState(false);
     const ref = createRef(null);
     const userData = useContext(UserContext);
-    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
+    const MEDIA_URL = process.env.REACT_APP_BACKEND_URL+'/media/';
 
     useEffect(() => {
         if (props.setSuccessAlert) {

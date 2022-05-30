@@ -10,7 +10,7 @@ import plus_sign from '../../static/plus_sign.svg'
 
 export default function ImageUploadCard(props) {
     const [hiddenInputs, setHiddenInputs] = useState([]);
-    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
+    const MEDIA_URL = process.env.REACT_APP_BACKEND_URL+'/media/';
     const [images, setImages] = useState([]);
 
     useEffect(() => {

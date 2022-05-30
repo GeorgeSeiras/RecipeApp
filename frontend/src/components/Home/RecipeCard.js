@@ -11,7 +11,7 @@ import RatingStars from './RatingStar';
 
 export default function RecipeCard(props) {
     const navigate = useNavigate();
-    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
+    const MEDIA_URL = process.env.REACT_APP_BACKEND_URL+'/media/';
     const [avatar, setAvatar] = useState(null)
 
     useEffect(() => {

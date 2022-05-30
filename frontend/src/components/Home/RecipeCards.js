@@ -8,7 +8,7 @@ import RecipeCard from './RecipeCard';
 
 export default function RecipeCards(props) {
     const [thumbnails, setThumbnails] = useState([])
-    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
+    const MEDIA_URL = process.env.REACT_APP_BACKEND_URL+'/media/';
 
     useEffect(() => {
         setThumbnails([])

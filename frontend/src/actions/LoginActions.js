@@ -1,6 +1,6 @@
 import Cookies from 'universal-cookie';
 
-const API_URL = process.env.REACT_APP_API_URL;
+const API_URL = process.env.REACT_APP_BACKEND_URL+'/api'
 const BACKEND_URL = process.env.REACT_APP_BACKEND_ADDRESS;
 
 export async function sociallogin(dispatch,provider, accessToken) {

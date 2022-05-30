@@ -5,7 +5,7 @@ import Cookies from 'universal-cookie';
 export const UserContext = createContext({ user: null, token: null, isAuth: null });
 
 export const AuthProvider = ({ children }) => {
-    const API_URL = process.env.REACT_APP_API_URL
+    const API_URL = process.env.REACT_APP_BACKEND_URL+'/api'
     const cookies = new Cookies();
 
     const [user, setUser] = useState({

@@ -13,7 +13,7 @@ import { deleteRecipeFromList } from '../../actions/RecipesInListActions';
 
 export default function ListRecipeCards(props) {
     const [thumbnails, setThumbnails] = useState([])
-    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
+    const MEDIA_URL = process.env.REACT_APP_BACKEND_URL+'/media/';
     const { listId } = useParams();
     const userData = useContext(UserContext);
     const [showModal, setShowModal] = useState(false);

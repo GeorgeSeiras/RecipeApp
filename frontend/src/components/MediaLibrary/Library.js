@@ -25,7 +25,7 @@ import './Library.css';
 export const Library = (props) => {
     const [state, dispatch] = useReducer(MediaLibraryReducer)
     const userData = useContext(UserContext);
-    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
+    const MEDIA_URL = process.env.REACT_APP_BACKEND_URL+'/media/';
     const [folderName, setFolderName] = useState('');
     const [mediaName, setMediaName] = useState('');
     const [hiddenInput, setHiddenInput] = useState(createRef(null));
