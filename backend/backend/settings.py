@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'social_django',
     'drf_social_oauth2',
+    'django_extensions'
 ]
 
 AUTH_USER_MODEL = 'user.User'
@@ -276,3 +277,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.load_extra_data',
     'social.pipeline.user.user_details',
 )
+
+GRAPH_MODELS = {
+    'all_applications': True,
+    'group_models': True
+}
