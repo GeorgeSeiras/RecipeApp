@@ -147,7 +147,7 @@ export default function CreateRecipe() {
                 setIngredients={setIngredients} steps={steps} setSteps={setSteps} thumbnail={thumbnail} setThumbnail={setThumbnail} carousel={carousel} setCarousel={setCarousel}
                 course={course} setCourse={setCourse} cuisine={cuisine} setCuisine={setCuisine} dispatch={dispatch}/>
 
-            <Button variant="success" type="submit" disabled={!validateForm()}>
+            <Button style={{marginLeft:'18%'}} variant="success" type="submit" disabled={!validateForm()}>
                 Create Recipe
             </Button>
         </Form >

@@ -1,6 +1,6 @@
 const API_URL = process.env.REACT_APP_BACKEND_URL+'/api'
 
-export async function getRecipes(dispatch, queryParams, pageClicked,setSearchParams) {
+export async function getRecipes(dispatch, queryParams,setSearchParams) {
     const requestOptions = {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },

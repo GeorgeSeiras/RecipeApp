@@ -7,6 +7,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import {useSearchParams} from 'react-router-dom';
 
 import { getList, deleteList } from '../../actions/ListActions';
 import { getListRecipes, updateRecipesInList } from '../../actions/RecipesInListActions';
@@ -30,8 +31,19 @@ export default function List() {
     const [showModal, setShowModal] = useState(false);
     const [rerender, setRerender] = useState(false);
     const { addError } = useError();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const navigate = useNavigate();
+    console.log(queryParams)
+    useEffect(()=>{
+        var params = `?page=${searchParams.get('page') ||active}`
+        searchParams.forEach((value,key)=>{
+            if(key !== 'page'){
+                    params = params.concat(`&${key}=${value}`);
+            }
+        })
+        setQueryParams(params)
+    },[searchParams])
 
     useEffect(() => {
         (async () => {
@@ -41,20 +53,26 @@ export default function List() {
         })()
     }, [listId]);
 
+    useEffect(()=>{
+        const urlParams = new URLSearchParams(searchParams)
+        urlParams.set('page',pageClicked)
+        setSearchParams(urlParams.toString())
+        setActive(pageClicked)
+    },[pageClicked])
+
     useEffect(() => {
         (async () => {
-            if (stateList?.list && !stateRecipesList?.recipes) {
-                const res = await getListRecipes(dispatchRecipesList, listId, queryParams, pageClicked);
+            if (stateList?.list) {
+                const res = await getListRecipes(dispatchRecipesList, listId, queryParams, setSearchParams);
                 if (res) {
                     const recipes = [];
                     res.results.forEach(item => {
                         recipes.push(item.recipe);
                     })
-                    setActive(pageClicked);
                 }
             }
         })()
-    }, [queryParams, pageClicked, rerender, stateList?.list]);
+    }, [queryParams, rerender, stateList?.list]);
 
     useEffect(() => {
         if (stateList?.errorMessage) {

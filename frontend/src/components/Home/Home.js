@@ -26,21 +26,27 @@ export default function Home(props) {
     }, [state?.errorMessage])
 
     useEffect(()=>{
-        var params = `?page=${active}`
+        var params = `?page=${searchParams.get('page') ||active}`
         searchParams.forEach((value,key)=>{
-            params = params.concat(`&${key}=${value}`);
+            if(key !== 'page'){
+                params = params.concat(`&${key}=${value}`);
+            }
         })
         setQueryParams(params)
-    },[])
+    },[searchParams])
+
+    useEffect(()=>{
+        const urlParams = new URLSearchParams(searchParams)
+        urlParams.set('page',pageClicked)
+        setSearchParams(urlParams.toString())
+        setActive(pageClicked)
+    },[pageClicked])
 
     useEffect(() => {
         (async () => {
-            const res = await getRecipes(dispatch, queryParams, pageClicked,setSearchParams);
-            if (res) {
-                setActive(pageClicked);
-            }
+            const res = await getRecipes(dispatch, queryParams ,setSearchParams);
         })()
-    }, [queryParams, pageClicked])
+    }, [queryParams])
 
     return (
         <Container>

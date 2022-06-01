@@ -1,26 +1,17 @@
 const API_URL = process.env.REACT_APP_BACKEND_URL+'/api'
 
-export async function getListRecipes(dispatch, id, queryParams, pageClicked) {
+export async function getListRecipes(dispatch, id, queryParams, setSearchParams) {
 
     const requestOptions = {
         method: 'GET',
     };
 
     try {
-        var response = null;
-        if (pageClicked) {
-            if (queryParams === '') {
-                queryParams = `?page=${pageClicked}`;
-            } else {
-                queryParams.concat(`&page=${pageClicked}`);
-            }
-            response = await fetch(`${API_URL}/list/${id}/recipes${queryParams}`, requestOptions);
-        } else {
-            response = await fetch(`${API_URL}/list/${id}/recipes${queryParams}`, requestOptions);
-        }
+        const response = await fetch(`${API_URL}/list/${id}/recipes${queryParams}`, requestOptions);
         let data = await response.json();
         if (data?.results) {
             dispatch({ type: 'GET_LIST_RECIPES', payload: data.results })
+            setSearchParams(queryParams)
             return data
         }
         dispatch({ type: 'RECIPES_LIST_ERROR', errorMessage: data })

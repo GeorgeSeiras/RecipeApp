@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
+import {useSearchParams} from 'react-router-dom';
 
 import { RecipesReducer } from '../../reducers/RecipeReducer';
 import { getRecipes } from '../../actions/RecipeActions';
@@ -24,32 +25,46 @@ export default function User() {
     const [userState, userDispatch] = useReducer(UserReducer);
     const { username } = useParams();
     const [active, setActive] = useState(1);
-    const [pageClicked, setPageClicked] = useState();
+    const [pageClicked, setPageClicked] = useState(1);
     const [queryParams, setQueryParams] = useState('');
     const navigate = useNavigate();
     const { addError } = useError();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const userData = useContext(UserContext);
 
+    useEffect(()=>{
+        (async()=>{
+            await getUser(userDispatch, username,userData?.user?.token?.key);  
+        })()
+    },[userData?.user?.user])
+
+    useEffect(()=>{
+        (async()=>{
+            if(userData?.user?.user){
+                var params = `?page=${searchParams.get('page') ||active}&username=${username}`
+                searchParams.forEach((value,key)=>{
+                    if(key !== 'page' && key!=='username'){
+                        params = params.concat(`&${key}=${value}`);
+                    }
+                })
+                setQueryParams(params)
+            }
+        })()
+    },[searchParams,userData?.user?.user])
+
+    useEffect(()=>{
+        const urlParams = new URLSearchParams(searchParams)
+        urlParams.set('page',pageClicked)
+        setSearchParams(urlParams.toString())
+        setActive(pageClicked)
+    },[pageClicked])
+
     useEffect(() => {
         (async () => {
-            const userResponse = await getUser(userDispatch, username,userData?.user?.token?.key);
-            if (userResponse?.result) {
-                var query = queryParams
-                if (query === '') {
-                    query = `?username=${username}`
-                } else {
-                    query.concat = `&username=${username}`
-                }
-                const recipesResponse = await getRecipes(recipesDispatch, query, pageClicked);
-                if (recipesResponse) {
-                    if (pageClicked) {
-                        setActive(pageClicked);
-                    }
-                }
-            }
+            await getRecipes(recipesDispatch, queryParams,setSearchParams);
         })();
-    }, [queryParams, pageClicked, userData?.user?.user])
+    }, [queryParams])
 
     useEffect(() => {
         if (userState?.errorMessage) {
