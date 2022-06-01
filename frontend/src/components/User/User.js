@@ -78,7 +78,7 @@ export default function User() {
                             <RecipeLists user={userState?.user} />
                         </Col>
                         <Col style={{ width: '85%', paddingLeft: '0', paddingRight: '0' }}>
-                            <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} username={username} />
+                            <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} user={username} />
                             <RecipeCards response={recipesState?.recipes} />
                             {recipesState?.recipes &&
                                 <Pagination response={recipesState?.recipes} active={active} setPageClicked={setPageClicked} />

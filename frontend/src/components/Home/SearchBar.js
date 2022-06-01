@@ -8,12 +8,12 @@ import Container from 'react-bootstrap/Container';
 
 export default function SearchBar(props) {
 
-    const [title, setTitle] = useState('');
-    const [cuisine, setCuisine] = useState('');
-    const [course, setCourse] = useState('');
-    const [username, setUsername] = useState('');
-    const [sort, setSort] = useState('desc');
-    const [titleAdvanced, setTitleAdvanced] = useState('');
+    const [title, setTitle] = useState(props?.title || '');
+    const [cuisine, setCuisine] = useState(props?.cuisine || '');
+    const [course, setCourse] = useState(props?.course || '');
+    const [username, setUsername] = useState(props?.username || '');
+    const [sort, setSort] = useState(props?.sort || 'desc');
+    const [titleAdvanced, setTitleAdvanced] = useState(props?.title || '');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -124,7 +124,7 @@ export default function SearchBar(props) {
                                             />
                                         </Form.Group>
                                     </Col>
-                                    {!props?.username &&
+                                    {!props?.user &&
                                         <Col>
                                             <Form.Group controlId='username'>
                                                 <Form.Label>Username</Form.Label>
@@ -140,7 +140,7 @@ export default function SearchBar(props) {
                                     }
                                     <Col>
                                         <Form.Group controlId='cuisine'>
-                                            <Form.Label style={{ paddingTop: '0.5em' }}>Cuisine</Form.Label>
+                                            <Form.Label >Cuisine</Form.Label>
                                             <Form.Control
                                                 type="search"
                                                 placeholder="Cuisine"
@@ -152,7 +152,7 @@ export default function SearchBar(props) {
                                     </Col>
                                     <Col>
                                         <Form.Group controlId='course'>
-                                            <Form.Label style={{ paddingTop: '0.5em' }}>Course</Form.Label>
+                                            <Form.Label >Course</Form.Label>
                                             <Form.Control
                                                 type="search"
                                                 placeholder="Course"
@@ -164,10 +164,12 @@ export default function SearchBar(props) {
                                     </Col>
                                     <Col>
                                         <Form.Group controlId='sort'>
-                                            <Form.Label style={{ paddingTop: '0.5em' }}>Sort Type</Form.Label>
-                                            <Form.Select onChange={(e) => setSort(e.target.value)}>
-                                                <option value="desc">Newest</option>
-                                                <option value="asc">Oldest</option>
+                                            <Form.Label >Sort Type</Form.Label>
+                                            <Form.Select 
+                                                defaultValue={sort}
+                                                onChange={(e) => setSort(e.target.value)}>
+                                                <option  value="desc">Newest</option>
+                                                <option  value="asc">Oldest</option>
                                                 <option value="popular">Most Popular</option>
                                             </Form.Select>
                                         </Form.Group>

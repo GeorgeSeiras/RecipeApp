@@ -1,27 +1,17 @@
 const API_URL = process.env.REACT_APP_BACKEND_URL+'/api'
 
-export async function getRecipes(dispatch, queryParams, pageClicked) {
+export async function getRecipes(dispatch, queryParams, pageClicked,setSearchParams) {
     const requestOptions = {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     };
 
     try {
-        let response = null
-        if (pageClicked) {
-            if (queryParams === '') {
-                queryParams = `?page=${pageClicked}`;
-            } else {
-                queryParams.concat(`&page=${pageClicked}`);
-            }
-            response = await fetch(`${API_URL}/recipes${queryParams}`, requestOptions);
-        } else {
-            response = await fetch(`${API_URL}/recipes${queryParams}`, requestOptions);
-        }
-
-        let data = await response.json();
+        const response = await fetch(`${API_URL}/recipes${queryParams}`, requestOptions);
+        const data = await response.json();
         if (data?.results) {
             dispatch({ type: 'GET_RECIPES', payload: data })
+            setSearchParams(queryParams)
             return data
         }
         dispatch({ type: 'GET_RECIPES_ERROR', errorMessage: data })

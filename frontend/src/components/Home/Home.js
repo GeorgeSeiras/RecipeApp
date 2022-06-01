@@ -1,4 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react';
+import {useSearchParams} from 'react-router-dom';
 import { RecipesReducer } from '../../reducers/RecipeReducer';
 import { getRecipes } from "../../actions/RecipeActions";
 import RecipeCards from './RecipeCards';
@@ -16,6 +17,7 @@ export default function Home(props) {
     const [active, setActive] = useState(1);
     const [pageClicked, setPageClicked] = useState(1);
     const {addError} = useError();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
         if (state?.errorMessage) {
@@ -23,9 +25,17 @@ export default function Home(props) {
         }
     }, [state?.errorMessage])
 
+    useEffect(()=>{
+        var params = `?page=${active}`
+        searchParams.forEach((value,key)=>{
+            params = params.concat(`&${key}=${value}`);
+        })
+        setQueryParams(params)
+    },[])
+
     useEffect(() => {
         (async () => {
-            const res = await getRecipes(dispatch, queryParams, pageClicked);
+            const res = await getRecipes(dispatch, queryParams, pageClicked,setSearchParams);
             if (res) {
                 setActive(pageClicked);
             }
@@ -35,7 +45,13 @@ export default function Home(props) {
     return (
         <Container>
             <Row>
-                <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} />
+                <SearchBar 
+                title={searchParams.get('title')}
+                username={searchParams.get('username')} 
+                cuisine={searchParams.get('cuisine')}
+                course={searchParams.get('course')}
+                sort={searchParams.get('sort')}
+                setQueryParams={setQueryParams} />
             </Row>
             {state?.recipes &&
                 <Row style={{ paddingBottom: '1em' }}>
