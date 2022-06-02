@@ -104,3 +104,45 @@ export async function getMe(dispatch, token) {
         dispatch({ type: 'GET_ME_ERROR', errorMessage: error })
     }
 }
+
+export async function resetRequest(dispatch,payload){
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body:JSON.stringify(payload)
+    }
+    try {
+        const response = await fetch(`${API_URL}/password_reset/`, requestOptions);
+        const data = await response.json();
+        if (data) {
+            dispatch({ type: 'RESET_REQUEST', payload:{} })
+            return data
+        }
+        dispatch({ type: 'RESET_ERROR', errorMessage: data })
+    } catch (error) {
+            dispatch({ type: 'RESET_ERROR', errorMessage: error })
+    }
+}
+
+export async function resetPassword(dispatch,payload){
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        body:JSON.stringify(payload)
+    }
+    try {
+        const response = await fetch(`${API_URL}/password_reset/confirm/`, requestOptions);
+        const data = await response.json();
+        if (data?.status==='OK') {
+            dispatch({ type: 'RESET_SUCCESS', payload:{status:'OK'} })
+            return data
+        }
+        dispatch({ type: 'RESET_ERROR', errorMessage: data })
+    } catch (error) {
+            dispatch({ type: 'RESET_ERROR', errorMessage: error })
+    }
+}

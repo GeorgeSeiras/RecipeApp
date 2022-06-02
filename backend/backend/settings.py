@@ -65,7 +65,8 @@ INSTALLED_APPS = [
     'oauth2_provider',
     'social_django',
     'drf_social_oauth2',
-    'django_extensions'
+    'django_extensions',
+    'django_rest_passwordreset',
 ]
 
 AUTH_USER_MODEL = 'user.User'
@@ -282,3 +283,6 @@ GRAPH_MODELS = {
     'all_applications': True,
     'group_models': True
 }
+
+#password reset
+DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME=24

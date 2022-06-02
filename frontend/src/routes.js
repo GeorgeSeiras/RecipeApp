@@ -12,6 +12,8 @@ import Report from './components/Report/Report';
 import EmailVerification from './components/Signup/EmailVerificationNotification';
 import VerifyEmail from './components/Signup/VerifyEmail';
 import NewToken from './components/Signup/NewToken';
+import ForgotPassword from './components/Login/ForgotPassword';
+import NewPassword from './components/Login/NewPassword';
 
 export const privateRoutes = [
     {
@@ -65,9 +67,13 @@ export const authRoutes = [
         element: <VerifyEmail />
     },
     {
-        path: '/verification/new-token',
-        element: <NewToken />
-    }
+        path: '/password/forgot',
+        element: <ForgotPassword />
+    },
+    {
+        path: '/password/reset/:token',
+        element: <NewPassword />
+    },
 ]
 
 export const adminRoutes = [
