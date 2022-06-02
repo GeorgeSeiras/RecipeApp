@@ -50,3 +50,27 @@ export const GetMeReducer = (initialStateGetMe, action) => {
             throw new Error(`Unhandled action type :${action.type}`)
     }
 }
+
+export const initialStateReset = {
+    errorMessage: null
+}
+
+export const passwordResetReducer = (initialStateReset,action)=>{
+    switch (action.type) {
+        case 'RESET_REQUEST':
+            return {
+                ...initialStateReset,
+            }
+        case 'RESET_SUCCESS':
+                return {
+                    ...initialStateReset,
+                }
+        case 'RESET_ERROR':
+            return {
+                ...initialStateReset,
+                errorMessage: action.errorMessage
+            }
+        default:
+            throw new Error(`Unhandled action type :${action.type}`)
+    }
+}

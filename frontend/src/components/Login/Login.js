@@ -136,8 +136,13 @@ function Login(props) {
                         RememberMe
                     </label>
                 </div>
+                <p style={{marginBottom:'0px'}}>
                 <a href='/verification/new-token' style={{ fontSize: '15px' }}>
                     Resend verification email
+                </a>
+                </p>
+                <a href='/password/forgot'>
+                    Forgot your password?
                 </a>
             </div>
 

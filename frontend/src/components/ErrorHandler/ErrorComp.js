@@ -15,6 +15,7 @@ export default function ErrorComp() {
             {error.length > 0 &&
                 <Alert variant={'danger'} style={{ textAlign: 'center' }} dismissible onClose={() => dismissError()}>
                     {error.map((elem, index) => {
+                        console.log(elem)
                         let message = ''
                         if (elem?.status_code) {
                             message += `${elem.status_code}:`
