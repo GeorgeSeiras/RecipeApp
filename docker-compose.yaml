@@ -29,9 +29,6 @@ services:
     #     # restart: on-failure
     #     env_file:
     #         - ./frontend/.env
-    #     # volumes:
-    #     #     - /client:/app
-    #     #     - /app/node_modules
     #     networks:
     #         - recipeapp
     #     ports:
@@ -51,7 +48,6 @@ services:
             - ./backend/backend/.env
         volumes:
             - postgres_data:/var/lib/postgresql/data/
-            # - ./init.sql:/docker-entrypoint-initdb.d/init.sql
         environment:
             - POSTGRES_USER=recipeadmin
             - POSTGRES_PASSWORD=password
