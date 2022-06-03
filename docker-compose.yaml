@@ -21,25 +21,25 @@ services:
         networks:
             - recipeapp
     
-    frontend:
-        container_name: frontend
-        build:
-            context: ./frontend/
-            dockerfile: Dockerfile
-        # restart: on-failure
-        env_file:
-            - ./frontend/.env
-        # volumes:
-        #     - /client:/app
-        #     - /app/node_modules
-        networks:
-            - recipeapp
-        ports:
-            - "3000:3000"
-        depends_on:
-            - database
-            - redis
-            - backend
+    # frontend:
+    #     container_name: frontend
+    #     build:
+    #         context: ./frontend/
+    #         dockerfile: Dockerfile
+    #     # restart: on-failure
+    #     env_file:
+    #         - ./frontend/.env
+    #     # volumes:
+    #     #     - /client:/app
+    #     #     - /app/node_modules
+    #     networks:
+    #         - recipeapp
+    #     ports:
+    #         - "3000:3000"
+    #     depends_on:
+    #         - database
+    #         - redis
+    #         - backend
 
     database:
         restart: always
@@ -51,10 +51,11 @@ services:
             - ./backend/backend/.env
         volumes:
             - postgres_data:/var/lib/postgresql/data/
-        # environment:
-        #     - POSTGRES_USER=${POSTGRES_USER}
-        #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-        #     - POSTGRES_DB=${POSTGRES_DB}
+            # - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+        environment:
+            - POSTGRES_USER=recipeadmin
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_DB=recipeapp
         networks:
             - recipeapp
 
