@@ -47,6 +47,7 @@ class Notifications(models.Model):
 @receiver(post_save, sender=Notifications)
 def create_notification(sender, instance, created, **kwargs):
     if created:
+        print('sending notifications....')
         layer = get_channel_layer()
         async_to_sync(layer.group_send)(
             f"user_{instance.user_receiver.username}",

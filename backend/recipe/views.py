@@ -164,12 +164,11 @@ class createCommentView(APIView):
             if(user == comment.recipe.user or (type == Type.REPLY and comment.parent.user == comment.user)):
                 return JsonResponse({'result': comment.to_dict()})
 
-            notifications = Notifications(
+            notifications = Notifications.objects.create(
                 user_sender=user,
                 user_receiver=comment.recipe.user,
                 type=type,
                 comment=comment)
-            notifications.save()
             return JsonResponse({'result': comment.to_dict()})
 
 
