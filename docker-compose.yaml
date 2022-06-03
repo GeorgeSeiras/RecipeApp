@@ -1,37 +1,74 @@
-# docker_tutorial/docker-compose.yml
+version: "3.3"
 
-version: "3"
 services:
-
-  database:
-    image: postgres:12.7-alpine
-    volumes:
-        - ./backup_data/db:/var/lib/postgresql/data
-    environment:
-        - POSTGRES_DB=recipeapp
-        - POSTGRES_USER=recipeadmin
-        - POSTGRES_PASSWORD=password
-
-  backend:
-    build: ./backend
-    volumes:
-      - ./backend:/app
-    depends_on:
-      - database
+    backend:
+        # restart: on-failure
+        container_name: backend
+        build:
+            context: ./backend/
+            dockerfile: Dockerfile
+        # volumes:
+        #     - .:/app
+        #     - media_volume:/app/media
+        ports:
+            - "8000:8000"
+        env_file:
+            - ./backend/backend/.env
+        depends_on:
+            - database
+        links:
+            - database:database
+        networks:
+            - recipeapp
     
-  frontend:
-    build: ./frontend
-    volumes:
-      - ./frontend:/app
-    depends_on:
-      - backend
-    ports:
-      - 80:80
-  
-  nginx_backend_server:
-    build: ./nginx_backend_server
-    ports:
-        - 8000:8000
-        - 5432:5432
-    depends_on:
-        - backend
+    frontend:
+        container_name: frontend
+        build:
+            context: ./frontend/
+            dockerfile: Dockerfile
+        # restart: on-failure
+        env_file:
+            - ./frontend/.env
+        # volumes:
+        #     - /client:/app
+        #     - /app/node_modules
+        networks:
+            - recipeapp
+        ports:
+            - "3000:3000"
+        depends_on:
+            - database
+            - redis
+            - backend
+
+    database:
+        restart: always
+        container_name: database
+        image: postgres:12.0-alpine
+        ports:
+            - "5432:5432"
+        env_file:
+            - ./backend/backend/.env
+        volumes:
+            - postgres_data:/var/lib/postgresql/data/
+        # environment:
+        #     - POSTGRES_USER=${POSTGRES_USER}
+        #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        #     - POSTGRES_DB=${POSTGRES_DB}
+        networks:
+            - recipeapp
+
+    redis:
+        image: redis:5-alpine
+        ports:
+            - "6379:6379"
+        networks:
+            - recipeapp
+
+networks:
+    recipeapp:
+        driver: bridge
+
+volumes:
+    postgres_data:
+    media_volume:
