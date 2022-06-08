@@ -53,32 +53,6 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     """
 
     url = env('FRONTEND_URL')
-
-    # send an e-mail to the user
-    # context = {
-    #     'current_user': reset_password_token.user,
-    #     'username': reset_password_token.user.username,
-    #     'email': reset_password_token.user.email,
-    #     'reset_password_url': "{}/{}".format(
-    #         instance.request.build_absolute_uri(reverse(url+'/password/reset')),
-    #         reset_password_token.key)
-    # }
-
-    # # render email text
-    # email_html_message = render_to_string('email/user_reset_password.html', context)
-    # email_plaintext_message = render_to_string('email/user_reset_password.txt', context)
-
-    # msg = EmailMultiAlternatives(
-    #     # title:
-    #     "Password Reset for {title}".format(title="Recipeapp"),
-    #     # message:
-    #     email_plaintext_message,
-    #     # from:
-    #     "recipeappthesis@gmail.com",
-    #     # to:
-    #     [reset_password_token.user.email]
-    # )
-    print(reset_password_token.key)
     subject = 'Reset your password'
     message = 'Click here to reset your password: href=https://{}/password/reset/{}'.format(
         url, reset_password_token.key)
