@@ -322,7 +322,7 @@ export const Library = (props) => {
                     <Button variant="secondary" onClick={() => setFolderModal(false)}>
                         Cancel
                     </Button>
-                    <Button variant="danger" onClick={() => handleFolderDelete()}>
+                    <Button variant="danger" onClick={(e) => handleFolderDelete(e)}>
                         Delete
                     </Button>
                 </Modal.Footer>
@@ -340,7 +340,7 @@ export const Library = (props) => {
                     <Button variant="secondary" onClick={() => setMediaModal(false)}>
                         Cancel
                     </Button>
-                    <Button variant="danger" onClick={() => handleMediaDelete()}>
+                    <Button variant="danger" onClick={(e) => handleMediaDelete(e)}>
                         Delete
                     </Button>
                 </Modal.Footer>
