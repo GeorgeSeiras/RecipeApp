@@ -127,7 +127,7 @@ export const Library = (props) => {
 
     const overlayMedia = (
         <Popover >
-            <Popover.Body style={{ textAlign: 'center',width:'200px' }}>
+            <Popover.Body style={{ textAlign: 'center',width:'200px'}}>
                 <>
                     <Form.Group>
                         <Form.Control

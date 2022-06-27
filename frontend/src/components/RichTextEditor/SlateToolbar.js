@@ -231,7 +231,7 @@ function CustomImageUploadButton({ id, getImageUrl, ...props }){
           width='20px'
         />
       </Button>
-        <Overlay target={target.current} show={show} >
+        <Overlay target={target.current} show={show} placement={'bottom'}>
           {({ placement, arrowProps, show: _show, popper, ...props }) => (
             <div
               {...props}
