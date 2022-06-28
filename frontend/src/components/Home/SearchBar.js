@@ -79,7 +79,6 @@ export default function SearchBar(props) {
     return (
         <Container xs={'auto'} style={{display:'flex',flexDirection:'column',paddingLeft:'0'}}>
             <Form className="d-flex"
-                onSubmit={handleSubmit}
                 style={{
                     paddingTop: '0.5em',
                     paddingBottom: '0',
@@ -98,7 +97,7 @@ export default function SearchBar(props) {
                         onChange={(e) => setTitle(e.target.value)}
                     />
                 </Form.Group>
-                <Button type="submit" variant="outline-success">Search</Button>
+                <Button onClick={handleSubmit} variant="outline-success">Search</Button>
             </Form>
             <Accordion style={{
                 paddingBottom: '0.5em',
@@ -108,7 +107,6 @@ export default function SearchBar(props) {
                     <Accordion.Header>Advanced Search</Accordion.Header>
                     <Accordion.Body >
                         <Form className="d-flex"
-                            onSubmit={handleAdvancedSubmit}
                             style={{ paddingTop: '0', paddingBottom: '0.5em' }}>
                             <Container>
                                 <Row xs='auto'>
@@ -177,7 +175,7 @@ export default function SearchBar(props) {
                                 </Row>
                                 <Row xs='auto' style={{ paddingTop: '0.5em', margin: 'auto', justifyContent: 'center' }}>
                                     <Col style={{ width: '100%' }}>
-                                        <Button type="submit" style={{ width: '100%' }} variant="outline-success">Search</Button>
+                                        <Button onClick={handleAdvancedSubmit} style={{ width: '100%' }} variant="outline-success">Search</Button>
                                     </Col>
                                 </Row>
                             </Container>

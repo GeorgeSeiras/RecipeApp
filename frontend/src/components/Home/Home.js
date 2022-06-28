@@ -32,8 +32,11 @@ export default function Home(props) {
                 params = params.concat(`&${key}=${value}`);
             }
         })
-        setQueryParams(params)
-    },[searchParams])
+        console.log(queryParams, params)
+        if(queryParams !== params){
+            setQueryParams(params)
+        }
+    },[])
 
     useEffect(()=>{
         const urlParams = new URLSearchParams(searchParams)

@@ -53,7 +53,6 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     """
 
     url = env('FRONTEND_URL')
-    print(reset_password_token.key)
     subject = 'Reset your password'
     message = 'Click here to reset your password: href=https://{}/password/reset/{}'.format(
         url, reset_password_token.key)
