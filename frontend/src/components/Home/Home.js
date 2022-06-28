@@ -11,13 +11,13 @@ import Col from 'react-bootstrap/Col';
 import useError from '../ErrorHandler/ErrorHandler';
 
 export default function Home(props) {
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const [state, dispatch] = useReducer(RecipesReducer);
     const [queryParams, setQueryParams] = useState('');
-    const [active, setActive] = useState(1);
-    const [pageClicked, setPageClicked] = useState(1);
+    const [active, setActive] = useState(searchParams.get('page') || 1);
+    const [pageClicked, setPageClicked] = useState(searchParams.get('page') || 1);
     const {addError} = useError();
-    const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
         if (state?.errorMessage) {
@@ -25,29 +25,30 @@ export default function Home(props) {
         }
     }, [state?.errorMessage])
 
-    useEffect(()=>{
-        var params = `?page=${searchParams.get('page') ||active}`
-        searchParams.forEach((value,key)=>{
-            if(key !== 'page'){
-                params = params.concat(`&${key}=${value}`);
-            }
-        })
-        console.log(queryParams, params)
-        if(queryParams !== params){
-            setQueryParams(params)
-        }
-    },[])
 
     useEffect(()=>{
+        
         const urlParams = new URLSearchParams(searchParams)
         urlParams.set('page',pageClicked)
         setSearchParams(urlParams.toString())
         setActive(pageClicked)
+        var params = `?page=${pageClicked}`
+
+        searchParams.forEach((value,key)=>{
+            if(key !=='page'){
+              params = params.concat(`&${key}=${value}`);
+            }
+        })
+        if(queryParams !== params){
+            setQueryParams(params)
+        }
     },[pageClicked])
 
     useEffect(() => {
         (async () => {
-            const res = await getRecipes(dispatch, queryParams ,setSearchParams);
+            if(queryParams!==''){
+                await getRecipes(dispatch, queryParams ,setSearchParams);
+            }
         })()
     }, [queryParams])
 

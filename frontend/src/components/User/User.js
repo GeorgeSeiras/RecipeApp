@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
-import {useSearchParams} from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import { RecipesReducer } from '../../reducers/RecipeReducer';
 import { getRecipes } from '../../actions/RecipeActions';
@@ -21,48 +21,48 @@ import useError from '../ErrorHandler/ErrorHandler';
 import ReportButton from '../Report/CreateReportButton';
 
 export default function User() {
+    const [searchParams, setSearchParams] = useSearchParams();
+
     const [recipesState, recipesDispatch] = useReducer(RecipesReducer);
     const [userState, userDispatch] = useReducer(UserReducer);
     const { username } = useParams();
-    const [active, setActive] = useState(1);
-    const [pageClicked, setPageClicked] = useState(1);
+    const [active, setActive] = useState(searchParams.get('page') || 1);
+    const [pageClicked, setPageClicked] = useState(searchParams.get('page') || 1);
     const [queryParams, setQueryParams] = useState('');
     const navigate = useNavigate();
     const { addError } = useError();
-    const [searchParams, setSearchParams] = useSearchParams();
 
     const userData = useContext(UserContext);
 
-    useEffect(()=>{
-        (async()=>{
-            await getUser(userDispatch, username,userData?.user?.token?.key);  
+    useEffect(() => {
+        (async () => {
+            await getUser(userDispatch, username, userData?.user?.token?.key);
         })()
-    },[userData?.user?.user])
+    }, [userData?.user?.user])
 
-    useEffect(()=>{
-        (async()=>{
-            if(userData?.user?.user){
-                var params = `?page=${searchParams.get('page') ||active}&username=${username}`
-                searchParams.forEach((value,key)=>{
-                    if(key !== 'page' && key!=='username'){
-                        params = params.concat(`&${key}=${value}`);
-                    }
-                })
-                setQueryParams(params)
-            }
-        })()
-    },[searchParams,userData?.user?.user])
-
-    useEffect(()=>{
+    useEffect(() => {
         const urlParams = new URLSearchParams(searchParams)
-        urlParams.set('page',pageClicked)
+        urlParams.set('page', pageClicked)
         setSearchParams(urlParams.toString())
         setActive(pageClicked)
-    },[pageClicked])
+        if (userData?.user?.user) {
+            var params = `?page=${searchParams.get('page') || active}&username=${username}`
+            searchParams.forEach((value, key) => {
+                if (key !== 'page' && key !== 'username') {
+                    params = params.concat(`&${key}=${value}`);
+                }
+            })
+            if (queryParams !== params) {
+                setQueryParams(params)
+            }
+        }
+    }, [pageClicked])
 
     useEffect(() => {
         (async () => {
-            await getRecipes(recipesDispatch, queryParams,setSearchParams);
+            if (queryParams !== '') {
+                await getRecipes(recipesDispatch, queryParams, setSearchParams);
+            }
         })();
     }, [queryParams])
 
@@ -96,7 +96,7 @@ export default function User() {
                             <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} user={username} />
                             <RecipeCards response={recipesState?.recipes} />
                             {recipesState?.recipes &&
-                                <div style={{marginTop:'5%'}}>
+                                <div style={{ marginTop: '5%' }}>
                                     <Pagination response={recipesState?.recipes} active={active} setPageClicked={setPageClicked} />
                                 </div>
                             }
