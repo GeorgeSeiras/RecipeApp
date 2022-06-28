@@ -96,7 +96,9 @@ export default function User() {
                             <SearchBar queryParams={queryParams} setQueryParams={setQueryParams} user={username} />
                             <RecipeCards response={recipesState?.recipes} />
                             {recipesState?.recipes &&
-                                <Pagination response={recipesState?.recipes} active={active} setPageClicked={setPageClicked} />
+                                <div style={{marginTop:'5%'}}>
+                                    <Pagination response={recipesState?.recipes} active={active} setPageClicked={setPageClicked} />
+                                </div>
                             }
                         </Col>
                     </Row>
