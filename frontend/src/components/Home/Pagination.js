@@ -4,7 +4,6 @@ import Pagination from 'react-bootstrap/Pagination'
 export default function PaginationBar(props) {
     const [pageArr, setPageArr] = useState([]);
     const [totalPages, setTotalPages] = useState();
-
     useEffect(() => {
         setPageArr([])
         setTotalPages(props?.response?.total_pages);

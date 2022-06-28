@@ -21,29 +21,21 @@ import useError from '../ErrorHandler/ErrorHandler';
 import ReportButton from '../Report/CreateReportButton'
 
 export default function List() {
+    const [searchParams, setSearchParams] = useSearchParams();
+
     const userData = useContext(UserContext);
     const [stateList, dispatchList] = useReducer(ListReducer);
     const [stateRecipesList, dispatchRecipesList] = useReducer(RecipesInListReducer);
     const { listId } = useParams();
     const [queryParams, setQueryParams] = useState('');
-    const [active, setActive] = useState(1);
-    const [pageClicked, setPageClicked] = useState(1);
+    const [active, setActive] = useState(searchParams.get('page') || 1);
+    const [pageClicked, setPageClicked] = useState(searchParams.get('page') || 1);
     const [showModal, setShowModal] = useState(false);
     const [rerender, setRerender] = useState(false);
+    const [response, setResponse] = useState(null)
     const { addError } = useError();
-    const [searchParams, setSearchParams] = useSearchParams();
 
     const navigate = useNavigate();
-    console.log(queryParams)
-    useEffect(()=>{
-        var params = `?page=${searchParams.get('page') ||active}`
-        searchParams.forEach((value,key)=>{
-            if(key !== 'page'){
-                    params = params.concat(`&${key}=${value}`);
-            }
-        })
-        setQueryParams(params)
-    },[searchParams])
 
     useEffect(() => {
         (async () => {
@@ -58,12 +50,23 @@ export default function List() {
         urlParams.set('page',pageClicked)
         setSearchParams(urlParams.toString())
         setActive(pageClicked)
+
+        var params = `?page=${pageClicked}`
+        searchParams.forEach((value,key)=>{
+            if(key !== 'page'){
+                    params = params.concat(`&${key}=${value}`);
+            }
+        })
+        if(params !== queryParams){
+            setQueryParams(params)
+        }
     },[pageClicked])
 
     useEffect(() => {
         (async () => {
             if (stateList?.list) {
                 const res = await getListRecipes(dispatchRecipesList, listId, queryParams, setSearchParams);
+                setResponse(res)
                 if (res) {
                     const recipes = [];
                     res.results.forEach(item => {
@@ -131,8 +134,9 @@ export default function List() {
                 <ListRecipeCards state={stateRecipesList}
                     setRerender={setRerender} rerender={rerender} user={stateList?.list?.user} dispatch={dispatchRecipesList} />
             </Row>
-            <PaginationBar response={stateRecipesList?.recipes} active={active} setPageClicked={setPageClicked} />
-
+            {response &&
+                <PaginationBar response={response} active={active} setPageClicked={setPageClicked} />
+            }
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Delete List</Modal.Title>
