@@ -8,7 +8,7 @@ from user.models import User, get_file_path
 
 def save_profile(backend, user, response, *args, **kwargs):
     if backend.name == 'facebook':
-        url = response['picture']['data']['url']
+        url='https://graph.facebook.com/{0}/picture/?type=large&access_token={1}'.format(response['id'],response['access_token'])
         img_tmp = NamedTemporaryFile(delete=True)
         with urlopen(url) as uo:
             assert uo.status == 200
