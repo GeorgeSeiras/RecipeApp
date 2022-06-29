@@ -9,8 +9,9 @@ export default function DeleteComment(props) {
     const userData = useContext(UserContext);
     
     const deleteCommentHandler = async () => {
-        const response = await deleteComment(props.dispatch, userData.user.token.key, props.commentId)
+        const response = await deleteComment(props.dispatch, userData.user.token.key, props.comment.id)
         if (response?.result) {
+            props.comment.deleted=true
             props.setCommentDeleted(true)
         }
     }

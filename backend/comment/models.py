@@ -30,6 +30,7 @@ class Comment(models.Model):
         dict['recipe'] = self.recipe.id
         dict['text'] = self.text
         dict['deleted'] = self.deleted
+        dict['removed'] = self.removed
         if self.parent != None:
             dict['parent'] = self.get_parent()
         else:
@@ -44,6 +45,7 @@ class Comment(models.Model):
         dict['text'] = self.text
         dict['parent'] = self.parent
         dict['deleted'] = self.deleted
+        dict['removed'] = self.removed
         return dict
 
     def to_list(comments):
