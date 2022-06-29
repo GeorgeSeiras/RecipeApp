@@ -32,6 +32,11 @@ export const GetUserListsReducer = (initialStateUserLists, action) => {
                 ...initialStateUserLists,
                 errorMessage: action.errorMessage
             }
+        case 'SET_LISTS':
+            return{
+                ...initialStateUserLists,
+                lists: action.payload
+            }
         default:
             throw new Error(`Unhandled action type: ${action.type}`);
     }

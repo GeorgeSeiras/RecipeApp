@@ -6,7 +6,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Alert from 'react-bootstrap/Alert';
 
-import { getUserLists, getListsWithRecipe, addRecipeToList } from '../../actions/ListActions';
+import { getUserLists, getListsWithRecipe, addRecipeToList, setLists } from '../../actions/ListActions';
 import { GetUserListsReducer } from '../../reducers/ListReducer';
 import ListPagination from '../RecipeList/ListPagination';
 
@@ -30,12 +30,14 @@ export default function AddToList(props) {
         async function getLists() {
             if (userData?.user?.user?.id && !clicked) {
                 await getUserLists(dispatch, userData.user.user.id)
-
-            } else if (clicked !== 0) {
-                if (clicked) {
-                    await fetch(clicked);
+            } else if (clicked) {
+                const res = await fetch(clicked);
+                const data = await res.json();
+                if(data){
+                    setLists(dispatch,data)
                 }
             }
+
         }
         getLists();
     }, [userData?.user?.user, clicked])
