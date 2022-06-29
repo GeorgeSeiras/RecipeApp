@@ -1,6 +1,7 @@
 import React, { useState, useReducer, useContext,useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/esm/Container';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -142,14 +143,16 @@ export default function CreateRecipe() {
         }}
             onSubmit={(e) => handleSubmit(e)}
         >
+            <Container className='mb-3'>
             <EditableRecipeBody title={title} setTitle={setTitle} description={description} setDescription={setDescription} prepHours={prepHours} setPrepHours={setPrepHours}
                 prepMins={prepMins} setPrepMins={setPrepMins} cookHours={cookHours} setCookHours={setCookHours} cookMins={cookMins} setCookMins={setCookMins} servings={servings} setServings={setServings} ingredients={ingredients}
                 setIngredients={setIngredients} steps={steps} setSteps={setSteps} thumbnail={thumbnail} setThumbnail={setThumbnail} carousel={carousel} setCarousel={setCarousel}
                 course={course} setCourse={setCourse} cuisine={cuisine} setCuisine={setCuisine} dispatch={dispatch}/>
 
-            <Button style={{marginLeft:'18%'}} variant="success" type="submit" disabled={!validateForm()}>
+            <Button variant="success" type="submit" disabled={!validateForm()}>
                 Create Recipe
             </Button>
+            </Container>
         </Form >
     );
 }
