@@ -77,7 +77,7 @@ export default function Comment(props) {
                             </Col>
                             {props.comment.user.id === userData?.user?.user?.id &&
                                 !props.comment.deleted && !commentDeleted &&
-                                <Col className='ms-auto' style={{ paddingRight: '0' }}>
+                                <Col className='ms-auto'>
                                     <DeleteComment commentId={props.comment.id} setCommentDeleted={setCommentDeleted} dispatch={props.dispatch} />
                                 </Col>
                             }
