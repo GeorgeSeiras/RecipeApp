@@ -36,11 +36,21 @@ export default function Comment(props) {
         }
     }
 
+    const commentText=(comment)=>{
+        console.log(comment)
+        if(comment.removed){
+            return '[removed]'
+        }else if(comment.deleted){
+            return '[deleted]'
+        }else{
+            return comment.text
+        }
+    }
     return (
         <Row key={props.comment.id} style={{ paddingBottom: '0.5em', marginLeft: `0.5em`, marginRight: '-0.81em' }}>
             <Card style={{ marginRight: '0' }}>
                 <Card.Body style={{ paddingBottom: '0.5em' }}>
-                    <Card.Text>{commentDeleted ? '[deleted]' : props.comment.text}</Card.Text>
+                    <Card.Text>{commentText(props.comment)}</Card.Text>
                 </Card.Body>
                 <Card.Footer style={{ paddingLeft: '0', paddingBottom: '0', paddingTop: '0', paddingRight: '0' }}>
                     <Row className='container-fluid me-auto' xs="auto" style={{ alignItems: 'center', paddingLeft: '0', marginLeft: '0', paddingRight: '0' }}>
@@ -78,7 +88,7 @@ export default function Comment(props) {
                             {props.comment.user.id === userData?.user?.user?.id &&
                                 !props.comment.deleted && !commentDeleted &&
                                 <Col className='ms-auto'>
-                                    <DeleteComment commentId={props.comment.id} setCommentDeleted={setCommentDeleted} dispatch={props.dispatch} />
+                                    <DeleteComment comment={props.comment} setCommentDeleted={setCommentDeleted} dispatch={props.dispatch} />
                                 </Col>
                             }
                             {userData?.user?.isAuth && userData?.user?.user?.id !== props?.comment?.user?.id &&
