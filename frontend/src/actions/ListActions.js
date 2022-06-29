@@ -134,3 +134,7 @@ export async function addRecipeToList(dispatch, token, listId, recipeId) {
         dispatch({ type: 'USER_LISTS_ERROR', errorMessage: error })
     }
 }
+
+export  function setLists(dispatch,lists){
+    dispatch({type:'SET_LISTS',payload:lists})
+}

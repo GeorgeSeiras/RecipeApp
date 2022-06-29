@@ -3,7 +3,6 @@ import Pagination from 'react-bootstrap/Pagination';
 import Container from 'react-bootstrap/Container';
 
 export default function PaginationBar(props) {
-    console.log(props)
     const disabled = (action) => {
         switch (action) {
             case 'previous':
