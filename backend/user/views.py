@@ -131,10 +131,11 @@ class UserMe(APIView):
                 email = serializer.validated_data.get('email', None)
                 query = Q()
                 if username != None:
-                    query |= Q(username__icontains=username)
+                    query |= Q(username__iexact=username)
                 if email != None:
-                    query |= Q(email__icontains=email)
+                    query |= Q(email__iexact=email)
                 user_found = User.objects.filter(query)
+                print(user_found)
                 if len(user_found) > 0:
                     raise CustomException(
                         'User with this username and/or email already exists', status.HTTP_400_BAD_REQUEST)
