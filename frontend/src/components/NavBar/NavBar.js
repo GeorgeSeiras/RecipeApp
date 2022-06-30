@@ -8,6 +8,7 @@ import NO_AVATAR from '../../static/no_avatar.svg';
 
 import Notifications from '../Notifications/Notifications';
 import './NavBar.css'
+
 const Navigation = () => {
     const userData = useContext(UserContext);
     const [avatar, setAvatar] = useState(null);

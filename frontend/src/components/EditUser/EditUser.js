@@ -24,14 +24,8 @@ export default function UserInfo() {
     const [imageSuccess, setImageSuccess] = useState(null);
     const [show, setShow] = useState(false);
     const userData = useContext(UserContext);
+    const { updateUser } = useContext(UserContext)
     const [state, dispatch] = useReducer(UserReducer);
-    const { addError } = useError();
-
-    useEffect(() => {
-        if (state?.errorMessage) {
-            addError(state.errorMessage)
-        }
-    }, [state?.errorMessage])
 
     function checkPassword() {
         setPasswordError(null)
@@ -57,6 +51,7 @@ export default function UserInfo() {
             formData.append('image', image);
             const response = await changeImage(dispatch, formData, userData.user.token.key);
             if (response?.result) {
+                updateUser({user:response?.result})
                 setImageSuccess('Profile picture successfuly changed')
                 setImage(undefined)
             }
@@ -71,6 +66,7 @@ export default function UserInfo() {
             }
             const response = await editUser(dispatch, Object.fromEntries(payload), userData.user.token.key);
             if (response?.result) {
+                updateUser({user:response.result})
                 if (username !== '') {
                     setUsernameSuccess('Username successfuly changed');
                     setUsername('')
@@ -124,7 +120,7 @@ export default function UserInfo() {
         <Container>
             {state?.errorMessage &&
                 <Alert variant={'danger'} onClose={() => { dissmissError(dispatch) }} dismissible>
-                    {state.errorMessage.map((error, index) => { return <p key={index}>{error}</p> })}
+                    <p>{state.errorMessage}</p> 
                 </Alert>
             }
             <Form onSubmit={(e) => handleSubmit(e)} style={{ paddingTop: '1em' }}>

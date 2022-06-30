@@ -60,8 +60,14 @@ export const AuthProvider = ({ children }) => {
         cookies.remove('token', { path: '/' });
     };
 
+    const updateUser = (data)=>{
+        setUser((user)=>({
+            ...user,
+            user:data.user
+        }))
+    }
     return (
-        <UserContext.Provider value={{ user, login, logout }}>
+        <UserContext.Provider value={{ user, login, logout ,updateUser}}>
             {children}
         </ UserContext.Provider>
     );
