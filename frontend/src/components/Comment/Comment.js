@@ -37,7 +37,6 @@ export default function Comment(props) {
     }
 
     const commentText=(comment)=>{
-        console.log(comment)
         if(comment.removed){
             return '[removed]'
         }else if(comment.deleted){
@@ -46,6 +45,7 @@ export default function Comment(props) {
             return comment.text
         }
     }
+
     return (
         <Row key={props.comment.id} style={{ paddingBottom: '0.5em', marginLeft: `0.5em`, marginRight: '-0.81em' }}>
             <Card style={{ marginRight: '0' }}>
@@ -86,12 +86,12 @@ export default function Comment(props) {
                                 }
                             </Col>
                             {props.comment.user.id === userData?.user?.user?.id &&
-                                !props.comment.deleted && !commentDeleted &&
+                                !props.comment.removed && !commentDeleted &&
                                 <Col className='ms-auto'>
                                     <DeleteComment comment={props.comment} setCommentDeleted={setCommentDeleted} dispatch={props.dispatch} />
                                 </Col>
                             }
-                            {userData?.user?.isAuth && userData?.user?.user?.id !== props?.comment?.user?.id &&
+                            {userData?.user?.isAuth && userData?.user?.user?.id !== props?.comment?.user?.id && !props?.comment?.removed &&
                                 <Col style={{ paddingLeft: '0' }}>
                                     <ReportButton id={props.comment.id} userData={userData} type={'COMMENT'} />
                                 </Col>
