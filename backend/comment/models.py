@@ -77,8 +77,8 @@ class Comment(models.Model):
     the user deleted the comment
 '''
 
-@receiver(models.signals.pre_save, sender=Comment)
-def comment_pre_save(sender, instance, **kwargs):
-    if instance.deleted == True and instance.text != "[deleted]":
-        instance.text = "[deleted]"
-        instance.save()
+# @receiver(models.signals.pre_save, sender=Comment)
+# def comment_pre_save(sender, instance, **kwargs):
+#     if instance.deleted == True and instance.text != "[deleted]":
+#         instance.text = "[deleted]"
+#         instance.save()

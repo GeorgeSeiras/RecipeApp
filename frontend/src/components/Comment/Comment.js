@@ -86,12 +86,12 @@ export default function Comment(props) {
                                 }
                             </Col>
                             {props.comment.user.id === userData?.user?.user?.id &&
-                                !props.comment.deleted && !commentDeleted &&
+                                !props.comment.removed && !commentDeleted &&
                                 <Col className='ms-auto'>
                                     <DeleteComment comment={props.comment} setCommentDeleted={setCommentDeleted} dispatch={props.dispatch} />
                                 </Col>
                             }
-                            {userData?.user?.isAuth && userData?.user?.user?.id !== props?.comment?.user?.id &&
+                            {userData?.user?.isAuth && userData?.user?.user?.id !== props?.comment?.user?.id && !props?.comment?.removed &&
                                 <Col style={{ paddingLeft: '0' }}>
                                     <ReportButton id={props.comment.id} userData={userData} type={'COMMENT'} />
                                 </Col>

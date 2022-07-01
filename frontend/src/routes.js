@@ -74,6 +74,10 @@ export const authRoutes = [
         path: '/password/reset/:token',
         element: <NewPassword />
     },
+    {
+        path: '/verification/new-token',
+        element: <NewToken/>
+    }
 ]
 
 export const adminRoutes = [
